@@ -1,0 +1,24 @@
+﻿生成启动时间为 2018/7/11 6:44:36。
+     1>项目“D:\WorkStation\WorkProject\TW_Dealer\TW_Dealer\TW_Dealer.vcxproj”在节点 2 上(Rebuild 个目标)。
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I"D:\log4cplus-2.0.1\include" /I"D:\Program Files\ZeroMQ 4.0.4\include" /ID:\protocbuf\src /Zi /nologo /W1 /WX- /sdl- /O2 /D WIN32 /Gm /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt DealerService.cpp get_config.cpp log4_cplus.cpp logger.cpp main.cpp msg_define_new.pb.cc
+         msg_define_new.pb.cc
+         main.cpp
+         logger.cpp
+         log4_cplus.cpp
+         get_config.cpp
+         DealerService.cpp
+         正在生成代码...
+       Link:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\WorkStation\WorkProject\TW_Dealer\x64\Release\TW_Dealer.exe" /NOLOGO /LIBPATH:"D:\VS_Project\log4cplus-2.0.1\msvc14\x64\bin.Release" /LIBPATH:"D:\Program Files\ZeroMQ 4.0.4\lib" /LIBPATH:D:\protocbuf ws2_32.lib libprotobuf.lib "libprotobuf-lite.lib" "libzmq-v120-mt-4_0_4.lib" log4cplus.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:\WorkStation\WorkProject\TW_Dealer\x64\Release\TW_Dealer.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\WorkStation\WorkProject\TW_Dealer\x64\Release\TW_Dealer.lib" /MACHINE:X64 x64\Release\DealerService.obj
+         x64\Release\get_config.obj
+         x64\Release\log4_cplus.obj
+         x64\Release\logger.obj
+         x64\Release\main.obj
+         x64\Release\msg_define_new.pb.obj
+         TW_Dealer.vcxproj -> D:\WorkStation\WorkProject\TW_Dealer\x64\Release\TW_Dealer.exe
+     1>已完成生成项目“D:\WorkStation\WorkProject\TW_Dealer\TW_Dealer\TW_Dealer.vcxproj”(Rebuild 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:06.74
