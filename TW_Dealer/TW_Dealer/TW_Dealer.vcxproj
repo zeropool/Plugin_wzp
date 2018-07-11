@@ -86,7 +86,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\log4cplus-2.0.1\include;D:\Program Files\ZeroMQ 4.0.4\include;D:\protocbuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\log4cplusInterface\include;D:\Program Files\ZeroMQ 4.0.4\include;D:\protocbuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -108,7 +108,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;libprotobuf.lib;libprotobuf-lite.lib;libzmq-v120-mt-4_0_4.lib;log4cplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\VS_Project\log4cplus-2.0.1\msvc14\x64\bin.Release;D:\Program Files\ZeroMQ 4.0.4\lib;D:\protocbuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\log4cplusInterface;D:\Program Files\ZeroMQ 4.0.4\lib;D:\protocbuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
