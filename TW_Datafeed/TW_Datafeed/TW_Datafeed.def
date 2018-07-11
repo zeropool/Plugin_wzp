@@ -1,0 +1,7 @@
+LIBRARY TW_Datafeed.feed
+
+EXPORTS
+    DsCreate      @1
+    DsDestroy     @2
+    DsVersion     @3
+    DsCreateExt   @4
