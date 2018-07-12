@@ -1,0 +1,18 @@
+
+first:
+	open the Package unzip all the zip file.
+second:
+	open the TW_Dealer.sln file with the vs 2013.
+third:
+	set the vs 2013 project
+	1.C/C++ -- general -- additional include directories
+		D:\Package\log4cplusInterface\include;
+		D:\Package\ZeroMQ 4.0.4\include;
+		D:\Package\protocbuf\src;%(AdditionalIncludeDirectories)
+	2.linker -- general -- additional library directories
+		D:\Package\log4cplusInterface;
+		D:\Package\ZeroMQ 4.0.4\lib;
+		D:\Package\protocbuf;
+		
+	Note:pls replace the "D:" according  location of yourself "Package" 
+		
