@@ -1642,7 +1642,7 @@ string DealerService::GetMarginInfo(const TradeRecord &record,const string &grou
 	m_Pump_mutex.unlock();
 	sprintf(format_str, "so:%0.1f%%/%0.1f/%0.1f", double((tmp.equity / tmp.margin)*100), tmp.equity, tmp.margin);
 	//ExtLogger.Out("GetMarginInfo:%s\n", format_str);
-	LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "GetMarginInfo:" << format_str);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "GetMarginInfo:" << format_str);
 	return format_str;
 }
 

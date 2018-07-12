@@ -84,7 +84,7 @@ int start_service(){
 		OutputDebugString("ERR:NULL == DealerService::GetInstance()");
 		return 0;
 	}
-	
+	//add test info add by wzp 2018-07-12
 	//create mt4 link:Note good
 	if (!DealerService::GetInstance()->CreateMT4Link()){
 	//	ExtLogger.Out("ERR:MT4 :GetInstance()->CreateMT4Link failed\n");

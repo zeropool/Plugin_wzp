@@ -138,7 +138,6 @@ public:
 	static bool LoadConfig();
 	//keep the mt4 link live.
 	void KeepLiveLinkMT4();
-
 	void PumpProcessTradeOrder(int code, int type, void *data);
 //	void PumpProcessManagerOrder();
 	//void TestLog4();
