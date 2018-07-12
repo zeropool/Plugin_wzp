@@ -79,27 +79,23 @@ void WINAPI CtrlHandler(DWORD request)
 int start_service(){
 	//get instance and  some init operate:Note good
 	if (NULL == DealerService::GetInstance()){
-	//	ExtLogger.Out("ERR:NULL == DealerService::GetInstance()");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "NULL == DealerService::GetInstance()");
 		OutputDebugString("ERR:NULL == DealerService::GetInstance()");
 		return 0;
 	}
 	//create mt4 link:Note good
 	if (!DealerService::GetInstance()->CreateMT4Link()){
-	//	ExtLogger.Out("ERR:MT4 :GetInstance()->CreateMT4Link failed\n");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "MT4:GetInstance()->CreateMT4Link failed");
 		OutputDebugString("ERR:MT4 :GetInstance()->CreateMT4Link failed");
 		return 0;
 	}
 	//create bridge link:Note good
 	if (!DealerService::GetInstance()->CreateBridgeLink()){
-		//ExtLogger.Out("ERR:Bridge:GetInstance()->CreateBridgeLink failed\n");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge:GetInstance()->CreateBridgeLink failed");
 		OutputDebugString("ERR:Bridge:GetInstance()->CreateBridgeLink failed");
 		return 0;
 	}
 
-//	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "ERR:NULL == DealerService::GetInstance()");
 	//init thread note:read message from bridge then send the message to mt4
 	DealerService::GetInstance()->InitThread();
 	//switch mode for dealer and pump.

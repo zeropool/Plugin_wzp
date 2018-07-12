@@ -115,16 +115,13 @@
     <ClInclude Include="DealerService.h" />
     <ClInclude Include="get_config.h" />
     <ClInclude Include="log4_cplus.h" />
-    <ClInclude Include="logger.h" />
     <ClInclude Include="msg_define_new.pb.h" />
     <ClInclude Include="MT4ManagerAPI.h" />
-    <ClInclude Include="sync.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DealerService.cpp" />
     <ClCompile Include="get_config.cpp" />
     <ClCompile Include="log4_cplus.cpp" />
-    <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="msg_define_new.pb.cc" />
   </ItemGroup>

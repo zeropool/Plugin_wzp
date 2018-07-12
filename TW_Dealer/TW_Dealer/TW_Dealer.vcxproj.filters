@@ -24,16 +24,10 @@
     <ClInclude Include="DealerService.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="logger.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MT4ManagerAPI.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="get_config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="sync.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -45,9 +39,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="logger.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="get_config.cpp">

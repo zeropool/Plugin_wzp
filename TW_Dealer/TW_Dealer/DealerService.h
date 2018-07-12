@@ -8,7 +8,6 @@
 #include "MT4ManagerAPI.h"
 #include "msg_define_new.pb.h"
 #include "get_config.h"
-#include "logger.h"
 #include "log4_cplus.h"
 
 using namespace std;
@@ -25,6 +24,10 @@ void __stdcall PumpingNotify(int code, int type, void *data, void *param);
 double __fastcall NormalizeDouble(const double val, int digits);
 DWORD WINAPI TransferMsgFromBridgeToMT4(LPVOID lparamter);
 DWORD WINAPI KeepLiveForMT4(LPVOID lparamter);
+
+static int gettimeofday(struct timeval* tv);
+static time_t GetUtcCaressing();
+
 static const double ExtDecimalArray[9] = { 1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0 };
 //ReadConfig("test.cfg", m);
 //extern map<string, string> m_config; // config file add by wzp
@@ -76,18 +79,19 @@ class DealerService
 {
 private:
 	//MT4 relationship info
-	CManagerFactory		m_factory;
-	RequestInfo			m_req;
-	RequestInfo			m_req_recv;
-	TradeRecord			*m_TradeRecord;
-	vector<string>		m_abook;
-	vector<string>		m_bbook;
-	vector<string>		m_symbols;
+	CManagerFactory					m_factory;
+
+	RequestInfo						m_req;
+	RequestInfo						m_req_recv;
+	TradeRecord						*m_TradeRecord;
+
+	vector<string>					m_abook;
+	vector<string>					m_bbook;
+	vector<string>					m_symbols;
 	
-	//zmq::pollitem_t items[1];
 	//Bridge relationship info
-	zmq::context_t		m_context;
-	zmq::socket_t		m_socket;
+	zmq::context_t					m_context;
+	zmq::socket_t					m_socket;
 
 	//singleton mode
 	static DealerService			*m_DealerService;
@@ -96,25 +100,26 @@ private:
 	MutexMap<string, SymbolsValue>	m_Symbols;
 	MutexMap<int, OrderValue>		m_Orders;
 	//lock 
-	mutex					m_Dealer_mutex;
-	mutex				m_ExtManager_mutex;
-	mutex					  m_Pump_mutex;
+	mutex							m_Dealer_mutex;
+	mutex							m_ExtManager_mutex;
+	mutex							m_Pump_mutex;
 	//manager interface 
-	CManagerInterface *m_ExtManagerPump;
-	CManagerInterface *m_ExtDealer;
-	CManagerInterface *m_ExtManager;
-
+	CManagerInterface				*m_ExtManagerPump;
+	CManagerInterface				*m_ExtDealer;
+	CManagerInterface				*m_ExtManager;
 	//bakup manager interface
-	CManagerInterface *m_ExtManager_bak;
+	CManagerInterface				*m_ExtManager_bak;
 
 	//the pool of manager interface link
-	CManagerInterface *m_pool[2];
+	CManagerInterface				*m_pool[2];
 public:
 	//MT4 relationship info
 public:
+	static DealerService* GetInstance();
 	//get current absolute path.
 	static string GetProgramDir();
-	static DealerService* GetInstance();
+	//load config file
+	static bool LoadConfig();
 	void Close(void);
 	~DealerService();
 	//create mt4 link and create bridge link.
@@ -122,6 +127,7 @@ public:
 	bool Mt4DealerReconnection();
 	bool Mt4PumpReconnection();
 	bool Mt4DirectReconnection();
+
 	bool CreateBridgeLink();
 	//init and create thread .
 	bool SwitchMode();
@@ -134,18 +140,13 @@ public:
 	//m_ExtManagerPump update symbols and ask,bid.
 	void UpdateSymbols();
 	void UpdateAskAndBid();
-
-	static bool LoadConfig();
 	//keep the mt4 link live.
 	void KeepLiveLinkMT4();
 	void PumpProcessTradeOrder(int code, int type, void *data);
-//	void PumpProcessManagerOrder();
-	//void TestLog4();
 private:
 	//construct 
 	DealerService(const string &lib_path, const string abook, const string bbook, const string symbols);
 	//send data  
-	vector< string> split(string str, string pattern);
 	bool SendDataToBridge(dealer::RequestInfo *send_buf);
 	bool SendDataToMT4(const dealer::resp_msg &ret);
 	bool DealerSendDataToMT4(const dealer::resp_msg &ret);
@@ -155,41 +156,43 @@ private:
 	bool PumpSendDataToMT4(const dealer::resp_msg &ret);
 
 	int GetGroupType(const string group);
-	string  GetUserGroup(const int login);
-
+	//get symbol info
+	bool GetSiInfo(const string &symbol, SymbolInfo &si);
 	bool JudgeSymbol(const string symbol);
+	//get Margin info
+	string GetMarginInfo(const TradeRecord &record, const string &group);
+	string  GetUserGroup(const int login);
+	vector< string> split(string str, string pattern);
+
+	//get spread info 
 	bool CaculateSpread(const SymbolInfo  &si, RequestInfo &m_req, bool flag);
 	bool CaculateSpreadForPump(TradeTransInfo *info, const dealer::resp_msg &msg);
 	bool GetSpreadAndAskBidInfo(const string &symbol, const string &group, SymbolInfo &si, double &spread_diff);
-	//protocbuf and RequestInfo type transfer 
+	//protocbuf and Mt4 msg type transfer 
+	//MT4 msg -> Protoc msg
 	bool TransferMsgToProto(dealer::RequestInfo *msg);
-	bool TransferProtoToMsg(const dealer::resp_msg *msg);
 	bool TransferRecordToProto(const TradeRecord &record, dealer::RequestInfo *msg, unsigned int  type, string comment);
+	//Protoc msg -> MT4 msg
+	bool TransferProtoToMsg(const dealer::resp_msg *msg);
 	bool TransferProtoToTrade(TradeTransInfo *info, const dealer::resp_msg &msg);
 	//get ask and bid with m_ExtManagerPump then backfill data to RequestInfo.
 	bool BackFillAskAndBid(RequestInfo &m_req,bool flag = true);
-	//void BackFillTradeInfo();
 	bool CreateMT4LinkInterface(CManagerInterface ** m_interface, const string &server, const int &login, const string &passwd);
 	bool BusinessJudge(RequestInfo *req);
-	bool GetSiInfo(const string &symbol, SymbolInfo &si);
 
 	//connection pool switch
 	void SwitchConnection();
 	bool PumpProcessManagerOrder(const TradeRecord * trade, dealer::RequestInfo *info, const int type);
 	bool PumpProcessOtherOrder(int type, dealer::RequestInfo *info);
 	bool MakeNewOrderForClient(const TradeTransInfo &rec,const int &login);
-	string GetMarginInfo(const TradeRecord &record, const string &group);
 
+	//process the sl or tp so order repeat send to dealer.
 	bool FilterRepeatOrder(const TradeRecord &rec);
 	void DeleteOrderRecord();
 	void ModifyOrderRecord(const int &OrderNum, const int &status);
-
-	void WriteInfoTolog();
-
 };
 
-static int gettimeofday(struct timeval* tv);
-static time_t GetUtcCaressing();
+
 
 
 
