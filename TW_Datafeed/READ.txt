@@ -1,0 +1,6 @@
+
+Note：Open the vs2013 project.
+	1.General > Output Directory: D:\MetaTrader4Server\datafeed\
+		according your path of MT4 to set.
+	2.General > Debug > cmd: D:\MetaTrader4Server\mtsrv.dev.exe
+		according your path of MT4 to set.
