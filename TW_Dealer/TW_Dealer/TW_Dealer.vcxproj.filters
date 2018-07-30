@@ -30,6 +30,9 @@
     <ClInclude Include="get_config.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CSendMail.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DealerService.cpp">
@@ -45,6 +48,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="msg_define_new.pb.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CSendMail.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

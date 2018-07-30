@@ -9,6 +9,7 @@
 #include "msg_define_new.pb.h"
 #include "get_config.h"
 #include "log4_cplus.h"
+#include "CSendMail.h"
 
 using namespace std;
 //define bridge ret message
@@ -17,6 +18,16 @@ using namespace std;
 #define RESET 3
 #define A_BOOK  1
 #define B_BOOK	2
+
+#define FX		"FX"
+#define METAL	"METAL"
+#define ENERGY	"ENERGY"
+#define CFD		"CFD"
+
+#define REX_FX		"^[AUD|CAD|CHF|EUR|GBP|NZD|USD][\\s\\S]*"
+#define REX_METAL	"^[XAU|XAG][\\s\\S]*"
+#define REX_ENERGY  "XNGUSD|XBRUSD|XTIUSD"
+#define REX_CFD		"AUS200|EUSTX50|GER30|HK50|JPN225|SPA35|NAS100|UK100|US500|US30|USA500|FRA40|D30EUR|U30USD|200AUD|H33HKD|225JPY|F40EUR|E50EUR|100GBP|SPXUSD|NASUSD"
 
 void __stdcall OnDealingFunc(int code);
 void __stdcall OnPumpingFunc(int code, int type, void *data, void *param);
@@ -42,6 +53,15 @@ struct SymbolsValue{
 	int               type;                  // symbol type (symbols group index)
 	double            point;                 // symbol point=1/pow(10,digits)
 	int               digits;                // floating point digits
+};
+
+//add by wzp 2018-07-27
+struct SymbolConfigInfo{
+	double contract_size;
+	double margin_divider;
+	double margin_initial;
+	string margin_currency;
+	string type;
 };
 
 template <class K, class V> struct MutexMap{
@@ -73,6 +93,15 @@ template <class K, class V> struct MutexMap{
 		}
 		m_mutex.unlock();
 	}
+
+	// add empty() judge for MutexMap add by wzp.
+	bool Empty(){
+		m_mutex.lock();
+		bool flag = m_queue.empty();
+		m_mutex.unlock();
+
+		return flag;
+	}
 };
 
 class DealerService
@@ -94,11 +123,12 @@ private:
 	zmq::socket_t					m_socket;
 
 	//singleton mode
-	static DealerService			*m_DealerService;
-	static string					m_path;
-	static map<string, string>		m_config;
-	MutexMap<string, SymbolsValue>	m_Symbols;
-	MutexMap<int, OrderValue>		m_Orders;
+	static DealerService			    *m_DealerService;
+	static string					     m_path;
+	static map<string, string>		     m_config;
+	MutexMap<string, SymbolsValue>	     m_Symbols;
+	MutexMap<int, OrderValue>			 m_Orders;
+	MutexMap<string, SymbolConfigInfo>   m_SymbolConfigInfo;
 	//lock 
 	mutex							m_Dealer_mutex;
 	mutex							m_ExtManager_mutex;
@@ -114,6 +144,11 @@ private:
 	CManagerInterface				*m_pool[2];
 public:
 	//MT4 relationship info
+	static sMailInfo				m_sm;
+	CSendMail						m_csm;
+	mutex							m_SendMail_mutex;
+	static void InitMailInfo();
+	bool SendWarnMail(const string & title,const string &msg);
 public:
 	static DealerService* GetInstance();
 	//get current absolute path.
@@ -143,6 +178,10 @@ public:
 	//keep the mt4 link live.
 	void KeepLiveLinkMT4();
 	void PumpProcessTradeOrder(int code, int type, void *data);
+	double CaculateMargin(const TradeRecord &record);
+	bool CurrencyConversion(int &margin,const TradeRecord &record, const SymbolConfigInfo info);
+	bool ConvUnit(int &value,const string &from,const string &to);
+	bool StaticSymbolConfigInfo();
 private:
 	//construct 
 	DealerService(const string &lib_path, const string abook, const string bbook, const string symbols);
@@ -154,7 +193,7 @@ private:
 	bool DealerReject(const dealer::resp_msg &ret);
 	bool DealerReset(const dealer::resp_msg &ret);
 	bool PumpSendDataToMT4(const dealer::resp_msg &ret);
-
+	void InitSymbolType();
 	int GetGroupType(const string group);
 	//get symbol info
 	bool GetSiInfo(const string &symbol, SymbolInfo &si);

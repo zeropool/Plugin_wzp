@@ -9,6 +9,7 @@ using namespace std;
 
 DealerService *DealerService::m_DealerService = NULL;
 string DealerService::m_path = "";
+sMailInfo DealerService::m_sm;
 map<string, string> DealerService::m_config;
 //map<string, string> m_config; // config file add by wzp
 
@@ -54,10 +55,67 @@ DealerService* DealerService::GetInstance(){
 		tmp = m_path + "\\" + m_config["lib_path"];
 		OutputDebugString(tmp.c_str());
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "INFO:lib_path:" << tmp.c_str());
+		InitMailInfo();
 		m_DealerService = new DealerService(tmp.c_str(), m_config["a_book"], m_config["b_book"], m_config["symbols"]);
 	}
 
 	return m_DealerService;
+}
+
+//init add by wzp 2018-07-23
+void DealerService::InitMailInfo(){
+	m_sm.m_pcUserName = (char *)malloc(m_config["UserName"].length());
+	strcpy(m_sm.m_pcUserName, m_config["UserName"].c_str());
+	m_sm.m_pcUserPassWord = (char *)malloc(m_config["Passwd"].length());
+	strcpy(m_sm.m_pcUserPassWord, m_config["Passwd"].c_str());
+	m_sm.m_pcSenderName = (char *)malloc(m_config["SenderName"].length());
+	strcpy(m_sm.m_pcSenderName, m_config["SenderName"].c_str());
+	m_sm.m_pcSender = (char *)malloc(m_config["pcSender"].length());
+	strcpy(m_sm.m_pcSender, m_config["pcSender"].c_str());
+	m_sm.m_pcReceiver = (char *)malloc(m_config["pcReceiver"].length());
+	strcpy(m_sm.m_pcReceiver, m_config["pcReceiver"].c_str());
+	m_sm.m_pcIPName = (char *)malloc(m_config["pcIPName"].length());
+	strcpy(m_sm.m_pcIPName, m_config["pcIPName"].c_str());
+	m_sm.m_pcIPAddr = "";//服务器的IP可以留空 
+}
+//send warn mail add by wzp 2018-07-23
+bool DealerService::SendWarnMail(const string & title,const string &msg){
+	m_SendMail_mutex.lock();
+
+	if (m_sm.m_pcTitle != NULL){
+		if (strlen(m_sm.m_pcTitle) <= title.length()){
+			free(m_sm.m_pcTitle);
+			m_sm.m_pcTitle = (char *)malloc(title.length());
+		} else{
+			memset(m_sm.m_pcTitle, 0, strlen(m_sm.m_pcTitle));
+		}
+	} else{
+		m_sm.m_pcTitle = (char *)malloc(title.length());
+	}
+	
+	strcpy(m_sm.m_pcTitle, title.c_str());
+	OutputDebugString(m_sm.m_pcTitle);
+	cout << m_sm.m_pcTitle << endl;
+	if (m_sm.m_pcBody != NULL){
+		if (strlen(m_sm.m_pcBody) <= msg.length()){
+			free(m_sm.m_pcBody);
+			m_sm.m_pcBody = (char *)malloc(msg.length());
+		} else{
+			memset(m_sm.m_pcBody, 0, strlen(m_sm.m_pcBody));
+		}
+	} else{
+		m_sm.m_pcBody = (char *)malloc(msg.length());
+	}
+
+	strcpy(m_sm.m_pcBody, msg.c_str());
+	bool flag = m_csm.SendMail(m_sm);
+
+	if (!flag){
+		OutputDebugString("bool flag = m_csm.SendMail(m_sm);");
+	}
+
+	m_SendMail_mutex.unlock();
+	return true;
 }
 
 vector<string> DealerService::split(string str, string pattern)
@@ -107,7 +165,7 @@ bool DealerService::SwitchMode()
 
 //construct Dealer Service add by wzp
 DealerService::DealerService(const string &lib_path, const string abook, const string bbook, const string symbols) :m_factory(lib_path.c_str()),
-	m_ExtDealer(NULL), m_ExtManagerPump(NULL), m_ExtManager(NULL),m_ExtManager_bak(NULL), m_TradeRecord(NULL),
+m_ExtDealer(NULL), m_ExtManagerPump(NULL), m_ExtManager(NULL), m_ExtManager_bak(NULL), m_TradeRecord(NULL),
 	m_context(1), m_socket(m_context, ZMQ_DEALER)
 {
 	m_abook = split(abook, ";");
@@ -117,6 +175,12 @@ DealerService::DealerService(const string &lib_path, const string abook, const s
 	memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 	memset(m_pool, 0, sizeof(m_pool));
 }
+
+//void DealerService::InitSymbolType(){
+//	m_SymbolType.insert(pair<string, SymbolConfigInfo>("", {}));
+//	m_SymbolType.insert(pair<string, SymbolConfigInfo>("", "CFD"));
+//	m_SymbolType.insert(pair<string, SymbolConfigInfo>("", "CFD"));
+//}
 
 DealerService::~DealerService(){
 }
@@ -207,6 +271,7 @@ bool DealerService::Mt4PumpReconnection(){
 	m_Pump_mutex.lock();
 
 	if (RET_OK == m_ExtManagerPump->IsConnected()){
+		//SendWarnMail("ERROR", "m_ExtManagerPump CreateMT4LinkInterface reconnect the link");
 		OutputDebugString("ERR:Begin:m_ExtManagerPump CreateMT4LinkInterface reconnect the link");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "m_ExtManagerPump reconnect the link");
 		bool flag = CreateMT4LinkInterface(&m_ExtManagerPump, m_config["mt4_addr"], atoi(m_config["mt4_login_name"].c_str()), m_config["mt4_passwd"]);
@@ -317,10 +382,12 @@ void __stdcall OnDealingFunc(int code)
 	{
 	case DEAL_START_DEALING:
 		OutputDebugString("DEBUG:DEAL_START_DEALING");
+		DealerService::GetInstance()->SendWarnMail("WARN", "DEAL_START_DEALING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger,"DEAL_START_DEALING");
 		break;
 	case DEAL_STOP_DEALING:
 		OutputDebugString("DEBUG:DEAL_STOP_DEALING");
+		DealerService::GetInstance()->SendWarnMail("ERROR", "DEAL_STOP_DEALING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DEAL_STOP_DEALING");
 		break;
 	case DEAL_REQUEST_NEW:
@@ -339,9 +406,11 @@ void __stdcall OnPumpingFunc(int code, int type, void *data, void *param)
 	case PUMP_START_PUMPING:
 		OutputDebugString("PUMP_START_PUMPING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "PUMP_START_PUMPING");
+		DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_START_PUMPING");
 		break;
 	case PUMP_STOP_PUMPING:
 		OutputDebugString("PUMP_STOP_PUMPING");
+		DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_STOP_PUMPING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "PUMP_STOP_PUMPING");
 		break;
 	case PUMP_UPDATE_BIDASK:
@@ -409,6 +478,7 @@ void DealerService::PumpProcessTradeOrder(int code ,int type, void *data){
 			
 			if (!SendDataToBridge(&info)){
 				OutputDebugString("SendDataToBridge failed!");
+				DealerService::GetInstance()->SendWarnMail("ERROR", "SendDataToBridge failed!");
 				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"SendDataToBridge failed!");
 			}
 
@@ -447,6 +517,134 @@ bool DealerService::FilterRepeatOrder(const TradeRecord &rec){
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  suc order:" << order.OrderNum);
 		return false;
 	}
+}
+
+double DealerService::CaculateMargin(const TradeRecord &record){
+	int margin = 0;
+
+	//get config info about the symbol
+	if (m_SymbolConfigInfo[record.symbol].type == CFD){
+		margin = (record.volume * 0.01) * m_SymbolConfigInfo[record.symbol].contract_size * record.open_price / 100 * (100 / m_SymbolConfigInfo[record.symbol].margin_divider) / 100;
+	} else if (m_SymbolConfigInfo[record.symbol].type == ENERGY){
+		margin = (record.volume * 0.01) * m_SymbolConfigInfo[record.symbol].margin_initial * (100 / m_SymbolConfigInfo[record.symbol].margin_divider) / 100;
+	} else{
+		margin = (record.volume * 0.01) * m_SymbolConfigInfo[record.symbol].contract_size / 100 * (100 / m_SymbolConfigInfo[record.symbol].margin_divider);
+	}
+
+	if (!CurrencyConversion(margin, record, m_SymbolConfigInfo[record.symbol])){
+		return -1;
+	}
+
+	return margin;
+}
+//margin Currency conversion add by wzp 2018-07-30
+bool DealerService::CurrencyConversion(int &margin,const TradeRecord &record, const SymbolConfigInfo info){
+	ConGroup tmpGrp = { 0 };
+
+	//begin judge the margin currency and the balance currency.
+	string strGrp = GetUserGroup(record.login);
+	m_Pump_mutex.lock();
+	int res = m_ExtManagerPump->GroupRecordGet(strGrp.c_str(), &tmpGrp);
+
+	if (RET_OK != res){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Caculate Margin Err GroupRecordGet: Err" << m_ExtManagerPump->ErrorDescription(res));
+		m_Pump_mutex.unlock();
+		return false;
+	}
+	m_Pump_mutex.unlock();
+
+	if (ConvUnit(margin, info.margin_currency, tmpGrp.currency)){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (ConvUnit(margin, info.margin_currency, tmpGrp.currency)): Err");
+		return false;
+	}
+
+	return true;
+}
+
+//transfer unit for
+bool DealerService::ConvUnit(int &value, const string &from, const string &to){
+	if (from == to){
+		return true;
+	}
+
+	SymbolInfo tmpSi = { 0 };
+	string tmpBefore = from + to;
+	string tmpAfter = to + from;
+	SymbolsValue tmpSv = { 0 };
+
+	if (m_Symbols.Get(tmpBefore, tmpSv)){
+		if (!GetSiInfo(tmpBefore, tmpSi)){
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ConvUnit: Err GetSiInfo");
+			return false;
+		}
+
+		value = value*(tmpSi.ask + tmpSi.bid) / 2;
+		return true;
+	} else if (m_Symbols.Get(tmpAfter, tmpSv)){
+		if (!GetSiInfo(tmpAfter, tmpSi)){
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ConvUnit: Err GetSiInfo");
+			return false;
+		}
+
+		value = value/(tmpSi.ask + tmpSi.bid) / 2;
+		return true;
+	} else{
+		if (ConvUnit(value, from, "USD")){
+			return ConvUnit(value, "USD", to);
+		} else{
+			return false;
+		}
+	}
+}
+
+bool DealerService::StaticSymbolConfigInfo(){
+	if (!m_SymbolConfigInfo.Empty()){
+		return true;
+	}
+
+	int cnt = 0;
+	string tmp;
+	regex rex_fx(REX_FX);
+	regex rex_metal(REX_METAL);
+	regex rex_energy(REX_ENERGY);
+	regex rex_cfd(REX_CFD);
+
+	m_ExtManager_mutex.lock();
+	ConSymbol *m_ConSymbol = m_ExtManager->CfgRequestSymbol(&cnt);
+
+	if (m_ConSymbol == NULL){
+		SwitchConnection();
+		m_ConSymbol = m_ExtManager->CfgRequestSymbol(&cnt);
+
+		if (m_ConSymbol == NULL){
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (m_ConSymbol == NULL)");
+			m_ExtManager_mutex.unlock();
+			return false;//"-1" is failed get data from mt4
+		}
+	}
+
+	for (int i = 0; i < cnt; i++){
+		if (std::regex_match(m_ConSymbol[i].symbol, rex_fx)){
+			tmp = FX;
+		} else if (std::regex_match(m_ConSymbol[i].symbol, rex_metal)){
+			tmp = METAL;
+		} else if (std::regex_match(m_ConSymbol[i].symbol, rex_energy)){
+			tmp = ENERGY;
+		} else if (std::regex_match(m_ConSymbol[i].symbol, rex_energy)){
+			tmp = CFD;
+		}
+
+		SymbolConfigInfo tmpSymbolConfig{0};
+		tmpSymbolConfig.contract_size = m_ConSymbol[i].contract_size;
+		tmpSymbolConfig.margin_divider = m_ConSymbol[i].margin_divider;
+		tmpSymbolConfig.margin_initial = m_ConSymbol[i].margin_initial;
+		tmpSymbolConfig.type = tmp;
+		m_SymbolConfigInfo.Add(m_ConSymbol[i].symbol, tmpSymbolConfig);
+	}
+	m_ExtManager->MemFree(m_ConSymbol);
+	m_ExtManager_mutex.unlock();
+
+	return true;
 }
 
 bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
@@ -488,6 +686,7 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 			//send msg to bridge
 			if (send_flag){
 				if (!SendDataToBridge(info)){
+					SendWarnMail("ERROR", "PumpProcessOtherOrder SendDataToBridge failed!");
 					OutputDebugString("ERR:SendDataToBridge failed!");
 				}
 
@@ -663,7 +862,8 @@ void DealerService::ProcessMsgUp(){
 
 	//send data to bridge
 	if (!SendDataToBridge(&data)){
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"ProcessMsgUp:send data failed!");
+		SendWarnMail("ERROR", "ProcessMsgUp:send data failed!");
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"ProcessMsgUp:send data to bridge failed!");
 		OutputDebugString("ERR:ProcessMsgUp:send data failed!");
 	}
 
@@ -766,6 +966,7 @@ void DealerService::KeepLiveLinkMT4(){
 		}
 		//delete sl tp so temp order
 		DeleteOrderRecord();//add by wzp 2018-07-04
+	//	DealerService::GetInstance()->SendWarnMail("Test","KeepLiveLinkMT4");//test to use 2018-07-25
 		Sleep(2000);
 	}
 }
@@ -853,6 +1054,7 @@ bool DealerService::ProcessMsgDown()
 				OutputDebugString("ERR:Bridge: ParseFromString failed !");
 			}else{
 				if (!SendDataToMT4(msg)){	//send info to MT4
+					SendWarnMail("ERROR:","send data to MT4 failed !");
 					OutputDebugString("ERR:Bridge: send data to MT4 failed !");
 				}
 			}
@@ -963,6 +1165,7 @@ bool DealerService::DealerSend(const dealer::resp_msg &ret){
 		int res = m_ExtDealer->DealerSend(&m_req_recv, true, false);//test
 
 		if (res != RET_OK){
+			SendWarnMail("ERROR","m_ExtDealer->DealerSend(&m_req_recv, true, false)");
 			OutputDebugString("ERR: m_ExtDealer->DealerSend(&m_req_recv, true, false)");
 			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "code:" << m_ExtDealer->ErrorDescription(res) << " req_id:" << m_req_recv.id << ", order: " << m_req_recv.trade.order << " m_ExtDealer->DealerSend(&m_req_recv, true, false)");
 			MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
@@ -1240,7 +1443,6 @@ bool DealerService::TransferProtoToMsg(const dealer::resp_msg *msg){
 	m_req_recv.prices[1] = msg->info().price(1);
 	//split order process
 	if (msg->finish_status() != 2){
-		OutputDebugString("WARN:TransferProtoToMsg msg.finish_status != 2");
 		LOG4CPLUS_WARN(DealerLog::GetInstance()->m_Logger, "TransferProtoToMsg  req_id:" << msg->info().id() << " order_id:" << msg->info().trade().order() << " msg.finish_status:" << msg->finish_status());
 	}
 

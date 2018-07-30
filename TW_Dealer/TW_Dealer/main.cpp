@@ -95,7 +95,7 @@ int start_service(){
 		OutputDebugString("ERR:Bridge:GetInstance()->CreateBridgeLink failed");
 		return 0;
 	}
-
+	
 	//init thread note:read message from bridge then send the message to mt4
 	DealerService::GetInstance()->InitThread();
 	//switch mode for dealer and pump.

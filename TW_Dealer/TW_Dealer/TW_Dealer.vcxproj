@@ -112,6 +112,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CSendMail.h" />
     <ClInclude Include="DealerService.h" />
     <ClInclude Include="get_config.h" />
     <ClInclude Include="log4_cplus.h" />
@@ -119,6 +120,7 @@
     <ClInclude Include="MT4ManagerAPI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CSendMail.cpp" />
     <ClCompile Include="DealerService.cpp" />
     <ClCompile Include="get_config.cpp" />
     <ClCompile Include="log4_cplus.cpp" />
