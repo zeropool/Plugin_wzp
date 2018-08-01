@@ -500,10 +500,10 @@ bool DealerService::CaculateMargin(const TradeRecord &record){
 
 	if (info.type == CFD){
 		margin = (record.volume * 0.01) * info.contract_size * record.open_price / 100.00 * (100.00 / info.margin_divider) / 100.00;
-	} else if (info.type == ENERGY){
+	} else if (info.type == ENERGY || info.type == METAL){
 		margin = (record.volume * 0.01) * info.margin_initial * (100.00 / info.margin_divider) / 100.00;
 	} else{
-		margin = (record.volume * 0.01) * info.contract_size / 100.00 * (100.00 / info.margin_divider);
+		margin = (record.volume * 0.01) * info.contract_size / 100.00 * (100.00 / info.margin_divider) / 100.00;
 	}
 
 	if (record.margin_rate > 0){
@@ -513,7 +513,7 @@ bool DealerService::CaculateMargin(const TradeRecord &record){
 		return false;
 	}
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "(tmpMargin.margin_free - margin):" << (tmpMargin.margin_free - margin) << "tmpMargin.margin_free:" << tmpMargin.margin_free);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "(tmpMargin.margin_free - margin):" << (tmpMargin.margin_free - margin) <<" margin:"<< margin << " tmpMargin.margin_free:" << tmpMargin.margin_free);
 
 	if ((tmpMargin.margin_free - margin) <= 0.0){
 	//	PumpSendDataToMT4(record);
