@@ -9,7 +9,6 @@ using namespace std;
 
 DealerService *DealerService::m_DealerService = NULL;
 string DealerService::m_path = "";
-sMailInfo DealerService::m_sm;
 map<string, string> DealerService::m_config;
 //map<string, string> m_config; // config file add by wzp
 
@@ -55,67 +54,10 @@ DealerService* DealerService::GetInstance(){
 		tmp = m_path + "\\" + m_config["lib_path"];
 		OutputDebugString(tmp.c_str());
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "INFO:lib_path:" << tmp.c_str());
-		InitMailInfo();
 		m_DealerService = new DealerService(tmp.c_str(), m_config["a_book"], m_config["b_book"], m_config["symbols"]);
 	}
 
 	return m_DealerService;
-}
-
-//init add by wzp 2018-07-23
-void DealerService::InitMailInfo(){
-	m_sm.m_pcUserName = (char *)malloc(m_config["UserName"].length());
-	strcpy(m_sm.m_pcUserName, m_config["UserName"].c_str());
-	m_sm.m_pcUserPassWord = (char *)malloc(m_config["Passwd"].length());
-	strcpy(m_sm.m_pcUserPassWord, m_config["Passwd"].c_str());
-	m_sm.m_pcSenderName = (char *)malloc(m_config["SenderName"].length());
-	strcpy(m_sm.m_pcSenderName, m_config["SenderName"].c_str());
-	m_sm.m_pcSender = (char *)malloc(m_config["pcSender"].length());
-	strcpy(m_sm.m_pcSender, m_config["pcSender"].c_str());
-	m_sm.m_pcReceiver = (char *)malloc(m_config["pcReceiver"].length());
-	strcpy(m_sm.m_pcReceiver, m_config["pcReceiver"].c_str());
-	m_sm.m_pcIPName = (char *)malloc(m_config["pcIPName"].length());
-	strcpy(m_sm.m_pcIPName, m_config["pcIPName"].c_str());
-	m_sm.m_pcIPAddr = "";//服务器的IP可以留空 
-}
-//send warn mail add by wzp 2018-07-23
-bool DealerService::SendWarnMail(const string & title,const string &msg){
-	m_SendMail_mutex.lock();
-
-	if (m_sm.m_pcTitle != NULL){
-		if (strlen(m_sm.m_pcTitle) <= title.length()){
-			free(m_sm.m_pcTitle);
-			m_sm.m_pcTitle = (char *)malloc(title.length());
-		} else{
-			memset(m_sm.m_pcTitle, 0, strlen(m_sm.m_pcTitle));
-		}
-	} else{
-		m_sm.m_pcTitle = (char *)malloc(title.length());
-	}
-	
-	strcpy(m_sm.m_pcTitle, title.c_str());
-	OutputDebugString(m_sm.m_pcTitle);
-	cout << m_sm.m_pcTitle << endl;
-	if (m_sm.m_pcBody != NULL){
-		if (strlen(m_sm.m_pcBody) <= msg.length()){
-			free(m_sm.m_pcBody);
-			m_sm.m_pcBody = (char *)malloc(msg.length());
-		} else{
-			memset(m_sm.m_pcBody, 0, strlen(m_sm.m_pcBody));
-		}
-	} else{
-		m_sm.m_pcBody = (char *)malloc(msg.length());
-	}
-
-	strcpy(m_sm.m_pcBody, msg.c_str());
-	bool flag = m_csm.SendMail(m_sm);
-
-	if (!flag){
-		OutputDebugString("bool flag = m_csm.SendMail(m_sm);");
-	}
-
-	m_SendMail_mutex.unlock();
-	return true;
 }
 
 vector<string> DealerService::split(string str, string pattern)
@@ -382,12 +324,12 @@ void __stdcall OnDealingFunc(int code)
 	{
 	case DEAL_START_DEALING:
 		OutputDebugString("DEBUG:DEAL_START_DEALING");
-		DealerService::GetInstance()->SendWarnMail("WARN", "DEAL_START_DEALING");
+		//DealerService::GetInstance()->SendWarnMail("WARN", "DEAL_START_DEALING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger,"DEAL_START_DEALING");
 		break;
 	case DEAL_STOP_DEALING:
 		OutputDebugString("DEBUG:DEAL_STOP_DEALING");
-		DealerService::GetInstance()->SendWarnMail("ERROR", "DEAL_STOP_DEALING");
+	//	DealerService::GetInstance()->SendWarnMail("ERROR", "DEAL_STOP_DEALING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DEAL_STOP_DEALING");
 		break;
 	case DEAL_REQUEST_NEW:
@@ -406,11 +348,11 @@ void __stdcall OnPumpingFunc(int code, int type, void *data, void *param)
 	case PUMP_START_PUMPING:
 		OutputDebugString("PUMP_START_PUMPING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "PUMP_START_PUMPING");
-		DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_START_PUMPING");
+	//	DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_START_PUMPING");
 		break;
 	case PUMP_STOP_PUMPING:
 		OutputDebugString("PUMP_STOP_PUMPING");
-		DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_STOP_PUMPING");
+	///	DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_STOP_PUMPING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "PUMP_STOP_PUMPING");
 		break;
 	case PUMP_UPDATE_BIDASK:
@@ -422,6 +364,7 @@ void __stdcall OnPumpingFunc(int code, int type, void *data, void *param)
 		break;
 	case PUMP_UPDATE_GROUPS:
 		OutputDebugString("PUMP_UPDATE_GROUPS");
+		DealerService::GetInstance()->StaticGroupConfigInfo();
 		break;
 	case PUMP_UPDATE_USERS:
 		OutputDebugString("PUMP_UPDATE_USERS");
@@ -478,7 +421,6 @@ void DealerService::PumpProcessTradeOrder(int code ,int type, void *data){
 			
 			if (!SendDataToBridge(&info)){
 				OutputDebugString("SendDataToBridge failed!");
-				DealerService::GetInstance()->SendWarnMail("ERROR", "SendDataToBridge failed!");
 				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"SendDataToBridge failed!");
 			}
 
@@ -519,41 +461,80 @@ bool DealerService::FilterRepeatOrder(const TradeRecord &rec){
 	}
 }
 
-double DealerService::CaculateMargin(const TradeRecord &record){
-	int margin = 0;
+bool DealerService::CaculateMargin(const TradeRecord &record){
+	double margin = 0;
+	SymbolConfigInfo info = {0};
+	MarginLevel tmpMargin{ 0 };
 
-	//get config info about the symbol
-	if (m_SymbolConfigInfo[record.symbol].type == CFD){
-		margin = (record.volume * 0.01) * m_SymbolConfigInfo[record.symbol].contract_size * record.open_price / 100 * (100 / m_SymbolConfigInfo[record.symbol].margin_divider) / 100;
-	} else if (m_SymbolConfigInfo[record.symbol].type == ENERGY){
-		margin = (record.volume * 0.01) * m_SymbolConfigInfo[record.symbol].margin_initial * (100 / m_SymbolConfigInfo[record.symbol].margin_divider) / 100;
-	} else{
-		margin = (record.volume * 0.01) * m_SymbolConfigInfo[record.symbol].contract_size / 100 * (100 / m_SymbolConfigInfo[record.symbol].margin_divider);
-	}
-
-	if (!CurrencyConversion(margin, record, m_SymbolConfigInfo[record.symbol])){
-		return -1;
-	}
-
-	return margin;
-}
-//margin Currency conversion add by wzp 2018-07-30
-bool DealerService::CurrencyConversion(int &margin,const TradeRecord &record, const SymbolConfigInfo info){
-	ConGroup tmpGrp = { 0 };
-
-	//begin judge the margin currency and the balance currency.
 	string strGrp = GetUserGroup(record.login);
-	m_Pump_mutex.lock();
-	int res = m_ExtManagerPump->GroupRecordGet(strGrp.c_str(), &tmpGrp);
 
-	if (RET_OK != res){
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Caculate Margin Err GroupRecordGet: Err" << m_ExtManagerPump->ErrorDescription(res));
-		m_Pump_mutex.unlock();
+	if ("" == strGrp){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CaculateMargin: GetUserGroup(record.login) failed ! login:" << record.login << " order:" << record.order);
 		return false;
 	}
+
+	m_Pump_mutex.lock();
+	int res = m_ExtManagerPump->MarginLevelGet(record.login, strGrp.c_str(), &tmpMargin);
+
+	if (RET_OK != res){
+		m_Pump_mutex.unlock();
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CaculateMargin: GetMarginInfo failed ! login:" << record.login << " order:" << record.order);
+		OutputDebugString("ERR:GetMarginInfo failed !");
+		return false;
+	}
+
 	m_Pump_mutex.unlock();
 
-	if (ConvUnit(margin, info.margin_currency, tmpGrp.currency)){
+	if (tmpMargin.margin_free <= 0.0){
+	//	PumpSendDataToMT4(record);
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CaculateMargin: if (tmpMargin.margin_free <= 0.0) login:" << record.login << " order:" << record.order);
+		return false;
+	}
+
+	if (!m_SymbolConfigInfo.Get(record.symbol, info)){
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "if (!m_SymbolConfigInfo.Get(record.symbol, info):" << record.symbol);
+		return false;
+	}
+	//get config info about the symbol
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "info.type:" << info.type);
+
+	if (info.type == CFD){
+		margin = (record.volume * 0.01) * info.contract_size * record.open_price / 100.00 * (100.00 / info.margin_divider) / 100.00;
+	} else if (info.type == ENERGY){
+		margin = (record.volume * 0.01) * info.margin_initial * (100.00 / info.margin_divider) / 100.00;
+	} else{
+		margin = (record.volume * 0.01) * info.contract_size / 100.00 * (100.00 / info.margin_divider);
+	}
+
+	if (record.margin_rate > 0){
+		margin = margin * record.margin_rate;
+	} else if (!CurrencyConversion(margin, strGrp, info)){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CaculateMargin: if (tmpMargin.margin_free <= 0.0) login:" << record.login << " order:" << record.order);
+		return false;
+	}
+
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "(tmpMargin.margin_free - margin):" << (tmpMargin.margin_free - margin) << "tmpMargin.margin_free:" << tmpMargin.margin_free);
+
+	if ((tmpMargin.margin_free - margin) <= 0.0){
+	//	PumpSendDataToMT4(record);
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CaculateMargin: if ((tmpMargin.margin_free - margin) <= 0.0):" << record.login << " order:" << record.order);
+		return false;
+	}
+
+	return true;
+}
+//margin Currency conversion add by wzp 2018-07-30
+bool DealerService::CurrencyConversion(double &margin, const string &group, const SymbolConfigInfo &info){
+	GroupConfigInfo tmpGroup;
+	//begin judge the margin currency and the balance currency.
+	if (!m_GroupConfigInfo.Get(group, tmpGroup)){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CurrencyConversion：m_GroupConfigInfo.Get(group, tmpGroup) no the info" << group);
+		return false;
+	}
+
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_GroupConfigInfo:" << tmpGroup.currency);
+
+	if (!ConvUnit(margin, info.margin_currency, tmpGroup.currency)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (ConvUnit(margin, info.margin_currency, tmpGrp.currency)): Err");
 		return false;
 	}
@@ -562,31 +543,33 @@ bool DealerService::CurrencyConversion(int &margin,const TradeRecord &record, co
 }
 
 //transfer unit for
-bool DealerService::ConvUnit(int &value, const string &from, const string &to){
+bool DealerService::ConvUnit(double &value, const string &from, const string &to){
+	//return true;
 	if (from == to){
 		return true;
 	}
 
 	SymbolInfo tmpSi = { 0 };
+	SymbolsValue tmpSv = { 0 };
 	string tmpBefore = from + to;
 	string tmpAfter = to + from;
-	SymbolsValue tmpSv = { 0 };
 
 	if (m_Symbols.Get(tmpBefore, tmpSv)){
 		if (!GetSiInfo(tmpBefore, tmpSi)){
-			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ConvUnit: Err GetSiInfo");
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ConvUnit: Err GetSiInfo" << tmpBefore);
 			return false;
 		}
-
-		value = value*(tmpSi.ask + tmpSi.bid) / 2;
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmpBefore ConvUnit: info GetSiInfo" << value << ":" << tmpBefore);
+		value = value*((tmpSi.ask + tmpSi.bid) / 2.00);
 		return true;
 	} else if (m_Symbols.Get(tmpAfter, tmpSv)){
 		if (!GetSiInfo(tmpAfter, tmpSi)){
-			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ConvUnit: Err GetSiInfo");
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ConvUnit: Err GetSiInfo" << tmpAfter);
 			return false;
 		}
-
-		value = value/(tmpSi.ask + tmpSi.bid) / 2;
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmpAfter ConvUnit: info GetSiInfo " << value << ":" << tmpAfter);
+		value = value/((tmpSi.ask + tmpSi.bid) / 2.00);
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmpAfter ConvUnit: info GetSiInfo " << value << ":" << tmpAfter);
 		return true;
 	} else{
 		if (ConvUnit(value, from, "USD")){
@@ -598,10 +581,6 @@ bool DealerService::ConvUnit(int &value, const string &from, const string &to){
 }
 
 bool DealerService::StaticSymbolConfigInfo(){
-	if (!m_SymbolConfigInfo.Empty()){
-		return true;
-	}
-
 	int cnt = 0;
 	string tmp;
 	regex rex_fx(REX_FX);
@@ -630,7 +609,7 @@ bool DealerService::StaticSymbolConfigInfo(){
 			tmp = METAL;
 		} else if (std::regex_match(m_ConSymbol[i].symbol, rex_energy)){
 			tmp = ENERGY;
-		} else if (std::regex_match(m_ConSymbol[i].symbol, rex_energy)){
+		} else if (std::regex_match(m_ConSymbol[i].symbol, rex_cfd)){
 			tmp = CFD;
 		}
 
@@ -638,12 +617,44 @@ bool DealerService::StaticSymbolConfigInfo(){
 		tmpSymbolConfig.contract_size = m_ConSymbol[i].contract_size;
 		tmpSymbolConfig.margin_divider = m_ConSymbol[i].margin_divider;
 		tmpSymbolConfig.margin_initial = m_ConSymbol[i].margin_initial;
+		tmpSymbolConfig.margin_currency = m_ConSymbol[i].margin_currency;
 		tmpSymbolConfig.type = tmp;
 		m_SymbolConfigInfo.Add(m_ConSymbol[i].symbol, tmpSymbolConfig);
 	}
-	m_ExtManager->MemFree(m_ConSymbol);
-	m_ExtManager_mutex.unlock();
 
+	m_ExtManager->MemFree(m_ConSymbol);
+	m_ConSymbol = NULL;
+	m_ExtManager_mutex.unlock();
+	return true;
+}
+
+bool DealerService::StaticGroupConfigInfo(){
+	int cnt = 0;
+	GroupConfigInfo tmpCfg{};
+	m_ExtManager_mutex.lock();
+	ConGroup *m_ConGroup = m_ExtManager->CfgRequestGroup(&cnt);
+
+	if (m_ConGroup == NULL){
+		SwitchConnection();
+		m_ConGroup = m_ExtManager->CfgRequestGroup(&cnt);
+
+		if (m_ConGroup == NULL){
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (m_ConSymbol == NULL)");
+			m_ExtManager_mutex.unlock();
+			return false;//"-1" is failed get data from mt4
+		}
+	}
+
+	for (int i = 0; i < cnt; i++){
+		tmpCfg.currency = m_ConGroup[i].currency;
+		memcpy(&tmpCfg.secgroups, &m_ConGroup[i].secgroups, sizeof(m_ConGroup[i].secgroups));
+		m_GroupConfigInfo.Add(m_ConGroup[i].group, tmpCfg);
+		memset(&tmpCfg, 0, sizeof(tmpCfg));
+	}
+
+	m_ExtManager->MemFree(m_ConGroup);
+	m_ConGroup = NULL;
+	m_ExtManager_mutex.unlock();
 	return true;
 }
 
@@ -665,9 +676,12 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 				continue;
 			if (!FilterRepeatOrder(m_TradeRecord[i]))
 				continue;
-			if (m_TradeRecord[i].activation == ACTIVATION_PENDING){
-				send_flag = true;
-				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_ACTIVATE, "D_PE");
+			if (m_TradeRecord[i].activation == ACTIVATION_PENDING ){
+				send_flag = CaculateMargin(m_TradeRecord[i]);
+				if (send_flag){
+					TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_ACTIVATE, "D_PE");
+				}
+				
 			} else if (m_TradeRecord[i].activation == ACTIVATION_SL){
 				send_flag = true;
 			//	DealerLog::GetInstance()->LogInfo("ACTIVATION_SL");
@@ -686,7 +700,6 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 			//send msg to bridge
 			if (send_flag){
 				if (!SendDataToBridge(info)){
-					SendWarnMail("ERROR", "PumpProcessOtherOrder SendDataToBridge failed!");
 					OutputDebugString("ERR:SendDataToBridge failed!");
 				}
 
@@ -814,6 +827,8 @@ void DealerService::UpdateSymbols()
 	}
 
 	m_Pump_mutex.unlock();
+	//record all the Symbol config info.add by wzp 2018-07-30
+	StaticSymbolConfigInfo();
 }
 //current not use UpdateAskAndBid add by wzp;
 void DealerService::UpdateAskAndBid()
@@ -847,6 +862,7 @@ void DealerService::ProcessMsgUp(){
 	if (!BusinessJudge(&m_req)){
 		memset(&m_req, 0, sizeof(struct RequestInfo));
 		m_Dealer_mutex.unlock();
+
 		return;
 	}
 
@@ -862,7 +878,6 @@ void DealerService::ProcessMsgUp(){
 
 	//send data to bridge
 	if (!SendDataToBridge(&data)){
-		SendWarnMail("ERROR", "ProcessMsgUp:send data failed!");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"ProcessMsgUp:send data to bridge failed!");
 		OutputDebugString("ERR:ProcessMsgUp:send data failed!");
 	}
@@ -885,12 +900,11 @@ bool DealerService::BusinessJudge(RequestInfo *req){
 		|| TT_ORDER_CLOSE_BY == req->trade.type){
 		//OutputDebugString("TT_ORDER_MODIFY");
 
-		if (BackFillAskAndBid(*req,false)){
+		if (CaculateAskBidAndSpread(*req, false)){
 			m_ExtDealer->DealerSend(req, false, false);
 		} else{
 			m_ExtDealer->DealerReset(req->id);
 		}
-		
 		return false;//not need send data to bridge
 	} else {
 		return true;
@@ -1054,7 +1068,7 @@ bool DealerService::ProcessMsgDown()
 				OutputDebugString("ERR:Bridge: ParseFromString failed !");
 			}else{
 				if (!SendDataToMT4(msg)){	//send info to MT4
-					SendWarnMail("ERROR:","send data to MT4 failed !");
+				
 					OutputDebugString("ERR:Bridge: send data to MT4 failed !");
 				}
 			}
@@ -1140,7 +1154,7 @@ bool DealerService::DealerSendDataToMT4(const dealer::resp_msg &ret){
 bool DealerService::DealerSend(const dealer::resp_msg &ret){
 	bool flag = TransferProtoToMsg(&ret);
 
-	if (0.0 == m_req_recv.trade.price){
+	if (0.0 >= m_req_recv.trade.price){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (0.0 == m_req_recv.trade.price) req_id:" << m_req_recv.id << ", order:%d" << m_req_recv.trade.order);
 		m_Dealer_mutex.lock();
 		m_ExtDealer->DealerReject(m_req_recv.id);
@@ -1148,7 +1162,7 @@ bool DealerService::DealerSend(const dealer::resp_msg &ret){
 		return false;
 	}
 
-	if (!BackFillAskAndBid(m_req_recv)){
+	if (!CaculateAskBidAndSpread(m_req_recv)){
 		memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "BackFillAskAndBid failed ! req_id:" << m_req_recv.id << ", order:%d" << m_req_recv.trade.order);
 		OutputDebugString("ERR:BackFillAskAndBid failed !");
@@ -1165,7 +1179,6 @@ bool DealerService::DealerSend(const dealer::resp_msg &ret){
 		int res = m_ExtDealer->DealerSend(&m_req_recv, true, false);//test
 
 		if (res != RET_OK){
-			SendWarnMail("ERROR","m_ExtDealer->DealerSend(&m_req_recv, true, false)");
 			OutputDebugString("ERR: m_ExtDealer->DealerSend(&m_req_recv, true, false)");
 			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "code:" << m_ExtDealer->ErrorDescription(res) << " req_id:" << m_req_recv.id << ", order: " << m_req_recv.trade.order << " m_ExtDealer->DealerSend(&m_req_recv, true, false)");
 			MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
@@ -1237,6 +1250,46 @@ bool DealerService::PumpSendDataToMT4(const dealer::resp_msg &ret){
 	m_ExtManager_mutex.unlock();
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:PumpSendDataToMT4-----------------");
 	OutputDebugString("INFO:END:PumpSendDataToMT4-------------");
+
+	return true;
+}
+
+bool DealerService::PumpSendDataToMT4(const TradeRecord &record){
+	TradeTransInfo info{};
+
+	info.type = TT_BR_ORDER_DELETE;
+	info.order = record.order;
+	info.cmd = record.cmd;
+	strcpy(info.symbol, record.symbol);
+	info.volume = record.volume;
+	info.price = record.open_price;
+	info.sl = record.sl;
+	info.tp = record.tp;
+	info.expiration = record.expiration;//add by wzp 2018-05-20.
+	strcpy(info.comment, record.comment);
+
+	PrintTradeInfo(&info);
+	m_ExtManager_mutex.lock();
+
+	int res = m_ExtManager->TradeTransaction(&info);
+
+	if (RET_OK != res){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "m_ExtManager->TradeTransaction(&info) failed! order:" << info.order << " ErrCode:" << m_ExtManager->ErrorDescription(res));
+		OutputDebugString("ERR:m_ExtManager->TradeTransaction(&info) failed!");
+		SwitchConnection();
+		res = m_ExtManager->TradeTransaction(&info);
+
+		if (RET_OK != res){
+			ModifyOrderRecord(info.order, 1);
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "SwitchConnection failed! order:" << info.order << " ErrCode:" << m_ExtManager->ErrorDescription(res));
+			OutputDebugString("ERR:SwitchConnection failed!");
+			m_ExtManager_mutex.unlock();
+			return false;
+		}
+	}
+
+	ModifyOrderRecord(info.order, 2);
+	m_ExtManager_mutex.unlock();
 
 	return true;
 }
@@ -1327,23 +1380,31 @@ bool DealerService::TransferProtoToTrade(TradeTransInfo *info, const dealer::res
 }
 
 bool DealerService::CaculateSpreadForPump(TradeTransInfo *info, const dealer::resp_msg &msg){
-	SymbolInfo  si = { "" };
-	double spread_diff = 0;
-
-	if (GetSpreadAndAskBidInfo(info->symbol, msg.info().group().c_str(), si, spread_diff)){
-		if (spread_diff != 0){
-			if ((msg.info().trade().cmd() == OP_BUY && msg.info().trade().type() == TT_BR_ORDER_OPEN) ||
-				(msg.info().trade().cmd() == OP_SELL && msg.info().trade().type() == TT_BR_ORDER_CLOSE)){
-				info->price = NormalizeDouble(info->price + si.point * spread_diff / 2.0, si.digits);
-			} else if ((msg.info().trade().cmd() == OP_SELL && msg.info().trade().type() == TT_BR_ORDER_OPEN) ||
-				(msg.info().trade().cmd() == OP_BUY && msg.info().trade().type() == TT_BR_ORDER_CLOSE)){
-				info->price = NormalizeDouble(info->price - si.point * spread_diff / 2.0, si.digits);
-			}
-		}
-	} else{
+	//SymbolInfo  si = { "" };
+	GroupConfigInfo grp{};
+	SymbolsValue sv{};
+	//get symbol info about the ask and bid. add by wzp 2018-08-01
+	if (!GetSymbolInfo(msg.info().trade().symbol(), sv)){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (!GetAskBidInfo(msg.info().trade().symbol(), sv)) CaculateSpreadForPump: order_id:" << info->order);
+		return false;
+	}
+	//get the group info about the spread info. add by wzp 2018-08-01
+	if (!m_GroupConfigInfo.Get(msg.info().group(), grp)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CaculateSpreadForPump: order_id:" << info->order);
 		OutputDebugString("ERR:CaculateSpreadForPump");
 		return false;
+	}
+
+	double spread_diff = grp.secgroups[sv.type].spread_diff;
+
+	if (spread_diff != 0){
+		if ((msg.info().trade().cmd() == OP_BUY && msg.info().trade().type() == TT_BR_ORDER_OPEN) ||
+			(msg.info().trade().cmd() == OP_SELL && msg.info().trade().type() == TT_BR_ORDER_CLOSE)){
+			info->price = NormalizeDouble(info->price + sv.point * spread_diff / 2.0, sv.digits);
+		} else if ((msg.info().trade().cmd() == OP_SELL && msg.info().trade().type() == TT_BR_ORDER_OPEN) ||
+			(msg.info().trade().cmd() == OP_BUY && msg.info().trade().type() == TT_BR_ORDER_CLOSE)){
+			info->price = NormalizeDouble(info->price - sv.point * spread_diff / 2.0, sv.digits);
+		}
 	}
 
 	return true;
@@ -1351,6 +1412,7 @@ bool DealerService::CaculateSpreadForPump(TradeTransInfo *info, const dealer::re
 
 bool DealerService::GetSiInfo(const string &symbol, SymbolInfo &si){
 	m_Pump_mutex.lock();
+	SymbolsValue sv{ 0 };
 	//get symbol info with the m_ExtManagerPump interface.
 	if ((m_ExtManagerPump->SymbolInfoGet(symbol.c_str(), &si)) != RET_OK){
 		m_ExtManagerPump->SymbolAdd(symbol.c_str());
@@ -1364,55 +1426,37 @@ bool DealerService::GetSiInfo(const string &symbol, SymbolInfo &si){
 		m_ExtManagerPump->SymbolAdd(symbol.c_str());
 		OutputDebugString("ERR:SymbolInfoGet failed si.bid == 0.0 || si.ask == 0.0 ");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "SymbolInfoGet failed si.bid == 0.0 || si.ask == 0.0:");
-		m_Symbols.Add(symbol, SymbolsValue{ si.type ,si.point, si.digits });
 		m_Pump_mutex.unlock();
 		return false;
 	}
 
-	m_Symbols.Add(symbol, SymbolsValue{ si.type, si.point, si.digits });
 	m_Pump_mutex.unlock();
 
 	return true;
 }
 
-bool DealerService::GetSpreadAndAskBidInfo(const string &symbol, const string &group, SymbolInfo &si, double &spread_diff){
-	ConGroup     grp = { "" };
-	SymbolsValue tmp = {0};
+bool DealerService::GetSymbolInfo(const string &symbol, SymbolsValue &sv){
 
-	if (!m_Symbols.Get(symbol, tmp)){
+	if (!m_Symbols.Get(symbol, sv)){
+		SymbolInfo si{};
+		LOG4CPLUS_WARN(DealerLog::GetInstance()->m_Logger, "GetAskBidInfo:if (!m_Symbols.Get(symbol, sv)){");
 		if (!GetSiInfo(symbol, si)){
-			return false;
+			if (0 == si.type || 0.0 == si.point || 0 == si.digits){
+				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "GetAskBidInfo tmp.type:  if (!GetSiInfo(symbol, si)) error");
+				return false;//only when type point and digits is 0 ,I will retrun false;add by wzp.
+			}
 		}
+		
+		m_Symbols.Add(symbol, SymbolsValue{ si.type, si.point, si.digits });
 	} else{
-		si.type = tmp.type;
-		si.point = tmp.point;
-		si.digits = tmp.digits;
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmp.type:" << tmp.type << ",tmp.point:" << tmp.point << ",tmp.digits:" << tmp.digits);
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmp.type:" << sv.type << ",tmp.point:" << sv.point << ",tmp.digits:" << sv.digits);
 	}
 
-	m_Pump_mutex.lock();
-	int res = m_ExtManagerPump->GroupRecordGet(group.c_str(), &grp);
-	//if spread diff is zero return.
-	if (res != RET_OK){
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "m_ExtManagerPump->GroupRecordGet failed RET_OK :%s"<<symbol.c_str());
-		m_Pump_mutex.unlock();
-		return false;
-	}
-
-	if (0 == grp.secgroups[si.type].spread_diff){
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "0 == grp.secgroups[si.type].spread_diff = 0");
-		m_Pump_mutex.unlock();
-		return true;
-	}
-
-	m_Pump_mutex.unlock();
-	spread_diff = grp.secgroups[si.type].spread_diff;
 	return true;
 }
 
 //
 bool DealerService::TransferProtoToMsg(const dealer::resp_msg *msg){
-	
 	m_req_recv.id = msg->info().id();
 	m_req_recv.status = msg->info().status();
 	m_req_recv.time = msg->info().time();
@@ -1448,27 +1492,21 @@ bool DealerService::TransferProtoToMsg(const dealer::resp_msg *msg){
 
 	return true;
 }
-bool DealerService::BackFillAskAndBid(RequestInfo &req,bool flag)
+bool DealerService::CaculateAskBidAndSpread(RequestInfo &req, bool flag)
 {
+	SymbolsValue tmpSV = { 0 };
 	SymbolInfo  si = { "" };
-	double spread_diff = 0.0;
-
+	GroupConfigInfo tmpGrp;
 	//judge disconnect process for Pump. add by wzp
-	if (!Mt4PumpReconnection())
-	{
+	if (!Mt4PumpReconnection()){
 		OutputDebugString("ERR:m_ExtManagerPump BackFillAskAndBid reconnect the link");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"m_ExtManagerPump BackFillAskAndBid reconnect the link");
 		return false;
 	}
 
-	char tmp[256];
-	sprintf(tmp, "req.prices[0]:%lf,req.prices[1]:%lf", req.prices[0], req.prices[1]);
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, tmp);
-	OutputDebugString(tmp);
-
-	if (!GetSpreadAndAskBidInfo(req.trade.symbol, req.group, si, spread_diff)){
+	if (flag && !GetSymbolInfo(req.trade.symbol, tmpSV)){
 		OutputDebugString("ERR:GetSpreadAndAskBidInfo failed:");
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "GetSpreadAndAskBidInfo:" << req.group);
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "GetSpreadAndAskBidInfo: I can not get the symbol info" << req.group);
 		return false;
 	}
 
@@ -1480,31 +1518,39 @@ bool DealerService::BackFillAskAndBid(RequestInfo &req,bool flag)
 			return false;
 		} else{
 			req.prices[0] = si.bid; req.prices[1] = si.ask;
+			tmpSV.point = si.point; tmpSV.type = si.type; tmpSV.digits = si.digits;
 		}
 
-		sprintf(tmp, "req.prices[0]:%lf,req.prices[1]:%lf", req.prices[0], req.prices[1]);
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, tmp);
+		//sprintf(tmp, "req.prices[0]:%lf,req.prices[1]:%lf", req.prices[0], req.prices[1]);
 	}
 
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "begin req.prices[0]:" << req.prices[0] << ",req.prices[1]:" << req.prices[1] << ",req.trade.price:" << req.trade.price);
+	if (!m_GroupConfigInfo.Get(req.group, tmpGrp)){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "m_GroupConfigInfo: get the group info error: " << req.group);
+		return false;
+	}
+	
+	double spread_diff = tmpGrp.secgroups[tmpSV.type].spread_diff;
 	//set the prices value to use the current bridge price.
 	if ((req.trade.cmd == OP_BUY && req.trade.type == TT_ORDER_MK_OPEN) || 
 		(req.trade.cmd == OP_SELL && req.trade.type == TT_ORDER_MK_CLOSE)){
 		req.prices[1] = req.trade.price;
 		if (spread_diff!= 0.0){
-			req.prices[1] = NormalizeDouble(req.prices[1] + si.point * spread_diff / 2.0, si.digits);
+			req.prices[1] = NormalizeDouble(req.prices[1] + tmpSV.point * spread_diff / 2.0, tmpSV.digits);
 			req.trade.price = req.prices[1];
-			req.prices[0] = NormalizeDouble(req.prices[0] - si.point * spread_diff / 2.0, si.digits);
+			req.prices[0] = NormalizeDouble(req.prices[0] - tmpSV.point * spread_diff / 2.0, tmpSV.digits);
 		}
 	} else if ((req.trade.cmd == OP_SELL && req.trade.type == TT_ORDER_MK_OPEN) || 
 		(req.trade.cmd == OP_BUY && req.trade.type == TT_ORDER_MK_CLOSE)){
 		req.prices[0] = req.trade.price;
 		if (spread_diff != 0.0){
-			req.prices[0] = NormalizeDouble(req.prices[0] - si.point * spread_diff / 2.0, si.digits);
+			req.prices[0] = NormalizeDouble(req.prices[0] - tmpSV.point * spread_diff / 2.0, tmpSV.digits);
 			req.trade.price = req.prices[0];
-			req.prices[1] = NormalizeDouble(req.prices[1] + si.point * spread_diff / 2.0, si.digits);
+			req.prices[1] = NormalizeDouble(req.prices[1] + tmpSV.point * spread_diff / 2.0, tmpSV.digits);
 		}
 	}
 
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "end req.prices[0]:" << req.prices[0] << ",req.prices[1]:" << req.prices[1] << ",req.trade.price:" << req.trade.price);
 	return true;
 }
 
@@ -1560,7 +1606,7 @@ bool DealerService::TransferRecordToProto(const TradeRecord &record, dealer::Req
 	//begin------stop out comment added------ by wzp 2018-06-27
 	if (record.activation == ACTIVATION_STOPOUT){
 		tmp = GetMarginInfo(record, strTmp);
-	} else{	
+	} else {
 		tmp = comment;//modify by wzp
 	}
 	//end------stop out comment added-------- by wzp 2018-06-27

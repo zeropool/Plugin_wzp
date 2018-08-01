@@ -9,7 +9,6 @@
 #include "msg_define_new.pb.h"
 #include "get_config.h"
 #include "log4_cplus.h"
-#include "CSendMail.h"
 
 using namespace std;
 //define bridge ret message
@@ -24,8 +23,8 @@ using namespace std;
 #define ENERGY	"ENERGY"
 #define CFD		"CFD"
 
-#define REX_FX		"^[AUD|CAD|CHF|EUR|GBP|NZD|USD][\\s\\S]*"
-#define REX_METAL	"^[XAU|XAG][\\s\\S]*"
+#define REX_FX		"^(AUD|CAD|CHF|EUR|GBP|NZD|USD)[\\s\\S]*"
+#define REX_METAL	"^(XAU|XAG)[\\s\\S]*"
 #define REX_ENERGY  "XNGUSD|XBRUSD|XTIUSD"
 #define REX_CFD		"AUS200|EUSTX50|GER30|HK50|JPN225|SPA35|NAS100|UK100|US500|US30|USA500|FRA40|D30EUR|U30USD|200AUD|H33HKD|225JPY|F40EUR|E50EUR|100GBP|SPXUSD|NASUSD"
 
@@ -63,6 +62,13 @@ struct SymbolConfigInfo{
 	string margin_currency;
 	string type;
 };
+
+//add by wzp 2018-08-01
+struct GroupConfigInfo{
+	string		 currency;
+	ConGroupSec  secgroups[MAX_SEC_GROUPS];//record the spread info.
+};
+
 
 template <class K, class V> struct MutexMap{
 	map<K, V> m_queue;
@@ -129,6 +135,7 @@ private:
 	MutexMap<string, SymbolsValue>	     m_Symbols;
 	MutexMap<int, OrderValue>			 m_Orders;
 	MutexMap<string, SymbolConfigInfo>   m_SymbolConfigInfo;
+	MutexMap<string, GroupConfigInfo>	 m_GroupConfigInfo;
 	//lock 
 	mutex							m_Dealer_mutex;
 	mutex							m_ExtManager_mutex;
@@ -144,11 +151,6 @@ private:
 	CManagerInterface				*m_pool[2];
 public:
 	//MT4 relationship info
-	static sMailInfo				m_sm;
-	CSendMail						m_csm;
-	mutex							m_SendMail_mutex;
-	static void InitMailInfo();
-	bool SendWarnMail(const string & title,const string &msg);
 public:
 	static DealerService* GetInstance();
 	//get current absolute path.
@@ -178,10 +180,11 @@ public:
 	//keep the mt4 link live.
 	void KeepLiveLinkMT4();
 	void PumpProcessTradeOrder(int code, int type, void *data);
-	double CaculateMargin(const TradeRecord &record);
-	bool CurrencyConversion(int &margin,const TradeRecord &record, const SymbolConfigInfo info);
-	bool ConvUnit(int &value,const string &from,const string &to);
+	bool CaculateMargin(const TradeRecord &record);
+	bool CurrencyConversion(double &margin, const string &group, const SymbolConfigInfo &info);
+	bool ConvUnit(double &value, const string &from, const string &to);
 	bool StaticSymbolConfigInfo();
+	bool StaticGroupConfigInfo();
 private:
 	//construct 
 	DealerService(const string &lib_path, const string abook, const string bbook, const string symbols);
@@ -193,6 +196,7 @@ private:
 	bool DealerReject(const dealer::resp_msg &ret);
 	bool DealerReset(const dealer::resp_msg &ret);
 	bool PumpSendDataToMT4(const dealer::resp_msg &ret);
+	bool PumpSendDataToMT4(const TradeRecord &record);
 	void InitSymbolType();
 	int GetGroupType(const string group);
 	//get symbol info
@@ -206,7 +210,9 @@ private:
 	//get spread info 
 	bool CaculateSpread(const SymbolInfo  &si, RequestInfo &m_req, bool flag);
 	bool CaculateSpreadForPump(TradeTransInfo *info, const dealer::resp_msg &msg);
-	bool GetSpreadAndAskBidInfo(const string &symbol, const string &group, SymbolInfo &si, double &spread_diff);
+	bool CaculateAskBidAndSpread(RequestInfo &m_req, bool flag = true);
+//	bool GetSpreadAndAskBidInfo(const string &symbol, const string &group, SymbolInfo &si, double &spread_diff);
+	bool GetSymbolInfo(const string &symbol, SymbolsValue &sv);
 	//protocbuf and Mt4 msg type transfer 
 	//MT4 msg -> Protoc msg
 	bool TransferMsgToProto(dealer::RequestInfo *msg);
@@ -215,7 +221,7 @@ private:
 	bool TransferProtoToMsg(const dealer::resp_msg *msg);
 	bool TransferProtoToTrade(TradeTransInfo *info, const dealer::resp_msg &msg);
 	//get ask and bid with m_ExtManagerPump then backfill data to RequestInfo.
-	bool BackFillAskAndBid(RequestInfo &m_req,bool flag = true);
+
 	bool CreateMT4LinkInterface(CManagerInterface ** m_interface, const string &server, const int &login, const string &passwd);
 	bool BusinessJudge(RequestInfo *req);
 
