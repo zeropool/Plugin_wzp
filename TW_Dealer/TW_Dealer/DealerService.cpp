@@ -697,6 +697,7 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "send_flag = false");
 			}
 
+			PrintRecord(m_TradeRecord[i]);
 			//send msg to bridge
 			if (send_flag){
 				if (!SendDataToBridge(info)){
@@ -1396,13 +1397,19 @@ bool DealerService::CaculateSpreadForPump(TradeTransInfo *info, const dealer::re
 	}
 
 	double spread_diff = grp.secgroups[sv.type].spread_diff;
-
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id:" << info->order << "grp.secgroups[sv.type].spread_diff" << spread_diff);
 	if (spread_diff != 0){
-		if ((msg.info().trade().cmd() == OP_BUY && msg.info().trade().type() == TT_BR_ORDER_OPEN) ||
-			(msg.info().trade().cmd() == OP_SELL && msg.info().trade().type() == TT_BR_ORDER_CLOSE)){
+		//TT_BR_ORDER_ACTIVATE
+		int cmd = msg.info().trade().cmd();
+		unsigned int type = msg.info().trade().type();
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id:" << info->order << "cmd:" << cmd << " type:" << type);
+		if ((cmd == OP_BUY && type == TT_BR_ORDER_OPEN ) ||
+			((cmd == OP_BUY_LIMIT || cmd == OP_BUY_STOP) && type == TT_BR_ORDER_ACTIVATE) ||
+			(cmd == OP_SELL && type == TT_BR_ORDER_CLOSE)){
 			info->price = NormalizeDouble(info->price + sv.point * spread_diff / 2.0, sv.digits);
-		} else if ((msg.info().trade().cmd() == OP_SELL && msg.info().trade().type() == TT_BR_ORDER_OPEN) ||
-			(msg.info().trade().cmd() == OP_BUY && msg.info().trade().type() == TT_BR_ORDER_CLOSE)){
+		} else if ((cmd == OP_SELL && type == TT_BR_ORDER_OPEN) ||
+			((cmd == OP_SELL_LIMIT || cmd == OP_SELL_STOP) && type == TT_BR_ORDER_ACTIVATE) ||
+			(cmd == OP_BUY && type == TT_BR_ORDER_CLOSE)){
 			info->price = NormalizeDouble(info->price - sv.point * spread_diff / 2.0, sv.digits);
 		}
 	}
