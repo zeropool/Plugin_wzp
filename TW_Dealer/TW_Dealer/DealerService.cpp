@@ -37,7 +37,7 @@ string DealerService::GetProgramDir()
 //get instance
 DealerService* DealerService::GetInstance(){
 	if (NULL == m_DealerService){
-
+		//curl_global_init(CURL_GLOBAL_ALL);//add by wzp curl init operate; 2018-08-02
 		if (!LoadConfig()){
 			OutputDebugString("ERR:LoadConfig(): failed!");
 			return NULL;
@@ -58,6 +58,66 @@ DealerService* DealerService::GetInstance(){
 	}
 
 	return m_DealerService;
+}
+
+
+void DealerService::SendWarnMail(const string &title, const string &content){
+	string param = "email=" + m_config["mail_addr"] + "&" + "title=" + title + "&" + "content=" + content;
+	string postResponseStr;
+
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail param:" << param);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail url:" << m_config["mail_urls"]);
+
+	CURLcode res = curl_post_req(m_config["mail_urls"], param, postResponseStr);
+	
+	if (res != CURLE_OK){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "curl_easy_perform() failed: " + string(curl_easy_strerror(res)));
+	} else{
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail response:" << postResponseStr);
+	}
+}
+
+size_t DealerService::req_reply(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+	cout << "----->reply" << endl;
+	string *str = (string*)stream;
+	cout << *str << endl;
+	(*str).append((char*)ptr, size*nmemb);
+	return size * nmemb;
+}
+
+// http POST
+CURLcode DealerService::curl_post_req(const string &url, const string &postParams, string &response)
+{
+	// init curl
+	CURL *curl = curl_easy_init();
+	// res code
+	CURLcode res;
+	if (curl)
+	{
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "begin curl:");
+		// set params
+		curl_easy_setopt(curl, CURLOPT_POST, 1); // post req
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str()); // url
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postParams.c_str()); // params
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false); // if want to use https
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false); // set peer and host verify false
+		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+		curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &DealerService::req_reply);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response);
+		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+		curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);
+		// start req
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mid curl:");
+		res = curl_easy_perform(curl);
+	}
+	// release curl
+	curl_easy_cleanup(curl);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "end curl:");
+	return res;
 }
 
 vector<string> DealerService::split(string str, string pattern)
@@ -443,7 +503,8 @@ bool DealerService::FilterRepeatOrder(const TradeRecord &rec){
 		return false;
 	}
 
-	if (!m_Orders.Get(rec.order, order)){
+	//pending open then stop out question. add by wzp 2018-08-03
+	if (!m_Orders.Get(rec.order, order) || order.activation != rec.activation){
 		order.activation = rec.activation;
 		order.OrderNum = rec.order;
 		order.timestrap = GetUtcCaressing();
@@ -513,8 +574,11 @@ bool DealerService::CaculateMargin(const TradeRecord &record){
 		return false;
 	}
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "(tmpMargin.margin_free - margin):" << (tmpMargin.margin_free - margin) <<" margin:"<< margin << " tmpMargin.margin_free:" << tmpMargin.margin_free);
-
+	double profit = (record.close_price - record.open_price) * (record.volume * 0.01) * info.contract_size;
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "usd :profit:" << profit);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmpMargin.balance:" << tmpMargin.balance << "tmpMargin.equity:" << tmpMargin.equity << "tmpMargin.margin_free:" << tmpMargin.margin_free);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "MarginLevelGet:(tmpMargin.margin_free - margin):" << (tmpMargin.margin_free - margin) << " margin:" << margin);
+	//double profit = 
 	if ((tmpMargin.margin_free - margin) <= 0.0){
 	//	PumpSendDataToMT4(record);
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CaculateMargin: if ((tmpMargin.margin_free - margin) <= 0.0):" << record.login << " order:" << record.order);
@@ -979,6 +1043,7 @@ void DealerService::KeepLiveLinkMT4(){
 		if (!Mt4DealerReconnection()){
 			continue;
 		}
+		
 		//delete sl tp so temp order
 		DeleteOrderRecord();//add by wzp 2018-07-04
 	//	DealerService::GetInstance()->SendWarnMail("Test","KeepLiveLinkMT4");//test to use 2018-07-25

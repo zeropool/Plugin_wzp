@@ -9,7 +9,7 @@
 #include "msg_define_new.pb.h"
 #include "get_config.h"
 #include "log4_cplus.h"
-
+#include "curl/curl.h"
 using namespace std;
 //define bridge ret message
 #define SEND 1
@@ -27,13 +27,17 @@ using namespace std;
 #define REX_METAL	"^(XAU|XAG)[\\s\\S]*"
 #define REX_ENERGY  "XNGUSD|XBRUSD|XTIUSD"
 #define REX_CFD		"AUS200|EUSTX50|GER30|HK50|JPN225|SPA35|NAS100|UK100|US500|US30|USA500|FRA40|D30EUR|U30USD|200AUD|H33HKD|225JPY|F40EUR|E50EUR|100GBP|SPXUSD|NASUSD"
-
+//#pragma comment(lib, "ws2_32.lib")
+//#pragma comment(lib, "wldap32.lib")
+//#pragma comment(lib, "libcurl.lib")
 void __stdcall OnDealingFunc(int code);
 void __stdcall OnPumpingFunc(int code, int type, void *data, void *param);
 void __stdcall PumpingNotify(int code, int type, void *data, void *param);
 double __fastcall NormalizeDouble(const double val, int digits);
 DWORD WINAPI TransferMsgFromBridgeToMT4(LPVOID lparamter);
 DWORD WINAPI KeepLiveForMT4(LPVOID lparamter);
+
+
 
 static int gettimeofday(struct timeval* tv);
 static time_t GetUtcCaressing();
@@ -151,6 +155,10 @@ private:
 	CManagerInterface				*m_pool[2];
 public:
 	//MT4 relationship info
+	void SendWarnMail(const string &title, const string &content);
+private:
+	size_t req_reply(void *ptr, size_t size, size_t nmemb, void *stream);
+	CURLcode curl_post_req(const string &url, const string &postParams, string &response);
 public:
 	static DealerService* GetInstance();
 	//get current absolute path.
