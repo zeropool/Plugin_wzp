@@ -37,7 +37,8 @@ string DealerService::GetProgramDir()
 //get instance
 DealerService* DealerService::GetInstance(){
 	if (NULL == m_DealerService){
-		//curl_global_init(CURL_GLOBAL_ALL);//add by wzp curl init operate; 2018-08-02
+		curl_global_init(CURL_GLOBAL_ALL); //the main thread init the curl lib.add by wzp 2018-08-05
+		
 		if (!LoadConfig()){
 			OutputDebugString("ERR:LoadConfig(): failed!");
 			return NULL;
@@ -62,12 +63,13 @@ DealerService* DealerService::GetInstance(){
 
 
 void DealerService::SendWarnMail(const string &title, const string &content){
+	
 	string param = "email=" + m_config["mail_addr"] + "&" + "title=" + title + "&" + "content=" + content;
 	string postResponseStr;
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail param:" << param);
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail url:" << m_config["mail_urls"]);
-
+	//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail param:" << param);
+	//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail url:" << m_config["mail_urls"]);
+	
 	CURLcode res = curl_post_req(m_config["mail_urls"], param, postResponseStr);
 	
 	if (res != CURLE_OK){
@@ -75,9 +77,10 @@ void DealerService::SendWarnMail(const string &title, const string &content){
 	} else{
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail response:" << postResponseStr);
 	}
+	
 }
 
-size_t DealerService::req_reply(void *ptr, size_t size, size_t nmemb, void *stream)
+size_t req_reply(void *ptr, size_t size, size_t nmemb, void *stream)
 {
 	cout << "----->reply" << endl;
 	string *str = (string*)stream;
@@ -104,12 +107,13 @@ CURLcode DealerService::curl_post_req(const string &url, const string &postParam
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false); // set peer and host verify false
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 		curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &DealerService::req_reply);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response);
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 		curl_easy_setopt(curl, CURLOPT_HEADER, 1);
 		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3);
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);
+		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
 		// start req
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mid curl:");
 		res = curl_easy_perform(curl);
@@ -185,6 +189,7 @@ m_ExtDealer(NULL), m_ExtManagerPump(NULL), m_ExtManager(NULL), m_ExtManager_bak(
 //}
 
 DealerService::~DealerService(){
+	OutputDebugString("DealerService::~DealerService()");
 }
 //Create mt4 link include socket link and login add by wzp
 bool DealerService::CreateMT4Link()
@@ -245,6 +250,7 @@ bool DealerService::Mt4DealerReconnection(){
 	//dealer reconnection.
 	m_Dealer_mutex.lock();
 	if (RET_OK == m_ExtDealer->IsConnected()){
+		SendWarnMail("ERROR", "Dealer CreateMT4LinkInterface reconnect the link");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"m_ExtDealer reconnect the link");
 		OutputDebugString("ERR:m_ExtDealer reconnect the link");
 		bool flag = CreateMT4LinkInterface(&m_ExtDealer, m_config["mt4_addr"], atoi(m_config["mt4_login_name"].c_str()), m_config["mt4_passwd"]);
@@ -273,7 +279,7 @@ bool DealerService::Mt4PumpReconnection(){
 	m_Pump_mutex.lock();
 
 	if (RET_OK == m_ExtManagerPump->IsConnected()){
-		//SendWarnMail("ERROR", "m_ExtManagerPump CreateMT4LinkInterface reconnect the link");
+		SendWarnMail("ERROR", "Pump CreateMT4LinkInterface reconnect the link");
 		OutputDebugString("ERR:Begin:m_ExtManagerPump CreateMT4LinkInterface reconnect the link");
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "m_ExtManagerPump reconnect the link");
 		bool flag = CreateMT4LinkInterface(&m_ExtManagerPump, m_config["mt4_addr"], atoi(m_config["mt4_login_name"].c_str()), m_config["mt4_passwd"]);
@@ -384,12 +390,12 @@ void __stdcall OnDealingFunc(int code)
 	{
 	case DEAL_START_DEALING:
 		OutputDebugString("DEBUG:DEAL_START_DEALING");
-		//DealerService::GetInstance()->SendWarnMail("WARN", "DEAL_START_DEALING");
+		DealerService::GetInstance()->SendWarnMail("WARN", "DEAL_START_DEALING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger,"DEAL_START_DEALING");
 		break;
 	case DEAL_STOP_DEALING:
 		OutputDebugString("DEBUG:DEAL_STOP_DEALING");
-	//	DealerService::GetInstance()->SendWarnMail("ERROR", "DEAL_STOP_DEALING");
+		DealerService::GetInstance()->SendWarnMail("ERROR", "DEAL_STOP_DEALING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DEAL_STOP_DEALING");
 		break;
 	case DEAL_REQUEST_NEW:
@@ -408,11 +414,11 @@ void __stdcall OnPumpingFunc(int code, int type, void *data, void *param)
 	case PUMP_START_PUMPING:
 		OutputDebugString("PUMP_START_PUMPING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "PUMP_START_PUMPING");
-	//	DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_START_PUMPING");
+		DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_START_PUMPING");
 		break;
 	case PUMP_STOP_PUMPING:
 		OutputDebugString("PUMP_STOP_PUMPING");
-	///	DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_STOP_PUMPING");
+		DealerService::GetInstance()->SendWarnMail("WARN", "PUMP_STOP_PUMPING");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "PUMP_STOP_PUMPING");
 		break;
 	case PUMP_UPDATE_BIDASK:
@@ -482,6 +488,7 @@ void DealerService::PumpProcessTradeOrder(int code ,int type, void *data){
 			if (!SendDataToBridge(&info)){
 				OutputDebugString("SendDataToBridge failed!");
 				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"SendDataToBridge failed!");
+				DealerService::GetInstance()->SendWarnMail("ERROR", "SendDataToBridge");
 			}
 
 			OutputDebugString("END:PUMP_UPDATE_TRADES");
@@ -574,8 +581,8 @@ bool DealerService::CaculateMargin(const TradeRecord &record){
 		return false;
 	}
 
-	double profit = (record.close_price - record.open_price) * (record.volume * 0.01) * info.contract_size;
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "usd :profit:" << profit);
+	//double profit = (record.close_price - record.open_price) * (record.volume * 0.01) * info.contract_size;
+//	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "usd :profit:" << profit);
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmpMargin.balance:" << tmpMargin.balance << "tmpMargin.equity:" << tmpMargin.equity << "tmpMargin.margin_free:" << tmpMargin.margin_free);
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "MarginLevelGet:(tmpMargin.margin_free - margin):" << (tmpMargin.margin_free - margin) << " margin:" << margin);
 	//double profit = 
@@ -914,7 +921,8 @@ void DealerService::ProcessMsgUp(){
 	if (RET_OK != res){
 		sprintf(tmp, "ERR:ProcessMsgUp: get data failed. %s\n", m_ExtDealer->ErrorDescription(res));
 		OutputDebugString(tmp);
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, tmp);
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, tmp); 
+		DealerService::GetInstance()->SendWarnMail("ERROR", "m_ExtDealer->DealerRequestGet(&m_req)");
 		m_Dealer_mutex.unlock();
 		return;
 	}
@@ -927,7 +935,6 @@ void DealerService::ProcessMsgUp(){
 	if (!BusinessJudge(&m_req)){
 		memset(&m_req, 0, sizeof(struct RequestInfo));
 		m_Dealer_mutex.unlock();
-
 		return;
 	}
 
@@ -957,6 +964,7 @@ bool DealerService::BusinessJudge(RequestInfo *req){
 	if (!JudgeSymbol(req->trade.symbol)){
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger,"BusinessJudge:!JudgeSymbol(req->trade.symbol)!");
 		m_ExtDealer->DealerReject(req->id);
+		DealerService::GetInstance()->SendWarnMail("WARN", "m_ExtDealer->DealerRequestGet(&m_req) dealer don't process the symbol");
 		return false;
 	}
 
@@ -968,6 +976,7 @@ bool DealerService::BusinessJudge(RequestInfo *req){
 		if (CaculateAskBidAndSpread(*req, false)){
 			m_ExtDealer->DealerSend(req, false, false);
 		} else{
+			DealerService::GetInstance()->SendWarnMail("ERROR", "£¡CaculateAskBidAndSpread");
 			m_ExtDealer->DealerReset(req->id);
 		}
 		return false;//not need send data to bridge
@@ -984,7 +993,6 @@ bool  DealerService::SendDataToBridge( dealer::RequestInfo *msg)
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"SendDataToBridge failed!");
 		return false;
 	}
-
 
 	msg->SerializeToString(&send_buf);
 	//if the connection disconnect i need to reset link. 
@@ -1046,7 +1054,7 @@ void DealerService::KeepLiveLinkMT4(){
 		
 		//delete sl tp so temp order
 		DeleteOrderRecord();//add by wzp 2018-07-04
-	//	DealerService::GetInstance()->SendWarnMail("Test","KeepLiveLinkMT4");//test to use 2018-07-25
+		//DealerService::GetInstance()->SendWarnMail("Test","KeepLiveLinkMT4");//test to use 2018-07-25
 		Sleep(2000);
 	}
 }
@@ -1165,7 +1173,7 @@ bool DealerService::SendDataToMT4(const dealer::resp_msg &ret)
 	//manager order dont need reply to mt4.//here need note some 
 	if (string::npos != ret.info().trade().comment().find("MANAGER")){
 		OutputDebugString("SendDataToMT4 find manager response");
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:PumpSendDataToMT4 order:" << ret.info().id() << " bridge price:" << ret.info().trade().price());
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:SendDataToMT4 this is manager open order:" << ret.info().id() << " bridge price:" << ret.info().trade().price());
 		return true;
 	}
 
@@ -1175,10 +1183,12 @@ bool DealerService::SendDataToMT4(const dealer::resp_msg &ret)
 		string::npos != ret.info().trade().comment().find("so:")){
 		
 		if (!PumpSendDataToMT4(ret)){
+			DealerService::GetInstance()->SendWarnMail("ERROR", "PumpSendDataToMT4");
 			return false;
 		}
 	} else{
 		if (!DealerSendDataToMT4(ret)){
+			DealerService::GetInstance()->SendWarnMail("ERROR", "DealerSendDataToMT4");
 			return false;
 		}
 	}
@@ -1199,7 +1209,7 @@ bool DealerService::DealerSendDataToMT4(const dealer::resp_msg &ret){
 	switch (ret.ret_type())
 	{
 	case SEND:
-		DealerSend(ret);
+		flag  = DealerSend(ret);
 		break;
 	case REJECT:
 		DealerReject(ret);
@@ -1214,7 +1224,7 @@ bool DealerService::DealerSendDataToMT4(const dealer::resp_msg &ret){
 	memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:SendDataToMT4---------------------------:" << ret.info().id());
 	OutputDebugString("END:SendDataToMT4-------------");
-	return true;
+	return flag;
 }
 
 bool DealerService::DealerSend(const dealer::resp_msg &ret){
@@ -1225,6 +1235,7 @@ bool DealerService::DealerSend(const dealer::resp_msg &ret){
 		m_Dealer_mutex.lock();
 		m_ExtDealer->DealerReject(m_req_recv.id);
 		m_Dealer_mutex.unlock();
+		DealerService::GetInstance()->SendWarnMail("ERROR", "0.0 == m_req_recv.trade.price");
 		return false;
 	}
 
@@ -1232,8 +1243,9 @@ bool DealerService::DealerSend(const dealer::resp_msg &ret){
 		memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "BackFillAskAndBid failed ! req_id:" << m_req_recv.id << ", order:%d" << m_req_recv.trade.order);
 		OutputDebugString("ERR:BackFillAskAndBid failed !");
-		MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
 		m_ExtDealer->DealerReject(m_req_recv.id);
+		MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
+		DealerService::GetInstance()->SendWarnMail("ERROR", "CaculateAskBidAndSpread DealerSend have a error");
 		memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 		return false;
 	}
@@ -1247,8 +1259,9 @@ bool DealerService::DealerSend(const dealer::resp_msg &ret){
 		if (res != RET_OK){
 			OutputDebugString("ERR: m_ExtDealer->DealerSend(&m_req_recv, true, false)");
 			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "code:" << m_ExtDealer->ErrorDescription(res) << " req_id:" << m_req_recv.id << ", order: " << m_req_recv.trade.order << " m_ExtDealer->DealerSend(&m_req_recv, true, false)");
-			MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
 			m_ExtDealer->DealerReject(m_req_recv.id);
+			MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
+			DealerService::GetInstance()->SendWarnMail("ERROR", "DealerSend have a error");
 			memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 		}
 

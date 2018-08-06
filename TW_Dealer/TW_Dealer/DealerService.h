@@ -34,6 +34,7 @@ void __stdcall OnDealingFunc(int code);
 void __stdcall OnPumpingFunc(int code, int type, void *data, void *param);
 void __stdcall PumpingNotify(int code, int type, void *data, void *param);
 double __fastcall NormalizeDouble(const double val, int digits);
+size_t req_reply(void *ptr, size_t size, size_t nmemb, void *stream);
 DWORD WINAPI TransferMsgFromBridgeToMT4(LPVOID lparamter);
 DWORD WINAPI KeepLiveForMT4(LPVOID lparamter);
 
@@ -157,7 +158,7 @@ public:
 	//MT4 relationship info
 	void SendWarnMail(const string &title, const string &content);
 private:
-	size_t req_reply(void *ptr, size_t size, size_t nmemb, void *stream);
+
 	CURLcode curl_post_req(const string &url, const string &postParams, string &response);
 public:
 	static DealerService* GetInstance();

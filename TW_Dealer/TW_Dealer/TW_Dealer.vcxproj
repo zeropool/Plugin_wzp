@@ -86,7 +86,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Package\curl-7.61.0-win64-mingw\include;D:\Package\log4cplusInterface\include;D:\Package\ZeroMQ 4.0.4\include;D:\Package\protocbuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Package\curl-7.61.0-win64\include;D:\Package\log4cplusInterface\include;D:\Package\ZeroMQ 4.0.4\include;D:\Package\protocbuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -108,7 +108,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;libcurl.lib;wldap32.lib;libprotobuf.lib;libprotobuf-lite.lib;libzmq-v120-mt-4_0_4.lib;log4cplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Package\curl-7.61.0-win64-mingw\include;D:\Package\log4cplusInterface;D:\Package\ZeroMQ 4.0.4\lib;D:\Package\protocbuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Package\curl-7.61.0-win64;D:\Package\log4cplusInterface;D:\Package\ZeroMQ 4.0.4\lib;D:\Package\protocbuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

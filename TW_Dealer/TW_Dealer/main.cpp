@@ -77,7 +77,7 @@ void WINAPI CtrlHandler(DWORD request)
 }
 
 int start_service(){
-	curl_global_init(CURL_GLOBAL_ALL);
+	
 	//get instance and  some init operate:Note good
 	if (NULL == DealerService::GetInstance()){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "NULL == DealerService::GetInstance()");
@@ -97,7 +97,6 @@ int start_service(){
 		return 0;
 	}
 
-	DealerService::GetInstance()->SendWarnMail("test","wenzepeng");//test to use add by wzp 2018-08-03
 	//init thread note:read message from bridge then send the message to mt4
 	DealerService::GetInstance()->InitThread();
 	//switch mode for dealer and pump.
@@ -109,20 +108,20 @@ int start_service(){
 
 
 int main(int argc, char *argv[]){
-	start_service();
+	//start_service();
 
-	//SERVICE_TABLE_ENTRY entrytable[2];
+	SERVICE_TABLE_ENTRY entrytable[2];
 
-	//entrytable[0].lpServiceName = "DealerService";
+	entrytable[0].lpServiceName = "DealerService";
 
-	//entrytable[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTION)ServiceMain;
+	entrytable[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTION)ServiceMain;
 
-	//entrytable[1].lpServiceName = NULL;
+	entrytable[1].lpServiceName = NULL;
 
-	//entrytable[1].lpServiceProc = NULL;
+	entrytable[1].lpServiceProc = NULL;
 
-	//StartServiceCtrlDispatcher(entrytable);
+	StartServiceCtrlDispatcher(entrytable);
 
-	system("pause");
+	//system("pause");
 	return 0;
 }
