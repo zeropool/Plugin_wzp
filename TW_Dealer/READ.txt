@@ -18,3 +18,6 @@ forth:
 	sc stop   DealerService
 	
 	sc delete DealerService
+	
+	
+	Note: before run the "DealerService" you must check yourself "Dealer.cfg" file if is right now.
