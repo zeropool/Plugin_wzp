@@ -3,32 +3,18 @@ first:
 	open the Package unzip all the zip file.
 second:
 	open the TW_Dealer.sln file with the vs2013.
-third:
-	set the vs2013 project compile env
-	1.C/C++ -- general -- additional include directories
-		D:\Package\log4cplusInterface\include;
-		D:\Package\ZeroMQ 4.0.4\include;
-		D:\Package\protocbuf\src;%(AdditionalIncludeDirectories)
-	2.linker -- general -- additional library directories
-		D:\Package\log4cplusInterface;
-		D:\Package\ZeroMQ 4.0.4\lib;
-		D:\Package\protocbuf;
-		
-	Note:pls replace the "D:" according  location of your "Package" 
-
 forth:
 	set the operating env
 	the "TW_Dealer.exe" is a windows service program
 	the "x64/Release" folder contain all the "TW_Dealer.exe" operating env
 	
-	on current folder "CTRL+the right mouse button",open a cmd windows
+	on current folder "SHIFT+the mouse right button",open a cmd windows
 	execute some cmd:
 	
-	sc create ServiceName bibpath= D:\WorkStation\WorkProject\TW_Dealer\x64\Release\TW_Dealer.exe
-		Note:after the "=" must have a space. ex: "= "
-	sc start ServiceName
+	sc create DealerService binpath= D:\WorkStation\WorkProject\TW_Dealer\x64\Release\TW_Dealer.exe
+		Note:after the "=" must have a space. ex: "= " , the binpath is a absolute path and pls according yourself path to set.
+	sc start  DealerService
 	
-	sc stop ServiceName
+	sc stop   DealerService
 	
-	sc delete ServiceName
-		
+	sc delete DealerService
