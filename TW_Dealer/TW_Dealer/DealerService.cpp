@@ -366,12 +366,12 @@ bool DealerService::CreateMT4LinkInterface(CManagerInterface ** m_interface, con
 bool DealerService::CreateBridgeLink()
 {
 	string tmp_addr = "tcp://";
-	char tmp[256] = { 0 };
 	tmp_addr += m_config["bridge_ip"] + ":" + m_config["bridge_port"];
 
 	if (m_socket.connected()){
 		m_socket.connect(tmp_addr);
 	}else{
+		char tmp[256] = { 0 };
 		sprintf(tmp, "ERR:Connect Bridge: Link failed %s", tmp_addr.c_str());
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Connect Bridge: Link failed. addr:" << tmp_addr.c_str());
 		OutputDebugString(tmp);
@@ -1083,11 +1083,10 @@ bool DealerService::Mt4DirectReconnection(){
 
 
 void DealerService::DeleteOrderRecord(){
-	OutputDebugString("Begin:DeleteOrderRecord");
+	//OutputDebugString("Begin:DeleteOrderRecord");
 	m_Orders.m_mutex.lock();
-	map<int, OrderValue>::iterator iter;
 	char tmp[256];
-	iter = m_Orders.m_queue.begin();
+	map<int, OrderValue>::iterator iter = m_Orders.m_queue.begin();
 	stack<int> st;
 
 	while (iter != m_Orders.m_queue.end()){
@@ -1115,7 +1114,7 @@ void DealerService::DeleteOrderRecord(){
 	}
 
 	m_Orders.m_mutex.unlock();
-	OutputDebugString("End:DeleteOrderRecord");
+	//OutputDebugString("End:DeleteOrderRecord");
 }
 
 bool DealerService::ProcessMsgDown()
@@ -1128,10 +1127,10 @@ bool DealerService::ProcessMsgDown()
 		zmq::poll(items, 1, 0);
 
 		if (items[0].revents & ZMQ_POLLIN){
-
 			bool res = m_socket.recv(&request);
 
 			if (!res){
+				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: recv data failed !");
 				OutputDebugString("ERR:Bridge: recv data failed !");
 				continue;
 			}
@@ -1139,10 +1138,11 @@ bool DealerService::ProcessMsgDown()
 			std::string data(static_cast<char*>(request.data()), request.size());
 
 			if (!msg.ParseFromString(data)){
+				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: ParseFromString failed !");
 				OutputDebugString("ERR:Bridge: ParseFromString failed !");
 			}else{
 				if (!SendDataToMT4(msg)){	//send info to MT4
-				
+					LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: send data to MT4 failed !");
 					OutputDebugString("ERR:Bridge: send data to MT4 failed !");
 				}
 			}
@@ -1401,7 +1401,7 @@ bool DealerService::MakeNewOrderForClient(const TradeTransInfo &rec, const int &
 		info.type = TT_BR_ORDER_OPEN;
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Begin-----MakeNewOrderForClient-----");
 		PrintTradeInfo(&info);
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "End-------MakeNewOrderForClient-------");
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "End-------MakeNewOrderForClient-----");
 		m_ExtManager_mutex.lock();
 		int res = m_ExtManager->TradeTransaction(&info);
 		m_ExtManager_mutex.unlock();
