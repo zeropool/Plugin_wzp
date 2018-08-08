@@ -1229,7 +1229,7 @@ bool DealerService::DealerSendDataToMT4(const dealer::resp_msg &ret){
 
 bool DealerService::DealerSend(const dealer::resp_msg &ret){
 	if (!TransferProtoToMsg(&ret)){
-		return true;
+		return false;
 	}
 
 	if (0.0 >= m_req_recv.trade.price){
@@ -1302,7 +1302,7 @@ bool DealerService::PumpSendDataToMT4(const dealer::resp_msg &ret){
 	if (!TransferProtoToTrade(&info, ret)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "No End TransferProtoToTrade PumpSendDataToMT4-----------------order_id:" << ret.info().trade().order());
 		OutputDebugString("ERR:No End TransferProtoToTrade PumpSendDataToMT4-------------");
-		return true;
+		return false;
 	}
 
 	PrintTradeInfo(&info);
@@ -1594,7 +1594,7 @@ bool DealerService::FilterSplitOrder(const dealer::resp_msg *msg){
 			return false;
 		}
 	} else{
-		if (!m_SplitOrders.Get(tmp, value)){
+		if (m_SplitOrders.Get(tmp, value)){
 			m_SplitOrders.Delete(tmp);
 			return false;
 		}
