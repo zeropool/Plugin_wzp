@@ -1228,7 +1228,9 @@ bool DealerService::DealerSendDataToMT4(const dealer::resp_msg &ret){
 }
 
 bool DealerService::DealerSend(const dealer::resp_msg &ret){
-	bool flag = TransferProtoToMsg(&ret);
+	if (!TransferProtoToMsg(&ret)){
+		return true;
+	}
 
 	if (0.0 >= m_req_recv.trade.price){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (0.0 == m_req_recv.trade.price) req_id:" << m_req_recv.id << ", order:%d" << m_req_recv.trade.order);
@@ -1251,23 +1253,20 @@ bool DealerService::DealerSend(const dealer::resp_msg &ret){
 	}
 
 	PrintResponse(ret, &m_req_recv);
+	m_Dealer_mutex.lock();
+	int res = m_ExtDealer->DealerSend(&m_req_recv, true, false);//test
 
-	if (flag){
-		m_Dealer_mutex.lock();
-		int res = m_ExtDealer->DealerSend(&m_req_recv, true, false);//test
-
-		if (res != RET_OK){
-			OutputDebugString("ERR: m_ExtDealer->DealerSend(&m_req_recv, true, false)");
-			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "code:" << m_ExtDealer->ErrorDescription(res) << " req_id:" << m_req_recv.id << ", order: " << m_req_recv.trade.order << " m_ExtDealer->DealerSend(&m_req_recv, true, false)");
-			m_ExtDealer->DealerReject(m_req_recv.id);
-			MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
-			DealerService::GetInstance()->SendWarnMail("ERROR", "DealerSend have a error");
-			memset(&m_req_recv, 0, sizeof(struct RequestInfo));
-		}
-
-		m_Dealer_mutex.unlock();
+	if (res != RET_OK){
+		OutputDebugString("ERR: m_ExtDealer->DealerSend(&m_req_recv, true, false)");
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "code:" << m_ExtDealer->ErrorDescription(res) << " req_id:" << m_req_recv.id << ", order: " << m_req_recv.trade.order << " m_ExtDealer->DealerSend(&m_req_recv, true, false)");
+		m_ExtDealer->DealerReject(m_req_recv.id);
+		MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
+		DealerService::GetInstance()->SendWarnMail("ERROR", "DealerSend have a error");
+		memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 	}
 
+	m_Dealer_mutex.unlock();
+	
 	time_t tmp = GetUtcCaressing();
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "End:GetUtcCaressing::" << tmp);
 	return true;
@@ -1432,11 +1431,6 @@ void DealerService::SwitchConnection(){
 
 bool DealerService::TransferProtoToTrade(TradeTransInfo *info, const dealer::resp_msg &msg){
 	//if there are the splited the order only receive the last one to process.
-	if (msg.finish_status() != 2){
-		OutputDebugString("WARN:TransferProtoToTrade msg.finish_status != 2");
-		LOG4CPLUS_WARN(DealerLog::GetInstance()->m_Logger, "TransferProtoToTrade msg.finish_status != 2 order:" << msg.info().trade().order());
-		//return false;
-	}
 
 	info->type = msg.info().trade().type();
 	info->order = msg.info().trade().order();
@@ -1448,6 +1442,13 @@ bool DealerService::TransferProtoToTrade(TradeTransInfo *info, const dealer::res
 	info->tp = msg.info().trade().tp();
 	info->expiration = msg.info().trade().expiration();//add by wzp 2018-05-20.
 	strcpy(info->comment, msg.info().trade().comment().c_str());
+
+	//if (msg.finish_status() != 2){
+	//	OutputDebugString("WARN:TransferProtoToTrade msg.finish_status != 2");
+	//	LOG4CPLUS_WARN(DealerLog::GetInstance()->m_Logger, "TransferProtoToTrade msg.finish_status != 2 order:" << msg.info().trade().order());
+	//	return false;
+	//}
+
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "CaculateSpreadForPump before:" << info->price);
 
 	if (!CaculateSpreadForPump(info, msg)){
@@ -1455,7 +1456,8 @@ bool DealerService::TransferProtoToTrade(TradeTransInfo *info, const dealer::res
 	}
 
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "CaculateSpreadForPump after:" << info->price);
-	return true;
+
+	return FilterSplitOrder(&msg);
 }
 
 bool DealerService::CaculateSpreadForPump(TradeTransInfo *info, const dealer::resp_msg &msg){
@@ -1570,13 +1572,37 @@ bool DealerService::TransferProtoToMsg(const dealer::resp_msg *msg){
 
 	m_req_recv.prices[0] = msg->info().price(0);
 	m_req_recv.prices[1] = msg->info().price(1);
+
+	return FilterSplitOrder(msg);
+}
+
+//begin process the split order. deal the first reply data.
+bool DealerService::FilterSplitOrder(const dealer::resp_msg *msg){
+
+	char tmp[256];
+	int value;
+	sprintf(tmp, "%d_%d_%d", m_req_recv.id, m_req_recv.login, m_req_recv.trade.order);
+	OutputDebugString(tmp);
 	//split order process
 	if (msg->finish_status() != 2){
-		LOG4CPLUS_WARN(DealerLog::GetInstance()->m_Logger, "TransferProtoToMsg  req_id:" << msg->info().id() << " order_id:" << msg->info().trade().order() << " msg.finish_status:" << msg->finish_status());
+
+		if (!m_SplitOrders.Get(tmp, value)){
+			m_SplitOrders.Add(tmp, msg->finish_status());
+			return true;
+		} else{
+			LOG4CPLUS_WARN(DealerLog::GetInstance()->m_Logger, "TransferProtoToMsg  req_id:" << msg->info().id() << " order_id:" << msg->info().trade().order() << " msg.finish_status:" << msg->finish_status());
+			return false;
+		}
+	} else{
+		if (!m_SplitOrders.Get(tmp, value)){
+			m_SplitOrders.Delete(tmp);
+			return false;
+		}
 	}
 
 	return true;
 }
+
 bool DealerService::CaculateAskBidAndSpread(RequestInfo &req, bool flag)
 {
 	SymbolsValue tmpSV = { 0 };

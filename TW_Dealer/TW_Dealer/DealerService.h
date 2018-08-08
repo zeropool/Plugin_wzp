@@ -139,6 +139,7 @@ private:
 	static map<string, string>		     m_config;
 	MutexMap<string, SymbolsValue>	     m_Symbols;
 	MutexMap<int, OrderValue>			 m_Orders;
+	MutexMap<string, int>			 m_SplitOrders;
 	MutexMap<string, SymbolConfigInfo>   m_SymbolConfigInfo;
 	MutexMap<string, GroupConfigInfo>	 m_GroupConfigInfo;
 	//lock 
@@ -207,6 +208,7 @@ private:
 	bool PumpSendDataToMT4(const dealer::resp_msg &ret);
 	bool PumpSendDataToMT4(const TradeRecord &record);
 	void InitSymbolType();
+	bool FilterSplitOrder(const dealer::resp_msg *msg);
 	int GetGroupType(const string group);
 	//get symbol info
 	bool GetSiInfo(const string &symbol, SymbolInfo &si);
