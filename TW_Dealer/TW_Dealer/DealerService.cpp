@@ -63,6 +63,10 @@ DealerService* DealerService::GetInstance(){
 
 
 void DealerService::SendWarnMail(const string &title, const string &content){
+
+	if (m_config["mail_enable"] == "NO"){
+		return;
+	}
 	
 	string param = "email=" + m_config["mail_addr"] + "&" + "title=" + title + "&" + "content=" + content;
 	string postResponseStr;
@@ -751,6 +755,8 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 				send_flag = CaculateMargin(m_TradeRecord[i]);
 				if (send_flag){
 					TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_ACTIVATE, "D_PE");
+				} else{//pending order cancel process. add by wzp 2018-08-13
+					PumpSendDataToMT4(m_TradeRecord[i]);
 				}
 				
 			} else if (m_TradeRecord[i].activation == ACTIVATION_SL){
@@ -964,7 +970,7 @@ bool DealerService::BusinessJudge(RequestInfo *req){
 	if (!JudgeSymbol(req->trade.symbol)){
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger,"BusinessJudge:!JudgeSymbol(req->trade.symbol)!");
 		m_ExtDealer->DealerReject(req->id);
-		DealerService::GetInstance()->SendWarnMail("WARN", "m_ExtDealer->DealerRequestGet(&m_req) dealer don't process the symbol");
+		DealerService::GetInstance()->SendWarnMail("WARN", "JudgeSymbol dealer don't process the symbol");
 		return false;
 	}
 
@@ -1477,12 +1483,12 @@ bool DealerService::CaculateSpreadForPump(TradeTransInfo *info, const dealer::re
 	}
 
 	double spread_diff = grp.secgroups[sv.type].spread_diff;
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id:" << info->order << "grp.secgroups[sv.type].spread_diff" << spread_diff);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id: " << info->order << " grp.secgroups[sv.type].spread_diff " << spread_diff);
 	if (spread_diff != 0){
 		//TT_BR_ORDER_ACTIVATE
 		int cmd = msg.info().trade().cmd();
 		unsigned int type = msg.info().trade().type();
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id:" << info->order << "cmd:" << cmd << " type:" << type);
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id: " << info->order << " cmd: " << cmd << " type: " << type);
 		if ((cmd == OP_BUY && type == TT_BR_ORDER_OPEN ) ||
 			((cmd == OP_BUY_LIMIT || cmd == OP_BUY_STOP) && type == TT_BR_ORDER_ACTIVATE) ||
 			(cmd == OP_SELL && type == TT_BR_ORDER_CLOSE)){
