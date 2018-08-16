@@ -68,7 +68,7 @@ void DealerService::SendWarnMail(const string &title, const string &content){
 		return;
 	}
 	
-	string param = "email=" + m_config["mail_addr"] + "&" + "title=" + title + "&" + "content=" + content;
+	string param = "email=" + m_config["mail_addr"] + "&" + "title=" + title + "&" + "content=" + m_config["mail_env"] +":"+ content;
 	string postResponseStr;
 
 	//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "mail param:" << param);
