@@ -534,6 +534,8 @@ void Compare(){
 	}
 }
 
+
+
 int main(int argc, char *argv[]){
 	if (!LoadConfig()){
 		cout << "if (!LoadConfig()){"<< endl;
