@@ -1822,6 +1822,7 @@ bool DealerService::JudgeSymbol(const string symbol){
 		tmp = *ita;
 		OutputDebugString(tmp.c_str());
 		index_ex = tmp.find_first_of("!");
+
 		if (0 == index_ex){
 			InFlag = false;
 		}
