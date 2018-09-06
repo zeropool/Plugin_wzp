@@ -54,6 +54,10 @@ CManagerInterface				*m_ExtManager_dest = NULL;
 
 MutexMap<string, ConSymbol>		m_Symbol_src;
 MutexMap<string, ConSymbol>		m_Symbol_dest;
+
+MutexMap<string, ConGroup>		m_Group_src;
+MutexMap<string, ConGroup>		m_Group_dest;
+
 //CManagerInterface				*m_ExtManager;
 
 string GetProgramDir()
@@ -200,6 +204,27 @@ bool StaticSymbolConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, Co
 
 	m_ExtManager->MemFree(m_ConSymbol);
 	m_ConSymbol = NULL;
+	return true;
+}
+
+bool StaticGroupConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, ConGroup>		&Con){
+	int cnt = 0;
+	ConGroup *m_ConGroup = m_ExtManager->CfgRequestGroup(&cnt);
+
+	if (m_ConGroup == NULL){
+		cout << "if (m_ConSymbol == NULL)" << endl;
+		return false;
+	}
+
+	for (int i = 0; i < cnt; i++){
+		ConGroup tmpSymbolConfig{};
+		memcpy(&tmpSymbolConfig, &m_ConGroup[i], sizeof(tmpSymbolConfig));
+		cout << m_ConGroup[i].group << endl;
+		Con.Add(m_ConGroup[i].group, tmpSymbolConfig);
+	}
+
+	m_ExtManager->MemFree(m_ConGroup);
+	m_ConGroup = NULL;
 	return true;
 }
 
@@ -534,6 +559,14 @@ void Compare(){
 	}
 }
 
+void SetGroup(){
+	
+	int len = sizeof(m_Group_dest.m_queue["manager"].secgroups);
+
+	for (int i = 0; i < len;i++){
+		m_Group_dest.m_queue["manager"].secgroups[i].;
+	}
+}
 
 
 int main(int argc, char *argv[]){
@@ -547,17 +580,17 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 
-	if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src)){
-		cout << "if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src))" << endl;
-		return 0;
-	}
+	//if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src)){
+	//	cout << "if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src))" << endl;
+	//	return 0;
+	//}
 
-	if (!StaticSymbolConfigInfo(m_ExtManager_dest, m_Symbol_dest)){
+	if (!StaticGroupConfigInfo(m_ExtManager_dest, m_Group_dest)){
 		cout << "if (!StaticSymbolConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
 		return 0;
 	}
 
-	Compare();
+	//Compare();
 
 
 	cout <<"suc!" <<endl;
