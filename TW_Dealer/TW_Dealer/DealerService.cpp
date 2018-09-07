@@ -569,8 +569,8 @@ bool DealerService::CaculateMargin(const TradeRecord &record){
 	}
 	//get config info about the symbol
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "info.type:" << info.type);
-
-	if (info.type == CFD){
+	//The "UK" need special caculation modify add by wzp 2018-09-07
+	if (info.type == CFD || (string::npos != strGrp.find("UK") && (info.type == ENERGY || info.type == METAL))){
 		margin = (record.volume * 0.01) * info.contract_size * record.open_price / 100.00 * (100.00 / info.margin_divider) / 100.00;
 	} else if (info.type == ENERGY || info.type == METAL){
 		margin = (record.volume * 0.01) * info.margin_initial * (100.00 / info.margin_divider) / 100.00;
