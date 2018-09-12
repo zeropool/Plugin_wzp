@@ -184,6 +184,7 @@ m_ExtDealer(NULL), m_ExtManagerPump(NULL), m_ExtManager(NULL), m_ExtManager_bak(
 	memset(&m_req, 0, sizeof(struct RequestInfo)); 
 	memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 	memset(m_pool, 0, sizeof(m_pool));
+	InitSymbolRegex();
 }
 
 //void DealerService::InitSymbolType(){
@@ -1812,11 +1813,100 @@ int DealerService::GetGroupType(const string group){
 	return B_BOOK;
 }
 
+//bool DealerService::JudgeSymbol(const string symbol){
+//	vector<string>::iterator ita;
+//	string tmp;
+//	bool InFlag = true,result = false;
+//	int index_start = 0, index_end = 0, index_ex = 0;
+//	int cnt = 0;
+//	for (ita = m_symbols.begin(); ita != m_symbols.end(); ita++){
+//		tmp = *ita;
+//		OutputDebugString(tmp.c_str());
+//		index_ex = tmp.find_first_of("!");
+//
+//		if (0 == index_ex){
+//			InFlag = false;
+//		}
+//
+//		index_start = tmp.find_first_of("*");
+//		index_end = tmp.find_last_of("*");
+////		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmp.find_first_of():" << index_start << " tmp.find_last_of():" << index_end);
+//		if (index_start < index_end){
+//			tmp = "[\\s\\S]" + tmp.substr(index_start, index_end - index_start) + "[\\s\\S]*";
+//		} else if (index_start == index_end){
+//			if (-1 == index_start){//no * symbol
+//
+//			} else if (index_start > 1){
+//				tmp = tmp.substr(0, index_end) + "[\\s\\S]*";
+//			} else {
+//				tmp = "[\\s\\S]" + tmp.substr(index_start, tmp.length());
+//			}
+//		}
+//
+//		//begin modify by wzp 2018-09-11
+//		if (!InFlag){
+//			if (0 == tmp.find_first_of("!") && tmp.length() >= 2){
+//				tmp = tmp.substr(index_ex+1, tmp.length());
+//			}
+//		}
+//
+//		//SymbolRegex sr{ InFlag, regex(tmp), tmp };
+//		//m_RegexArray.Add(cnt, sr);
+//		//end modify by wzp 2018-09-11
+//
+//	//	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "JudgeSymbol(req->trade.symbol):" << tmp);
+//		regex r(tmp);
+//
+//		if (std::regex_match(symbol, r)){
+//			OutputDebugString("I need to process the order");
+//			if (!InFlag){
+//				result = false;
+//			} else{
+//				result = true;
+//			}
+//
+//			return result;
+//		} else {
+//			InFlag = true;
+//			result = false;
+//		}
+//	}
+//
+//	return result;
+//}
+
 bool DealerService::JudgeSymbol(const string symbol){
+	bool result = false;
+	map<int, SymbolRegex>::iterator iter = m_RegexArray.m_queue.begin();
+
+	while (iter != m_RegexArray.m_queue.end()){
+		regex r(iter->second.rule);
+
+		if (std::regex_match(symbol, r)){
+			OutputDebugString("I need to process the order");
+			if (!iter->second.bReverse){
+				result = false;
+			} else{
+				result = true;
+			}
+
+			return result;
+		} else {
+			result = false;
+		}
+
+		iter++;
+	}
+
+	return result;
+}
+
+bool DealerService::InitSymbolRegex(){
 	vector<string>::iterator ita;
 	string tmp;
-	bool InFlag = true,result = false;
+	bool InFlag = true, result = false;
 	int index_start = 0, index_end = 0, index_ex = 0;
+	int cnt = 0;
 
 	for (ita = m_symbols.begin(); ita != m_symbols.end(); ita++){
 		tmp = *ita;
@@ -1829,7 +1919,7 @@ bool DealerService::JudgeSymbol(const string symbol){
 
 		index_start = tmp.find_first_of("*");
 		index_end = tmp.find_last_of("*");
-
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmp.find_first_of():" << index_start << " tmp.find_last_of():" << index_end);
 		if (index_start < index_end){
 			tmp = "[\\s\\S]" + tmp.substr(index_start, index_end - index_start) + "[\\s\\S]*";
 		} else if (index_start == index_end){
@@ -1837,26 +1927,26 @@ bool DealerService::JudgeSymbol(const string symbol){
 
 			} else if (index_start > 1){
 				tmp = tmp.substr(0, index_end) + "[\\s\\S]*";
-			} else if (InFlag) {
+			} else {
 				tmp = "[\\s\\S]" + tmp.substr(index_start, tmp.length());
 			}
 		}
 
+		//begin modify by wzp 2018-09-11
 		if (!InFlag){
-			tmp = "!" + tmp;
+			if (0 == tmp.find_first_of("!") && tmp.length() >= 2){
+				tmp = tmp.substr(index_ex + 1, tmp.length());
+			}
 		}
 
-		regex r(tmp);
-
-		if (std::regex_match(symbol, r)){
-			OutputDebugString("I need to process the order");
-			result = true;
-			return result;
-		}
+		m_RegexArray.Add(cnt, SymbolRegex{ InFlag, tmp });
+		InFlag = true;
+		cnt++;
 	}
 
-	return result;
+	return true;
 }
+
 static int gettimeofday(struct timeval* tv)
 {
 	union {

@@ -68,6 +68,13 @@ struct SymbolConfigInfo{
 	string type;
 };
 
+//add by wzp 2018-09-11
+struct SymbolRegex{
+	bool   bReverse;
+//	regex  re;
+	string rule;
+};
+
 //add by wzp 2018-08-01
 struct GroupConfigInfo{
 	string		 currency;
@@ -139,9 +146,10 @@ private:
 	static map<string, string>		     m_config;
 	MutexMap<string, SymbolsValue>	     m_Symbols;
 	MutexMap<int, OrderValue>			 m_Orders;
-	MutexMap<string, int>			 m_SplitOrders;
+	MutexMap<string, int>				 m_SplitOrders;
 	MutexMap<string, SymbolConfigInfo>   m_SymbolConfigInfo;
 	MutexMap<string, GroupConfigInfo>	 m_GroupConfigInfo;
+	MutexMap<int, SymbolRegex>			 m_RegexArray; //add by wzp 2018-9-11
 	//lock 
 	mutex							m_Dealer_mutex;
 	mutex							m_ExtManager_mutex;
@@ -213,6 +221,7 @@ private:
 	//get symbol info
 	bool GetSiInfo(const string &symbol, SymbolInfo &si);
 	bool JudgeSymbol(const string symbol);
+	bool InitSymbolRegex();
 	//get Margin info
 	string GetMarginInfo(const TradeRecord &record, const string &group);
 	string  GetUserGroup(const int login);
