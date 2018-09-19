@@ -755,7 +755,7 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 			if (m_TradeRecord[i].activation == ACTIVATION_PENDING ){
 				send_flag = CaculateMargin(m_TradeRecord[i]);
 				if (send_flag){
-					TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_ACTIVATE, "D_PE");
+					TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_ACTIVATE, D_PE);
 				} else{//pending order cancel process. add by wzp 2018-08-13
 					PumpSendDataToMT4(m_TradeRecord[i]);
 				}
@@ -763,13 +763,13 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 			} else if (m_TradeRecord[i].activation == ACTIVATION_SL){
 				send_flag = true;
 			//	DealerLog::GetInstance()->LogInfo("ACTIVATION_SL");
-				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, "D_SL");
+				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, D_SL);
 			} else if (m_TradeRecord[i].activation == ACTIVATION_TP ){
 				send_flag = true;
-				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, "D_TP");
+				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, D_TP);
 			} else if (m_TradeRecord[i].activation == ACTIVATION_STOPOUT){
 				send_flag = true;
-				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, "D_SO");
+				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, D_SO);
 			} else{
 				send_flag = false;
 				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "send_flag = false");
@@ -837,7 +837,7 @@ bool DealerService::PumpProcessManagerOrder(const TradeRecord * trade, dealer::R
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "timestamp cap >= 3 order of manager or manager api beyond 3 seconds");
 	}
 	//8.judge the sl tp and so close operate don't process the order.
-	if ((NULL != strstr(trade->comment, "D_SL") ||NULL != strstr(trade->comment, "D_TP") ||
+	if ((NULL != strstr(trade->comment, D_SL) ||NULL != strstr(trade->comment, D_TP) ||
 		NULL != strstr(trade->comment, "so:")) && (type == TRANS_DELETE)){
 		OutputDebugString("INFO:PumpProcessManagerOrder a sl or tp or so order from manager ");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "INFO:PumpProcessManagerOrder a sl or tp or so order from manager.type:" <<
@@ -1178,15 +1178,15 @@ bool DealerService::SendDataToMT4(const dealer::resp_msg &ret)
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "BEGIN:SendDataToMT4-----------------:" << ret.info().id());
 	OutputDebugString("INFO:BEGIN:SendDataToMT4-------------");
 	//manager order dont need reply to mt4.//here need note some 
-	if (string::npos != ret.info().trade().comment().find("MANAGER")){
+	if (string::npos != ret.info().trade().comment().find(MANAGER)){
 		OutputDebugString("SendDataToMT4 find manager response");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:SendDataToMT4 this is manager open order:" << ret.info().id() << " bridge price:" << ret.info().trade().price());
 		return true;
 	}
 
-	if (string::npos != ret.info().trade().comment().find("D_PE") ||
-		string::npos != ret.info().trade().comment().find("D_SL") ||
-		string::npos != ret.info().trade().comment().find("D_TP") ||
+	if (string::npos != ret.info().trade().comment().find(D_PE) ||
+		string::npos != ret.info().trade().comment().find(D_SL) ||
+		string::npos != ret.info().trade().comment().find(D_TP) ||
 		string::npos != ret.info().trade().comment().find("so:")){
 		
 		if (!PumpSendDataToMT4(ret)){
@@ -1694,32 +1694,33 @@ bool DealerService::TransferRecordToProto(const TradeRecord &record, dealer::Req
 	msg->mutable_trade()->set_symbol(record.symbol);
 	msg->mutable_trade()->set_volume(record.volume);
 	//---begin---open price need send to bridge----add by wzp----2018-05-08
-	if (record.activation == ACTIVATION_PENDING || (TT_BR_ORDER_OPEN == type && "MANAGER" == comment)){
+	if (record.activation == ACTIVATION_PENDING || (TT_BR_ORDER_OPEN == type && MANAGER == comment)){
 		msg->set_time(record.open_time);
 		msg->mutable_trade()->set_price(record.open_price);
 	}
 	//---end---open price need send to bridge----add by wzp----2018-05-08
 	if (record.activation == ACTIVATION_PENDING || 
 		record.activation == ACTIVATION_STOPOUT || 
-		record.activation == ACTIVATION_SL || "MANAGER" == comment){
+		record.activation == ACTIVATION_SL || MANAGER == comment){
 		msg->mutable_trade()->set_sl(record.sl);
 	}
 
 	if (record.activation == ACTIVATION_PENDING || 
 		record.activation == ACTIVATION_STOPOUT || 
-		record.activation == ACTIVATION_TP || "MANAGER" == comment){
+		record.activation == ACTIVATION_TP || MANAGER == comment){
 		msg->mutable_trade()->set_tp(record.tp);
 	}
 
 	if (record.activation == ACTIVATION_SL || 
 		record.activation == ACTIVATION_TP || 
 		record.activation == ACTIVATION_STOPOUT ||
-		(TT_BR_ORDER_CLOSE == type && "MANAGER" == comment)){
+		(TT_BR_ORDER_CLOSE == type && MANAGER == comment)){
 		msg->set_time(record.timestamp);
 		msg->mutable_trade()->set_price(record.close_price);
 	}
 
 	string tmp = record.comment;
+	//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "record.comment:" << record.comment);
 	//i need apend the comment info to comment tail.
 	//begin------stop out comment added------ by wzp 2018-06-27
 	if (record.activation == ACTIVATION_STOPOUT){

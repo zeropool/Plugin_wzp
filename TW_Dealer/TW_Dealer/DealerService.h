@@ -17,6 +17,12 @@ using namespace std;
 #define RESET 3
 #define A_BOOK  1
 #define B_BOOK	2
+//add by wzp 2018-09-19
+#define D_PE "[pe]"
+#define D_TP "[tp]"
+#define D_SL "[sl]"
+#define D_SO "[so]"
+#define MANAGER "MANAGER"
 
 #define FX		"FX"
 #define METAL	"METAL"
