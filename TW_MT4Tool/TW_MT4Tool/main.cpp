@@ -57,6 +57,7 @@ MutexMap<string, ConSymbol>		m_Symbol_dest;
 
 MutexMap<string, ConGroup>		m_Group_src;
 MutexMap<string, ConGroup>		m_Group_dest;
+MutexMap<int, ConSymbolGroup>   m_SymbolGroup_src;
 
 //CManagerInterface				*m_ExtManager;
 
@@ -73,7 +74,7 @@ string GetProgramDir()
 bool LoadConfig(){
 	m_path = GetProgramDir();
 
-	if (!ReadConfig(m_path + "/" + "Dealer.cfg", m_config)){
+	if (!ReadConfig(m_path + "/" + "tool.cfg", m_config)){
 		cout << "if (!ReadConfig" << std::endl;
 		return false;
 	}
@@ -186,6 +187,7 @@ bool CreateMT4Link(){
 	return true;
 }
 
+//process the symbol info.
 bool StaticSymbolConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, ConSymbol>		&Con){
 	int cnt = 0;
 	ConSymbol *m_ConSymbol = m_ExtManager->CfgRequestSymbol(&cnt);
@@ -204,27 +206,6 @@ bool StaticSymbolConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, Co
 
 	m_ExtManager->MemFree(m_ConSymbol);
 	m_ConSymbol = NULL;
-	return true;
-}
-
-bool StaticGroupConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, ConGroup>		&Con){
-	int cnt = 0;
-	ConGroup *m_ConGroup = m_ExtManager->CfgRequestGroup(&cnt);
-
-	if (m_ConGroup == NULL){
-		cout << "if (m_ConSymbol == NULL)" << endl;
-		return false;
-	}
-
-	for (int i = 0; i < cnt; i++){
-		ConGroup tmpSymbolConfig{};
-		memcpy(&tmpSymbolConfig, &m_ConGroup[i], sizeof(tmpSymbolConfig));
-		cout << m_ConGroup[i].group << endl;
-		Con.Add(m_ConGroup[i].group, tmpSymbolConfig);
-	}
-
-	m_ExtManager->MemFree(m_ConGroup);
-	m_ConGroup = NULL;
 	return true;
 }
 
@@ -559,15 +540,77 @@ void Compare(){
 	}
 }
 
-void SetGroup(){
-	
-	int len = sizeof(m_Group_dest.m_queue["manager"].secgroups);
 
-	for (int i = 0; i < len;i++){
-		m_Group_dest.m_queue["manager"].secgroups[i].;
-	}
+
+
+//group  setting process 
+void __stdcall OnPumpingFunc(int code, int type, void *data, void *param){
+
 }
 
+bool SwitchMode(CManagerInterface *m_ExtManager){
+	char tmp[256];
+	int res = m_ExtManager->PumpingSwitchEx(OnPumpingFunc, 0, NULL);
+
+	if (RET_OK != res){
+		sprintf(tmp, "ERR:PumpingSwitch error ERRCODE:%", m_ExtManager->ErrorDescription(res));
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "PumpingSwitch error ERRCODE:" << m_ExtManager->ErrorDescription(res));
+		OutputDebugString(tmp);
+		return false;
+	}
+
+	return true;
+}
+
+bool StaticGroupConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, ConGroup> &Con){
+	int cnt = 0;
+	ConGroup *m_ConGroup = m_ExtManager->CfgRequestGroup(&cnt);
+
+	if (m_ConGroup == NULL){
+		cout << "if (m_ConSymbol == NULL)" << endl;
+		return false;
+	}
+
+	for (int i = 0; i < cnt; i++){
+		ConGroup tmpSymbolConfig{};
+		memcpy(&tmpSymbolConfig, &m_ConGroup[i], sizeof(tmpSymbolConfig));
+		cout << m_ConGroup[i].group << endl;
+		Con.Add(m_ConGroup[i].group, tmpSymbolConfig);
+	}
+
+	m_ExtManager->MemFree(m_ConGroup);
+	m_ConGroup = NULL;
+	return true;
+}
+
+bool StaticSymbolGroupConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<int, ConSymbolGroup> &Con){
+	ConSymbolGroup *symbolGrp = NULL;
+	int ret = m_ExtManager->SymbolsGroupsGet(symbolGrp);
+
+	if (symbolGrp == NULL){
+		cout << "if (m_ConSymbol == NULL)" << endl;
+		return false;
+	}
+
+	for (int i = 0; i < (symbolGrp); i++){
+		ConSymbolGroup tmpSymbolConfig{};
+		memcpy(&tmpSymbolConfig, &symbolGrp[i], sizeof(tmpSymbolConfig));
+		cout <<"i:"<<i<< symbolGrp[i].name << endl;
+		Con.Add(i, tmpSymbolConfig);
+	}
+
+	m_ExtManager->MemFree(symbolGrp);
+	symbolGrp = NULL;
+	return true;
+}
+void SetGroup(){
+	
+	//int len = sizeof(m_Group_dest.m_queue["manager"].secgroups);
+
+	//for (int i = 0; i < len;i++){
+	//	m_Group_dest.m_queue["manager"].secgroups[i].;
+	//}
+}
 
 int main(int argc, char *argv[]){
 	if (!LoadConfig()){
@@ -579,14 +622,24 @@ int main(int argc, char *argv[]){
 		cout << "if (!CreateMT4Link()){" << endl;
 		return 0;
 	}
+	//pump mode switch.
+	if (!SwitchMode(m_ExtManager_dest)){
+		cout << "if (!SwitchMode(m_ExtManager_src)){" << endl;
+		return 0;
+	}
 
 	//if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src)){
 	//	cout << "if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src))" << endl;
 	//	return 0;
 	//}
 
-	if (!StaticGroupConfigInfo(m_ExtManager_dest, m_Group_dest)){
+	if (!StaticGroupConfigInfo(m_ExtManager_src, m_Group_src)){
 		cout << "if (!StaticSymbolConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
+		return 0;
+	}
+
+	if (!StaticSymbolGroupConfigInfo(m_ExtManager_dest, m_SymbolGroup_src)){
+		cout << "if (!StaticSymbolGroupConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
 		return 0;
 	}
 
