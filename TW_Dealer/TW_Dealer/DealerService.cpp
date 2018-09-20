@@ -178,13 +178,17 @@ DealerService::DealerService(const string &lib_path, const string abook, const s
 m_ExtDealer(NULL), m_ExtManagerPump(NULL), m_ExtManager(NULL), m_ExtManager_bak(NULL), m_TradeRecord(NULL),
 	m_context(1), m_socket(m_context, ZMQ_DEALER)
 {
-	m_abook = split(abook, ";");
-	m_bbook = split(bbook, ";");
-	m_symbols = split(symbols, ";");
+	vector<string> m_abook = split(abook, ";");
+	vector<string> m_bbook = split(bbook, ";");
+	vector<string> m_symbols = split(symbols, ";");
+
 	memset(&m_req, 0, sizeof(struct RequestInfo)); 
 	memset(&m_req_recv, 0, sizeof(struct RequestInfo));
 	memset(m_pool, 0, sizeof(m_pool));
-	InitSymbolRegex();
+
+	InitRegex(m_symbols, m_SRegexArray);
+	InitRegex(m_abook, m_ARegexArray);
+	InitRegex(m_bbook, m_BRegexArray);
 }
 
 //void DealerService::InitSymbolType(){
@@ -1790,26 +1794,37 @@ bool  DealerService::TransferMsgToProto(dealer::RequestInfo *msg)
 
 int DealerService::GetGroupType(const string group){
 	//int flag = 0;
-	vector<string>::iterator ita;
-	string tmp;
-
-	for (ita = m_abook.begin(); ita != m_abook.end(); ita++){
-		tmp = *ita;
-		OutputDebugString(tmp.c_str());
-		if (string::npos != group.find(*ita)){
-			OutputDebugString("abook");
-			return A_BOOK;
-		}
+	if (JudgeRegex(m_ARegexArray, group)){
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Abook" << group);
+		return A_BOOK;
 	}
 
-	for (ita = m_bbook.begin(); ita != m_bbook.end(); ita++){
-		tmp = *ita;
-		OutputDebugString(tmp.c_str());
-		if (string::npos != group.find(*ita)){
-			OutputDebugString("bbook");
-			return B_BOOK;
-		}
+	if (JudgeRegex(m_BRegexArray, group)){
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Bbook" << group);
+		return B_BOOK;
 	}
+
+
+	//vector<string>::iterator ita;
+	//string tmp;
+
+	//for (ita = m_abook.begin(); ita != m_abook.end(); ita++){
+	//	tmp = *ita;
+	//	OutputDebugString(tmp.c_str());
+	//	if (string::npos != group.find(*ita)){
+	//		OutputDebugString("abook");
+	//		return A_BOOK;
+	//	}
+	//}
+
+	//for (ita = m_bbook.begin(); ita != m_bbook.end(); ita++){
+	//	tmp = *ita;
+	//	OutputDebugString(tmp.c_str());
+	//	if (string::npos != group.find(*ita)){
+	//		OutputDebugString("bbook");
+	//		return B_BOOK;
+	//	}
+	//}
 
 	return B_BOOK;
 }
@@ -1875,15 +1890,14 @@ int DealerService::GetGroupType(const string group){
 //
 //	return result;
 //}
-
-bool DealerService::JudgeSymbol(const string symbol){
+bool DealerService::JudgeRegex( MutexMap<int, SymbolGroupRegex> &regexArray, const string &info){
 	bool result = false;
-	map<int, SymbolRegex>::iterator iter = m_RegexArray.m_queue.begin();
+	map<int, SymbolGroupRegex>::iterator iter = regexArray.m_queue.begin();
 
-	while (iter != m_RegexArray.m_queue.end()){
+	while (iter != regexArray.m_queue.end()){
 		regex r(iter->second.rule);
 
-		if (std::regex_match(symbol, r)){
+		if (std::regex_match(info, r)){
 			OutputDebugString("I need to process the order");
 			if (!iter->second.bReverse){
 				result = false;
@@ -1902,14 +1916,41 @@ bool DealerService::JudgeSymbol(const string symbol){
 	return result;
 }
 
-bool DealerService::InitSymbolRegex(){
+bool DealerService::JudgeSymbol(const string symbol){
+	return  JudgeRegex(m_SRegexArray, symbol);
+	//bool result = false;
+	//map<int, SymbolGroupRegex>::iterator iter = m_SRegexArray.m_queue.begin();
+
+	//while (iter != m_SRegexArray.m_queue.end()){
+	//	regex r(iter->second.rule);
+
+	//	if (std::regex_match(symbol, r)){
+	//		OutputDebugString("I need to process the order");
+	//		if (!iter->second.bReverse){
+	//			result = false;
+	//		} else{
+	//			result = true;
+	//		}
+
+	//		return result;
+	//	} else {
+	//		result = false;
+	//	}
+
+	//	iter++;
+	//}
+
+	//return result;
+}
+
+bool DealerService::InitRegex(vector<string> &argVector, MutexMap<int, SymbolGroupRegex> &regexArray){
 	vector<string>::iterator ita;
 	string tmp;
 	bool InFlag = true, result = false;
 	int index_start = 0, index_end = 0, index_ex = 0;
 	int cnt = 0;
 
-	for (ita = m_symbols.begin(); ita != m_symbols.end(); ita++){
+	for (ita = argVector.begin(); ita != argVector.end(); ita++){
 		tmp = *ita;
 		OutputDebugString(tmp.c_str());
 		index_ex = tmp.find_first_of("!");
@@ -1940,7 +1981,7 @@ bool DealerService::InitSymbolRegex(){
 			}
 		}
 
-		m_RegexArray.Add(cnt, SymbolRegex{ InFlag, tmp });
+		regexArray.Add(cnt, SymbolGroupRegex{ InFlag, tmp });
 		InFlag = true;
 		cnt++;
 	}

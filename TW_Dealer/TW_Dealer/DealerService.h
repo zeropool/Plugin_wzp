@@ -75,7 +75,7 @@ struct SymbolConfigInfo{
 };
 
 //add by wzp 2018-09-11
-struct SymbolRegex{
+struct SymbolGroupRegex{
 	bool   bReverse;
 //	regex  re;
 	string rule;
@@ -138,9 +138,9 @@ private:
 	RequestInfo						m_req_recv;
 	TradeRecord						*m_TradeRecord;
 
-	vector<string>					m_abook;
-	vector<string>					m_bbook;
-	vector<string>					m_symbols;
+	//vector<string>					m_abook;
+	//vector<string>					m_bbook;
+	//vector<string>					m_symbols;
 	
 	//Bridge relationship info
 	zmq::context_t					m_context;
@@ -151,11 +151,15 @@ private:
 	static string					     m_path;
 	static map<string, string>		     m_config;
 	MutexMap<string, SymbolsValue>	     m_Symbols;
+
 	MutexMap<int, OrderValue>			 m_Orders;
 	MutexMap<string, int>				 m_SplitOrders;
 	MutexMap<string, SymbolConfigInfo>   m_SymbolConfigInfo;
 	MutexMap<string, GroupConfigInfo>	 m_GroupConfigInfo;
-	MutexMap<int, SymbolRegex>			 m_RegexArray; //add by wzp 2018-9-11
+
+	MutexMap<int, SymbolGroupRegex>		 m_SRegexArray; //add by wzp 2018-9-11
+	MutexMap<int, SymbolGroupRegex>		 m_ARegexArray; //add by wzp 2018-9-19
+	MutexMap<int, SymbolGroupRegex>		 m_BRegexArray; //add by wzp 2018-9-19
 	//lock 
 	mutex							m_Dealer_mutex;
 	mutex							m_ExtManager_mutex;
@@ -223,11 +227,12 @@ private:
 	bool PumpSendDataToMT4(const TradeRecord &record);
 	void InitSymbolType();
 	bool FilterSplitOrder(const dealer::resp_msg *msg);
+	bool JudgeRegex(MutexMap<int, SymbolGroupRegex> &regexArray,const string &info);
 	int GetGroupType(const string group);
+	bool JudgeSymbol(const string symbol);
 	//get symbol info
 	bool GetSiInfo(const string &symbol, SymbolInfo &si);
-	bool JudgeSymbol(const string symbol);
-	bool InitSymbolRegex();
+	bool InitRegex(vector<string> &argVector, MutexMap<int, SymbolGroupRegex> &regexArray);
 	//get Margin info
 	string GetMarginInfo(const TradeRecord &record, const string &group);
 	string  GetUserGroup(const int login);
