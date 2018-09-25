@@ -58,6 +58,7 @@ MutexMap<string, ConSymbol>		m_Symbol_dest;
 MutexMap<string, ConGroup>		m_Group_src;
 MutexMap<string, ConGroup>		m_Group_dest;
 MutexMap<int, ConSymbolGroup>   m_SymbolGroup_src;
+vector<string>					m_groups;
 
 //CManagerInterface				*m_ExtManager;
 
@@ -71,6 +72,24 @@ string GetProgramDir()
 	return strPath.substr(0, pos);  // Return the directory without the file name 
 }
 
+vector<string> split(string str, string pattern)
+{
+	vector<string> ret;
+	if (pattern.empty()) return ret;
+	size_t start = 0, index = str.find_first_of(pattern, 0);
+	while (index != str.npos)
+	{
+		if (start != index)
+			ret.push_back(str.substr(start, index - start));
+		start = index + 1;
+		index = str.find_first_of(pattern, start);
+	}
+
+	if (!str.substr(start).empty())
+		ret.push_back(str.substr(start));
+	return ret;
+}
+
 bool LoadConfig(){
 	m_path = GetProgramDir();
 
@@ -82,6 +101,8 @@ bool LoadConfig(){
 	PrintConfig(m_config);
 	string tmp = m_path + "/" + m_config["log_file"];
 	DealerLog::GetInstance(tmp + ".log");
+	m_groups = split(m_config["groups"], ";");
+
 
 	return true;
 }
@@ -584,32 +605,52 @@ bool StaticGroupConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, Con
 }
 
 bool StaticSymbolGroupConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<int, ConSymbolGroup> &Con){
-	ConSymbolGroup *symbolGrp = NULL;
-	int ret = m_ExtManager->SymbolsGroupsGet(symbolGrp);
+	ConSymbolGroup symbolGrp[MAX_SEC_GROUPS] = {0};
+	int ret = m_ExtManager->CfgRequestSymbolGroup(symbolGrp);
 
 	if (symbolGrp == NULL){
 		cout << "if (m_ConSymbol == NULL)" << endl;
 		return false;
 	}
 
-	for (int i = 0; i < (symbolGrp); i++){
+	for (int i = 0; i < MAX_SEC_GROUPS; i++){
 		ConSymbolGroup tmpSymbolConfig{};
 		memcpy(&tmpSymbolConfig, &symbolGrp[i], sizeof(tmpSymbolConfig));
 		cout <<"i:"<<i<< symbolGrp[i].name << endl;
 		Con.Add(i, tmpSymbolConfig);
 	}
 
-	m_ExtManager->MemFree(symbolGrp);
-	symbolGrp = NULL;
+	//m_ExtManager->MemFree(symbolGrp);
+	//symbolGrp = NULL;
 	return true;
 }
-void SetGroup(){
-	
-	//int len = sizeof(m_Group_dest.m_queue["manager"].secgroups);
+void SetGroup(CManagerInterface	*m_ExtManager){
+	//conTmpConGroup conTmp{};
+	vector<string>::iterator iter = m_groups.begin();
 
-	//for (int i = 0; i < len;i++){
-	//	m_Group_dest.m_queue["manager"].secgroups[i].;
-	//}
+	while (iter != m_groups.end()){
+		cout << *iter << endl;
+		ConGroup conTmp{};
+		m_Group_src.Get(*iter, conTmp);
+	//	conTmp.secgroups[]
+
+		for (int i = 0; i < MAX_SEC_GROUPS; i++){
+			ConSymbolGroup sy{};
+			m_SymbolGroup_src.Get(i, sy); 
+
+			if (conTmp.secgroups[i].execution != EXECUTION_MANUAL || !conTmp.secgroups[i].show || !conTmp.secgroups[i].trade){
+				//cout << sy.name << ":" << conTmp.secgroups[i].spread_diff << endl;
+				continue;
+			} else{
+				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, conTmp.group<<":"<<sy.name);
+				conTmp.secgroups[i].execution = EXECUTION_AUTO;
+				cout << conTmp.group << ":" << sy.name << endl;
+			}
+		}
+
+		m_ExtManager->CfgUpdateGroup(&conTmp);
+		iter++;
+	}
 }
 
 int main(int argc, char *argv[]){
@@ -622,31 +663,28 @@ int main(int argc, char *argv[]){
 		cout << "if (!CreateMT4Link()){" << endl;
 		return 0;
 	}
-	//pump mode switch.
-	if (!SwitchMode(m_ExtManager_dest)){
-		cout << "if (!SwitchMode(m_ExtManager_src)){" << endl;
-		return 0;
-	}
 
 	//if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src)){
 	//	cout << "if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src))" << endl;
 	//	return 0;
 	//}
 
+	//Compare();
+
 	if (!StaticGroupConfigInfo(m_ExtManager_src, m_Group_src)){
 		cout << "if (!StaticSymbolConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
 		return 0;
 	}
 
-	if (!StaticSymbolGroupConfigInfo(m_ExtManager_dest, m_SymbolGroup_src)){
+	if (!StaticSymbolGroupConfigInfo(m_ExtManager_src, m_SymbolGroup_src)){
 		cout << "if (!StaticSymbolGroupConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
 		return 0;
 	}
 
-	//Compare();
 
-
+	SetGroup(m_ExtManager_src);
 	cout <<"suc!" <<endl;
 	//system("pause");
+	exit(0);
 	return 0;
 }
