@@ -1107,7 +1107,8 @@ void DealerService::DeleteOrderRecord(){
 		time_t nTmp = GetUtcCaressing() - iter->second.timestrap;
 		sprintf(tmp, "diff:%lld", nTmp);
 		OutputDebugString(tmp);
-		if (nTmp >= 2000000 && 2 == iter->second.status){
+		if ((nTmp >= TIME_GAP && 2 == iter->second.status) || (nTmp >= TIME_GAP*5)){ //add by wzp 2018-10-11 if the order continue to be failed and the time gap greater than  TIME_GAP*10,
+			//need to delete this order.
 			st.push(iter->first);
 			//m_Orders.m_queue.erase(iter->first);
 			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord!");
@@ -1305,14 +1306,16 @@ bool DealerService::PumpSendDataToMT4(const dealer::resp_msg &ret){
 	OutputDebugString("INFO:BEGIN:PumpSendDataToMT4-------------");
 	TradeTransInfo info{};
 
-	if (ret.ret_type() == REJECT){
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ERR:this order:" << ret.info().trade().order() << " be rejected by bridge reject reason:" << ret.comment().c_str());
-		return false;
-	}
-
 	if (!TransferProtoToTrade(&info, ret)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "No End TransferProtoToTrade PumpSendDataToMT4-----------------order_id:" << ret.info().trade().order());
 		OutputDebugString("ERR:No End TransferProtoToTrade PumpSendDataToMT4-------------");
+	//	ModifyOrderRecord(info.order, 1);
+		return false;
+	}
+
+	if (ret.ret_type() == REJECT){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ERR:this order:" << ret.info().trade().order() << " be rejected by bridge reject reason:" << ret.comment().c_str());
+		ModifyOrderRecord(info.order, 1);//add by wzp 2018-10-11 If Bridge Reject need modify the order status for "1" .
 		return false;
 	}
 
