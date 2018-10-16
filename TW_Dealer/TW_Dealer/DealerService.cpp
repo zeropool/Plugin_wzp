@@ -1107,7 +1107,7 @@ void DealerService::DeleteOrderRecord(){
 		time_t nTmp = GetUtcCaressing() - iter->second.timestrap;
 		sprintf(tmp, "diff:%lld", nTmp);
 		OutputDebugString(tmp);
-		if ((nTmp >= TIME_GAP && 2 == iter->second.status) || (nTmp >= TIME_GAP*5)){ //add by wzp 2018-10-11 if the order continue to be failed and the time gap greater than  TIME_GAP*10,
+		if (nTmp >= TIME_GAP && 2 == iter->second.status){ //add by wzp 2018-10-16 delete the modify
 			//need to delete this order.
 			st.push(iter->first);
 			//m_Orders.m_queue.erase(iter->first);
@@ -1315,7 +1315,7 @@ bool DealerService::PumpSendDataToMT4(const dealer::resp_msg &ret){
 
 	if (ret.ret_type() == REJECT){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "ERR:this order:" << ret.info().trade().order() << " be rejected by bridge reject reason:" << ret.comment().c_str());
-		ModifyOrderRecord(info.order, 1);//add by wzp 2018-10-11 If Bridge Reject need modify the order status for "1" .
+		//ModifyOrderRecord(info.order, 2);//add by wzp 2018-10-11 If Bridge Reject need modify the order status for "1" .
 		return false;
 	}
 
