@@ -5,6 +5,15 @@
 
 using namespace std;
 
+struct Gap{
+	short open_hour, open_min;
+	short close_hour, close_min;
+};
+
+struct Session{
+	Gap gap[7][3];
+};
+
 template <class K, class V> struct MutexMap{
 	map<K, V> m_queue;
 //	mutex m_mutex;
@@ -60,10 +69,10 @@ MutexMap<string, ConGroup>		m_Group_dest;
 MutexMap<int, ConSymbolGroup>   m_SymbolGroup_src;
 vector<string>					m_groups;
 
-//CManagerInterface				*m_ExtManager;
+map<string, Session>			m_Session;
+vector<string>					m_Symbols;
 
-string GetProgramDir()
-{
+string GetProgramDir(){
 	TCHAR exeFullPath[MAX_PATH]; // Full path  
 	GetModuleFileName(NULL, exeFullPath, MAX_PATH);
 	string strPath = __TEXT("");
@@ -90,6 +99,175 @@ vector<string> split(string str, string pattern)
 	return ret;
 }
 
+bool AnalysisSession(){
+	vector<string>::iterator iter = m_Symbols.begin();
+
+	while (iter != m_Symbols.end()){
+		Session ss_tmp{};
+		vector<string> vcDiffDay = split(m_config[*iter], "#");
+		vector<string>::iterator vc_iter_DiffDay = vcDiffDay.begin();
+
+		while (vc_iter_DiffDay != vcDiffDay.end()){
+			vector<string> vcInfo = split(m_config[*iter], "%");
+			vector<string> vcDay = split(vcInfo[1], ",");
+			vector<string>::iterator vc_iter_Day = vcDay.begin();
+			int nInt = 0;
+
+			while (vc_iter_Day != vcDay.end()){
+				nInt = atoi(((string)*vc_iter_Day).c_str()) - 1;
+				//	ss_tmp.gap[nInt][] = 1;
+			}
+
+			vector<string> vcphase = split(vcInfo[0], ",");
+			vector<string>::iterator vc_iter_phase = vcphase.begin();
+
+			short arr[3][2][2] = { 0 };
+			int cnt = 0;
+
+			while (vc_iter_phase != vcphase.end()){
+				vector<string> vc_begin_end = split(*vc_iter_phase, "-");
+				vector<string>::iterator vc_iter_begin_end = vc_begin_end.begin();
+				int cnt1 = 0;
+
+				while (vc_iter_begin_end != vc_begin_end.end()){
+					vector<string> vc_hour_min = split(*vc_iter_begin_end, ":");
+					vector<string>::iterator vc_iter_hour_min = vc_hour_min.begin();
+					int cnt2 = 0;
+
+					while (vc_iter_hour_min != vc_hour_min.end()){
+						arr[cnt][cnt1][cnt2] = atoi(((string)*vc_iter_hour_min).c_str());
+						vc_iter_hour_min++;
+						cnt2++;
+					}
+
+					cnt1++;
+					vc_iter_begin_end++;
+				}
+
+				cnt++;
+				vc_iter_phase++;
+			}
+
+			for (int i = 0; i < 3; i++){
+				ss_tmp.gap[nInt][i].open_hour = arr[i][0][0];
+				ss_tmp.gap[nInt][i].open_min = arr[i][0][1];
+				ss_tmp.gap[nInt][i].close_hour = arr[i][1][0];
+				ss_tmp.gap[nInt][i].close_min = arr[i][1][1];
+			}
+
+			vc_iter_DiffDay++;
+		}
+
+		m_Session[*iter] = ss_tmp;
+		iter++;
+	}
+
+	return true;
+}
+
+void AnalysisDay(string data, const string &del, vector<int> &arr){
+	vector<string> vc = split(data, del);
+	vector<string>::iterator vc_iter = vc.begin();
+
+	while (vc_iter != vc.end()){
+		arr.push_back(atoi(((string)*vc_iter).c_str())-1);
+		vc_iter++;
+	}
+}
+
+void AnalysisTime(string data, const string &del, int index[3], short reslut[3][2][2]){
+	vector<string> vc = split(data, del);
+	vector<string>::iterator vc_iter = vc.begin();
+	int nIndex = 0;
+
+	while (vc_iter != vc.end()){
+		if ("," == del){
+			index[0] = nIndex;
+			AnalysisTime(*vc_iter, "-", index, reslut);
+		} else if ("-" == del){
+			index[1] = nIndex;
+			AnalysisTime(*vc_iter, ":", index, reslut);
+		} else if (":" == del){
+			index[2] = nIndex;
+			reslut[index[0]][index[1]][index[2]] = atoi(((string)*vc_iter).c_str());
+			//return;
+		}
+
+		nIndex++;
+		vc_iter++;
+	}
+}
+
+void AnalysisCirle(string data, const string &del, Session &reslut){
+	vector<string> vc = split(data, del);
+	vector<string>::iterator vc_iter = vc.begin();
+
+	while (vc_iter != vc.end()){
+		if ("$" == del){
+			AnalysisCirle(*vc_iter, "%", reslut);
+		} else if ("%" == del){
+			//	cout << "AnalysisCirle begin" << endl;
+				int index[3] = {0};
+				short arrr[3][2][2] = {0};
+				vector<int> vc_day;
+				AnalysisTime(*vc_iter, ",", index, arrr);
+				vc_iter++;
+				AnalysisDay(*vc_iter, ",", vc_day);
+				vector<int>::iterator n_iter = vc_day.begin();
+
+				while (n_iter != vc_day.end()){
+					cout << "while (n_iter != vc_day.end())" << endl;
+					for (int i = 0; i < 3;i++){
+					//	cout << i <<":"<< "arrr[i][0][0]" << arrr[i][0][0] << endl;
+						reslut.gap[*n_iter][i].open_hour = arrr[i][0][0];
+					//	cout << i << ":"<< "arrr[i][0][1]" << arrr[i][0][1] << endl;
+						reslut.gap[*n_iter][i].open_min = arrr[i][0][1];
+					//	cout << i << ":" << "arrr[i][1][0]" << arrr[i][1][0] << endl;
+						reslut.gap[*n_iter][i].close_hour = arrr[i][1][0];
+					//	cout << i << ":" << "arrr[i][1][1]" << arrr[i][1][1] << endl;
+						reslut.gap[*n_iter][i].close_min = arrr[i][1][1];
+					}
+
+					n_iter++;
+				}
+		}
+
+		vc_iter++;
+	}
+}
+
+
+
+
+
+void AnalysisSessionTime(map<string, Session> &session,  vector<string> &m_Symbols){
+	vector<string>::iterator iter = m_Symbols.begin();
+
+	while (iter != m_Symbols.end()){
+		Session ss_tmp{};
+		AnalysisCirle(m_config[*iter], "$", ss_tmp);
+		session[*iter] = ss_tmp;
+		iter++;
+	}
+}
+
+
+
+void printInfo(){
+	map<string, Session>::iterator iter = m_Session.begin();
+
+	while (iter != m_Session.end()){
+		cout << "symbol:" << iter->first << " Session:" \
+			<< iter->second.gap[1][0].open_hour << ":" << iter->second.gap[1][0].open_min << "-" << iter->second.gap[1][0].close_hour << ":" << iter->second.gap[1][0].close_min \
+			<<" "<< iter->second.gap[1][1].open_hour << ":" << iter->second.gap[1][1].open_min << "-" << iter->second.gap[1][1].close_hour << ":" << iter->second.gap[1][1].close_min << endl;
+		cout << "symbol:" << iter->first << " Session:" \
+			<< iter->second.gap[5][0].open_hour << ":" << iter->second.gap[5][0].open_min << "-" << iter->second.gap[5][0].close_hour << ":" << iter->second.gap[5][0].close_min \
+			<< " " << iter->second.gap[5][1].open_hour << ":" << iter->second.gap[5][1].open_min << "-" << iter->second.gap[5][1].close_hour << ":" << iter->second.gap[5][1].close_min << endl;
+
+		iter++;
+	}
+}
+
 bool LoadConfig(){
 	m_path = GetProgramDir();
 
@@ -102,11 +280,13 @@ bool LoadConfig(){
 	string tmp = m_path + "/" + m_config["log_file"];
 	DealerLog::GetInstance(tmp + ".log");
 	m_groups = split(m_config["groups"], ";");
-
+	m_Symbols = split(m_config["Symbols"], ";");
+//	AnalysisSession();
+	AnalysisSessionTime(m_Session, m_Symbols);
+	printInfo();
 
 	return true;
 }
-
 
 bool CreateMT4LinkInterface(CManagerInterface ** m_interface, const string &server, const int &login, const string &passwd)
 {
@@ -209,7 +389,7 @@ bool CreateMT4Link(){
 }
 
 //process the symbol info.
-bool StaticSymbolConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, ConSymbol>		&Con){
+bool StaticSymbolConfigInfo(CManagerInterface *m_ExtManager, MutexMap<string, ConSymbol>	&Con){
 	int cnt = 0;
 	ConSymbol *m_ConSymbol = m_ExtManager->CfgRequestSymbol(&cnt);
 
@@ -230,7 +410,81 @@ bool StaticSymbolConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<string, Co
 	return true;
 }
 
-void update_config(CManagerInterface	*m_ExtManager, ConSymbol con_dest, ConSymbol con_src){
+bool SetSymbolsSession(CManagerInterface *m_ExtManager, MutexMap<string, ConSymbol>	&Con){
+	vector<string>::iterator iter = m_Symbols.begin();
+	
+
+	while (iter != m_Symbols.end()){
+		ConSymbol tmp{};
+		Con.Get(*iter, tmp);
+		
+		for (int i = 0; i < 7;i++){
+			for (int k = 0; k < 3;k++){
+				tmp.sessions[i].quote[k].open_hour = m_Session[*iter].gap[i][k].open_hour;
+				tmp.sessions[i].quote[k].open_min = m_Session[*iter].gap[i][k].open_min;
+				tmp.sessions[i].quote[k].close_hour = m_Session[*iter].gap[i][k].close_hour;
+				tmp.sessions[i].quote[k].close_min = m_Session[*iter].gap[i][k].close_min;
+
+				tmp.sessions[i].trade[k].open_hour = m_Session[*iter].gap[i][k].open_hour;
+				tmp.sessions[i].trade[k].open_min = m_Session[*iter].gap[i][k].open_min;
+				tmp.sessions[i].trade[k].close_hour = m_Session[*iter].gap[i][k].close_hour;
+				tmp.sessions[i].trade[k].close_min = m_Session[*iter].gap[i][k].close_min;
+			}
+		}
+
+		m_ExtManager->CfgUpdateSymbol(&tmp);
+		iter++;
+	}
+	
+//	m_ExtManager->CfgUpdateSymbol();
+	return true;
+}
+
+bool SetSymbolsSession2(CManagerInterface *m_ExtManager, MutexMap<string, ConSymbol>	&Con){
+	vector<string>::iterator iter = m_Symbols.begin();
+
+
+	while (iter != m_Symbols.end()){
+		ConSymbol tmp{};
+		map<string, ConSymbol>::iterator m_iter = Con.m_queue.begin();
+
+
+		while (m_iter != Con.m_queue.end()){
+			string Str_tmp = m_iter->first;
+			//Str_tmp.substr()
+			if (string::npos != Str_tmp.find(*iter)){
+				cout << "Str_tmp:" << Str_tmp << "*iter:" << *iter << endl;
+				memcpy(&tmp, &(ConSymbol)m_iter->second, sizeof(ConSymbol));
+
+				for (int i = 0; i < 7; i++){
+					for (int k = 0; k < 3; k++){
+						tmp.sessions[i].quote[k].open_hour = m_Session[*iter].gap[i][k].open_hour;
+						tmp.sessions[i].quote[k].open_min = m_Session[*iter].gap[i][k].open_min;
+						tmp.sessions[i].quote[k].close_hour = m_Session[*iter].gap[i][k].close_hour;
+						tmp.sessions[i].quote[k].close_min = m_Session[*iter].gap[i][k].close_min;
+
+						tmp.sessions[i].trade[k].open_hour = m_Session[*iter].gap[i][k].open_hour;
+						tmp.sessions[i].trade[k].open_min = m_Session[*iter].gap[i][k].open_min;
+						tmp.sessions[i].trade[k].close_hour = m_Session[*iter].gap[i][k].close_hour;
+						tmp.sessions[i].trade[k].close_min = m_Session[*iter].gap[i][k].close_min;
+					}
+				}
+
+				m_ExtManager->CfgUpdateSymbol(&tmp);
+			}
+
+			m_iter++;
+		}
+
+
+		iter++;
+	}
+
+	//	m_ExtManager->CfgUpdateSymbol();
+	return true;
+}
+
+void update_config(CManagerInterface *m_ExtManager, ConSymbol con_dest, ConSymbol con_src){
 	if (m_config["update_enable"] != "OK"){
 		cout << "not ok" << endl;
 		return;
@@ -561,9 +815,6 @@ void Compare(){
 	}
 }
 
-
-
-
 //group  setting process 
 void __stdcall OnPumpingFunc(int code, int type, void *data, void *param){
 
@@ -624,6 +875,7 @@ bool StaticSymbolGroupConfigInfo(CManagerInterface	*m_ExtManager, MutexMap<int, 
 	//symbolGrp = NULL;
 	return true;
 }
+
 void SetGroup(CManagerInterface	*m_ExtManager){
 	//conTmpConGroup conTmp{};
 	vector<string>::iterator iter = m_groups.begin();
@@ -655,7 +907,7 @@ void SetGroup(CManagerInterface	*m_ExtManager){
 
 int main(int argc, char *argv[]){
 	if (!LoadConfig()){
-		cout << "if (!LoadConfig()){"<< endl;
+		cout << "if (!LoadConfig()){" << endl;
 		//return 0;
 	}
 	//create mt4 link:Note good
@@ -664,27 +916,34 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 
-	//if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src)){
-	//	cout << "if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src))" << endl;
-	//	return 0;
-	//}
+	if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src)){
+		cout << "if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src))" << endl;
+		return 0;
+	}
 
 	//Compare();
 
-	if (!StaticGroupConfigInfo(m_ExtManager_src, m_Group_src)){
-		cout << "if (!StaticSymbolConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
-		return 0;
+	//if (!StaticGroupConfigInfo(m_ExtManager_src, m_Group_src)){
+	//	cout << "if (!StaticSymbolConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
+	//	return 0;
+	//}
+
+	//if (!StaticSymbolGroupConfigInfo(m_ExtManager_src, m_SymbolGroup_src)){
+	//	cout << "if (!StaticSymbolGroupConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
+	//	return 0;
+	//}
+
+
+	//SetGroup(m_ExtManager_src);
+	if (m_config["Enable"] == "YES"){
+		SetSymbolsSession2(m_ExtManager_src, m_Symbol_src);
+	} else{
+		SetSymbolsSession(m_ExtManager_src, m_Symbol_src);
 	}
-
-	if (!StaticSymbolGroupConfigInfo(m_ExtManager_src, m_SymbolGroup_src)){
-		cout << "if (!StaticSymbolGroupConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
-		return 0;
-	}
-
-
-	SetGroup(m_ExtManager_src);
+	
+	
 	cout <<"suc!" <<endl;
 	//system("pause");
-	exit(0);
+//	exit(0);
 	return 0;
 }
