@@ -206,7 +206,6 @@ void AnalysisCirle(string data, const string &del, Session &reslut){
 		if ("$" == del){
 			AnalysisCirle(*vc_iter, "%", reslut);
 		} else if ("%" == del){
-			//	cout << "AnalysisCirle begin" << endl;
 				int index[3] = {0};
 				short arrr[3][2][2] = {0};
 				vector<int> vc_day;
@@ -218,13 +217,9 @@ void AnalysisCirle(string data, const string &del, Session &reslut){
 				while (n_iter != vc_day.end()){
 					cout << "while (n_iter != vc_day.end())" << endl;
 					for (int i = 0; i < 3;i++){
-					//	cout << i <<":"<< "arrr[i][0][0]" << arrr[i][0][0] << endl;
 						reslut.gap[*n_iter][i].open_hour = arrr[i][0][0];
-					//	cout << i << ":"<< "arrr[i][0][1]" << arrr[i][0][1] << endl;
 						reslut.gap[*n_iter][i].open_min = arrr[i][0][1];
-					//	cout << i << ":" << "arrr[i][1][0]" << arrr[i][1][0] << endl;
 						reslut.gap[*n_iter][i].close_hour = arrr[i][1][0];
-					//	cout << i << ":" << "arrr[i][1][1]" << arrr[i][1][1] << endl;
 						reslut.gap[*n_iter][i].close_min = arrr[i][1][1];
 					}
 
@@ -237,9 +232,6 @@ void AnalysisCirle(string data, const string &del, Session &reslut){
 }
 
 
-
-
-
 void AnalysisSessionTime(map<string, Session> &session,  vector<string> &m_Symbols){
 	vector<string>::iterator iter = m_Symbols.begin();
 
@@ -250,8 +242,6 @@ void AnalysisSessionTime(map<string, Session> &session,  vector<string> &m_Symbo
 		iter++;
 	}
 }
-
-
 
 void printInfo(){
 	map<string, Session>::iterator iter = m_Session.begin();
@@ -447,7 +437,6 @@ bool SetSymbolsSession2(CManagerInterface *m_ExtManager, MutexMap<string, ConSym
 	while (iter != m_Symbols.end()){
 		ConSymbol tmp{};
 		map<string, ConSymbol>::iterator m_iter = Con.m_queue.begin();
-
 
 		while (m_iter != Con.m_queue.end()){
 			string Str_tmp = m_iter->first;
@@ -814,7 +803,6 @@ void Compare(){
 		iter++;
 	}
 }
-
 //group  setting process 
 void __stdcall OnPumpingFunc(int code, int type, void *data, void *param){
 
