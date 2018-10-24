@@ -1,0 +1,21 @@
+*.opensdf
+*.sdf
+*.suo
+*.exe
+*.dll
+*.exp
+*.ilk
+*.lib
+*.map
+*.pdb
+*.log
+
+log4cplusInterface/
+curl-7.61.0-win64/
+protocbuf/
+ZeroMQ 4.0.4/
+TW_MT4Tool/TW_MT4Tool/x64/
+TW_Dealer/TW_Dealer/x64/
+
+Debug/
+ipch/
