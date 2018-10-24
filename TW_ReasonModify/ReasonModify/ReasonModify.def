@@ -1,0 +1,11 @@
+LIBRARY ReasonModify
+
+EXPORTS
+    MtSrvAbout
+    MtSrvStartup
+	MtSrvPluginCfgSet
+	MtSrvPluginCfgGet
+	MtSrvPluginCfgNext
+	MtSrvPluginCfgTotal
+	MtSrvTradeTransaction
+	MtSrvTradesAdd
