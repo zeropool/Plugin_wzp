@@ -526,14 +526,14 @@ bool DealerService::FilterRepeatOrder(const TradeRecord &rec){
 		order.timestrap = GetUtcCaressing();
 		order.status = 0;
 		m_Orders.Add(rec.order, order);
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order.OrderNum: " << order.OrderNum 
-			<< "order.activation: " << order.activation << "order.timestrap: " << order.timestrap);
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Add order.OrderNum: " << order.OrderNum //add by wzp 2018-10-26 
+			<< " order.activation: " << order.activation << " order.timestrap: " << order.timestrap);
 		return true;
 	} else if (order.status == 1){//return mt4 failed
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == 1) order:" << order.OrderNum);
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == " << order.status << ") order:" << order.OrderNum); //add by wzp 2018 - 10 - 26
 		return true;
 	} else {
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  suc order:" << order.OrderNum);
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == " << order.status << ") suc order:" << order.OrderNum);//add by wzp 2018-10-26
 		return false;
 	}
 }
@@ -1099,7 +1099,7 @@ void DealerService::DeleteOrderRecord(){
 	char tmp[256];
 	map<int, OrderValue>::iterator iter = m_Orders.m_queue.begin();
 	stack<int> st;
-
+	
 	while (iter != m_Orders.m_queue.end()){
 		sprintf(tmp, "second.timestrap:%lld", iter->second.timestrap);
 		OutputDebugString(tmp);
@@ -1111,22 +1111,25 @@ void DealerService::DeleteOrderRecord(){
 			//need to delete this order.
 			st.push(iter->first);
 			//m_Orders.m_queue.erase(iter->first);
-			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord!");
-			OutputDebugString("INFO:GetUtcCaressing() - iter->second.timestrap>= 2000000000");
+//			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord!"); //add by wzp 2018-10-26
+//			OutputDebugString("INFO:GetUtcCaressing() - iter->second.timestrap>= 2000000000");
 			//iter = m_Orders.m_queue.begin();
 		} 
 
 		iter++;
 	}
 
+	if (!st.empty()){
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_Orders count:" << m_Orders.m_queue.size());
+	}
+
 	while (!st.empty()){
 		m_Orders.m_queue.erase(st.top());
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "st DeleteOrderRecord!");
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord! OrderNum:" + st.top()); //add by wzp 2018 - 10 - 26
 		st.pop();
 	}
 
 	m_Orders.m_mutex.unlock();
-	//OutputDebugString("End:DeleteOrderRecord");
 }
 
 bool DealerService::ProcessMsgDown()
