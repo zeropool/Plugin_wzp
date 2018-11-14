@@ -531,7 +531,7 @@ bool DealerService::FilterRepeatOrder(const TradeRecord &rec){
 		return true;
 	} else if (order.status == 1){//return mt4 failed
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == " << order.status << ") order:" << order.OrderNum); //add by wzp 2018 - 10 - 26
-		return true;
+		return false;
 	} else {
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == " << order.status << ") suc order:" << order.OrderNum);//add by wzp 2018-10-26
 		return false;
@@ -790,10 +790,10 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 			}
 		}
 
-		m_ExtManager_mutex.lock();
-		m_ExtManager->MemFree(m_TradeRecord);
+		m_Pump_mutex.lock();
+		m_ExtManagerPump->MemFree(m_TradeRecord);
 		m_TradeRecord = NULL;
-		m_ExtManager_mutex.unlock();
+		m_Pump_mutex.unlock();
 
 	} else{
 		send_flag = false;
@@ -1107,7 +1107,7 @@ void DealerService::DeleteOrderRecord(){
 		time_t nTmp = GetUtcCaressing() - iter->second.timestrap;
 		sprintf(tmp, "diff:%lld", nTmp);
 		OutputDebugString(tmp);
-		if (nTmp >= TIME_GAP && 2 == iter->second.status){ //add by wzp 2018-10-16 delete the modify
+		if ((nTmp >= TIME_GAP && 2 == iter->second.status) || nTmp >= TIME_GAP_FAIL){ //add by wzp 2018-10-16 delete the modify
 			//need to delete this order.
 			st.push(iter->first);
 			//m_Orders.m_queue.erase(iter->first);
@@ -1120,12 +1120,12 @@ void DealerService::DeleteOrderRecord(){
 	}
 
 	if (!st.empty()){
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_Orders count:" << m_Orders.m_queue.size());
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord m_Orders count:" << m_Orders.m_queue.size());
 	}
 
 	while (!st.empty()){
 		m_Orders.m_queue.erase(st.top());
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord! OrderNum:" + st.top()); //add by wzp 2018 - 10 - 26
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord OrderNum:" << st.top()); //add by wzp 2018 - 10 - 26
 		st.pop();
 	}
 
