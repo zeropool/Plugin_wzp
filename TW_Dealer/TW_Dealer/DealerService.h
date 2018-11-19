@@ -29,7 +29,7 @@ using namespace std;
 #define ENERGY	"ENERGY"
 #define CFD		"CFD"
 
-#define TIME_GAP      20000000
+#define TIME_GAP      5000000
 #define TIME_GAP_FAIL 60000000
 
 #define REX_FX		"^(AUD|CAD|CHF|EUR|GBP|NZD|USD)[\\s\\S]*"
