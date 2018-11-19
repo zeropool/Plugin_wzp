@@ -28,7 +28,9 @@ using namespace std;
 #define METAL	"METAL"
 #define ENERGY	"ENERGY"
 #define CFD		"CFD"
-#define TIME_GAP 2000000
+
+#define TIME_GAP      5000000
+#define TIME_GAP_FAIL 60000000
 
 #define REX_FX		"^(AUD|CAD|CHF|EUR|GBP|NZD|USD)[\\s\\S]*"
 #define REX_METAL	"^(XAU|XAG)[\\s\\S]*"
