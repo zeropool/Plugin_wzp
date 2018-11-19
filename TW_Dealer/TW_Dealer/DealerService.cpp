@@ -1419,7 +1419,7 @@ bool DealerService::MakeNewOrderForClient(const TradeTransInfo &rec, const int &
 		PrintTradeInfo(&info);
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "End-------MakeNewOrderForClient-----");
 		m_ExtManager_mutex.lock();
-		SwitchConnection();
+		SwitchConnection();//add by wzp 2018-11-16
 		int res = m_ExtManager->TradeTransaction(&info);
 		m_ExtManager_mutex.unlock();
 
