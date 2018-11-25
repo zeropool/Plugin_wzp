@@ -909,7 +909,12 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 
-	//Compare();
+	if (!StaticSymbolConfigInfo(m_ExtManager_dest, m_Symbol_dest)){
+		cout << "if (!StaticSymbolConfigInfo(m_ExtManager_src, m_Symbol_src))" << endl;
+		return 0;
+	}
+
+	Compare();
 
 	//if (!StaticGroupConfigInfo(m_ExtManager_src, m_Group_src)){
 	//	cout << "if (!StaticSymbolConfigInfo(m_ExtManager_dest, m_Symbol_dest))" << endl;
@@ -923,11 +928,11 @@ int main(int argc, char *argv[]){
 
 
 	//SetGroup(m_ExtManager_src);
-	if (m_config["Enable"] == "YES"){
-		SetSymbolsSession2(m_ExtManager_src, m_Symbol_src);
-	} else{
-		SetSymbolsSession(m_ExtManager_src, m_Symbol_src);
-	}
+	//if (m_config["Enable"] == "YES"){
+	//	SetSymbolsSession2(m_ExtManager_src, m_Symbol_src);
+	//} else{
+	//	SetSymbolsSession(m_ExtManager_src, m_Symbol_src);
+	//}
 	
 	
 	cout <<"suc!" <<endl;

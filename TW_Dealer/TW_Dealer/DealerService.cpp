@@ -783,7 +783,7 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 			//send msg to bridge
 			if (send_flag){
 				if (!SendDataToBridge(info)){
-					OutputDebugString("ERR:SendDataToBridge failed!");
+					LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "SendDataToBridge failed!");
 				}
 
 				info->Clear();
@@ -1014,13 +1014,19 @@ bool  DealerService::SendDataToBridge( dealer::RequestInfo *msg)
 
 	zmq::message_t reply(send_buf.length());
 	memcpy((void*)reply.data(), send_buf.c_str(), send_buf.length());
-	bool res = m_socket.send(reply);
-
-	if (!res){
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "SendDataToBridge:send data failed ! req_id:" << m_req.id << "order:" << m_req.trade.order);
-		return false; 
+	bool res = false;
+	try
+	{
+		res = m_socket.send(reply);
 	}
-
+	catch (const std::exception& e)
+	{
+		if (!res){
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "SendDataToBridge:send data failed ! req_id:" << m_req.id << "order:" << m_req.trade.order <<"e:"<<e.what());
+			return false;
+		}
+	}
+	
 	return true;
 }
 
