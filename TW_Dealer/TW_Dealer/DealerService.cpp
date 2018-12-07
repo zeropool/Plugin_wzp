@@ -3,6 +3,7 @@
 #include <time.h>
 #include <regex>
 #include <sys/timeb.h>
+#include <sstream>
 
 
 using namespace std;
@@ -10,6 +11,7 @@ using namespace std;
 DealerService *DealerService::m_DealerService = NULL;
 string DealerService::m_path = "";
 map<string, string> DealerService::m_config;
+int Count = 0;//record the dealer add by wzp process order 
 //map<string, string> m_config; // config file add by wzp
 
 bool DealerService::LoadConfig(){
@@ -175,8 +177,8 @@ bool DealerService::SwitchMode()
 
 //construct Dealer Service add by wzp
 DealerService::DealerService(const string &lib_path, const string abook, const string bbook, const string symbols) :m_factory(lib_path.c_str()),
-m_ExtDealer(NULL), m_ExtManagerPump(NULL), m_ExtManager(NULL), m_ExtManager_bak(NULL), m_TradeRecord(NULL),
-	m_context(1), m_socket(m_context, ZMQ_DEALER)
+m_ExtDealer(NULL), m_ExtManagerPump(NULL), m_ExtManager(NULL), m_ExtManager_bak(NULL), m_TradeRecord(NULL)
+	,m_context(1)//, m_socket(m_context, ZMQ_DEALER)
 {
 	vector<string> m_abook = split(abook, ";");
 	vector<string> m_bbook = split(bbook, ";");
@@ -372,23 +374,23 @@ bool DealerService::CreateMT4LinkInterface(CManagerInterface ** m_interface, con
 }
 
 //create bridge socket link  suport dns process add by wzp 
-bool DealerService::CreateBridgeLink()
-{
-	string tmp_addr = "tcp://";
-	tmp_addr += m_config["bridge_ip"] + ":" + m_config["bridge_port"];
-
-	if (m_socket.connected()){
-		m_socket.connect(tmp_addr);
-	}else{
-		char tmp[256] = { 0 };
-		sprintf(tmp, "ERR:Connect Bridge: Link failed %s", tmp_addr.c_str());
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Connect Bridge: Link failed. addr:" << tmp_addr.c_str());
-		OutputDebugString(tmp);
-		return false;
-	}
-
-	return true;
-}
+//bool DealerService::CreateBridgeLink()
+//{
+//	string tmp_addr = "tcp://";
+//	tmp_addr += m_config["bridge_ip"] + ":" + m_config["bridge_port"];
+//
+//	if (m_socket.connected()){
+//		m_socket.connect(tmp_addr);
+//	}else{
+//		char tmp[256] = { 0 };
+//		sprintf(tmp, "ERR:Connect Bridge: Link failed %s", tmp_addr.c_str());
+//		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Connect Bridge: Link failed. addr:" << tmp_addr.c_str());
+//		OutputDebugString(tmp);
+//		return false;
+//	}
+//
+//	return true;
+//}
 
 //call back function add by wzp
 void __stdcall OnDealingFunc(int code)
@@ -509,7 +511,7 @@ void DealerService::PumpProcessTradeOrder(int code ,int type, void *data){
 	}
 }
 
-bool DealerService::FilterRepeatOrder(const TradeRecord &rec){
+bool DealerService::FilterRepeatOrder(const TradeRecord &rec,string &grp){
 	OrderValue order{0};
 
 	if (rec.activation != ACTIVATION_PENDING && 
@@ -520,20 +522,28 @@ bool DealerService::FilterRepeatOrder(const TradeRecord &rec){
 	}
 
 	//pending open then stop out question. add by wzp 2018-08-03
-	if (!m_Orders.Get(rec.order, order) || order.activation != rec.activation){
-		order.activation = rec.activation;
-		order.OrderNum = rec.order;
+	if (!m_Orders.Get(rec.order, order) || order.rec.activation != rec.activation){
+		//if this record have in the m_Orders we don't need to get group name.
+		if (ACTIVATION_NONE != order.rec.activation){
+			grp = order.grp_name;
+		} else{
+			grp = GetUserGroup(rec.login);
+			order.grp_name = grp;
+		}
+		order.rec = rec;
+		//order.rec.activation = rec.activation;
+		//order.rec.order= rec.order;
 		order.timestrap = GetUtcCaressing();
 		order.status = 0;
 		m_Orders.Add(rec.order, order);
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Add order.OrderNum: " << order.OrderNum //add by wzp 2018-10-26 
-			<< " order.activation: " << order.activation << " order.timestrap: " << order.timestrap);
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Add order.rec.order: " << order.rec.order //add by wzp 2018-10-26 
+			<< " order.rec.activation: " << order.rec.activation << " order.timestrap: " << order.timestrap);
 		return true;
 	} else if (order.status == 1){//return mt4 failed
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == " << order.status << ") order:" << order.OrderNum); //add by wzp 2018 - 10 - 26
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == " << order.status << ") order:" << order.rec.order); //add by wzp 2018 - 10 - 26
 		return false;
 	} else {
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == " << order.status << ") suc order:" << order.OrderNum);//add by wzp 2018-10-26
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "FilterRepeatOrder  if (order.status == " << order.status << ") suc order:" << order.rec.order);//add by wzp 2018-10-26
 		return false;
 	}
 }
@@ -744,6 +754,7 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 	char tmp[256];
 	bool send_flag = true;
 	vector<string>::iterator ita;
+	string grp = "";
 	//get tr.ade info with the Pump mode from MT4. add  by wzp
 	m_Pump_mutex.lock();
 	m_TradeRecord = m_ExtManagerPump->TradesGet(&activated);
@@ -754,32 +765,33 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 		for (int i = 0; i < activated; i++){
 			if (m_TradeRecord[i].activation == ACTIVATION_NONE || !JudgeSymbol(m_TradeRecord[i].symbol))
 				continue;
-			if (!FilterRepeatOrder(m_TradeRecord[i]))
+			if (!FilterRepeatOrder(m_TradeRecord[i], grp))
 				continue;
 			if (m_TradeRecord[i].activation == ACTIVATION_PENDING ){
 				send_flag = CaculateMargin(m_TradeRecord[i]);
+
 				if (send_flag){
-					TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_ACTIVATE, D_PE);
+					TransferRecordToProto(m_TradeRecord[i], grp, info, TT_BR_ORDER_ACTIVATE, D_PE);
 				} else{//pending order cancel process. add by wzp 2018-08-13
-					PumpSendDataToMT4(m_TradeRecord[i]);
+					PumpSendDataToMT4(m_TradeRecord[i], TT_BR_ORDER_DELETE, grp);
 				}
 				
 			} else if (m_TradeRecord[i].activation == ACTIVATION_SL){
 				send_flag = true;
 			//	DealerLog::GetInstance()->LogInfo("ACTIVATION_SL");
-				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, D_SL);
+				TransferRecordToProto(m_TradeRecord[i], grp,info, TT_BR_ORDER_CLOSE, D_SL);
 			} else if (m_TradeRecord[i].activation == ACTIVATION_TP ){
 				send_flag = true;
-				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, D_TP);
+				TransferRecordToProto(m_TradeRecord[i], grp,info, TT_BR_ORDER_CLOSE, D_TP);
 			} else if (m_TradeRecord[i].activation == ACTIVATION_STOPOUT){
 				send_flag = true;
-				TransferRecordToProto(m_TradeRecord[i], info, TT_BR_ORDER_CLOSE, D_SO);
+				TransferRecordToProto(m_TradeRecord[i], grp,info, TT_BR_ORDER_CLOSE, D_SO);
 			} else{
 				send_flag = false;
 				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "send_flag = false");
 			}
 
-			PrintRecord(m_TradeRecord[i]);
+			PrintRecord(m_TradeRecord[i], grp);
 			//send msg to bridge
 			if (send_flag){
 				if (!SendDataToBridge(info)){
@@ -802,7 +814,7 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 	return send_flag;
 }
 
-bool DealerService::PumpProcessManagerOrder(const TradeRecord * trade, dealer::RequestInfo *info,const int type){
+bool DealerService::PumpProcessManagerOrder(TradeRecord * trade, dealer::RequestInfo *info,const int type){
 	//1.Is not manager or manager api order
 	if (trade->reason != TR_REASON_DEALER && trade->reason != TR_REASON_API){
 		return false;
@@ -849,18 +861,23 @@ bool DealerService::PumpProcessManagerOrder(const TradeRecord * trade, dealer::R
 		return false;
 	}
 
-	PrintRecord(*trade);
-
+	PrintRecord(*trade, tmp);
+	//begin--------add by wzp 2018-11-30 the manager make order
+	string coment = trade->comment;
+	strcpy(trade->comment, "MANAGER");
+	m_Orders.Add(trade->order, OrderValue{ GetUtcCaressing(), 0, tmp, *trade});
+	strcpy(trade->comment, coment.c_str());
+	//end----------add by wzp 2018-11-30 the manager make order
 	switch (type)
 	{
 	case TRANS_ADD:
 		OutputDebugString("TRANS_ADD");
-		TransferRecordToProto(*trade, info, TT_BR_ORDER_OPEN, "MANAGER");
+		TransferRecordToProto(*trade, tmp, info, TT_BR_ORDER_OPEN, "MANAGER");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "INFO:#" << trade->order << " added-------------------------");
 		break;
 	case TRANS_DELETE:
 		OutputDebugString("TRANS_DELETE");
-		TransferRecordToProto(*trade, info, TT_BR_ORDER_CLOSE, "MANAGER");
+		TransferRecordToProto(*trade, tmp, info, TT_BR_ORDER_CLOSE, "MANAGER");
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "INFO:#" << trade->order << " closed-------------------------");
 		break;
 	case TRANS_UPDATE:
@@ -959,13 +976,13 @@ void DealerService::ProcessMsgUp(){
 		return;
 	}
 
+	m_Reqs.Add(m_req.id, ReqValue{ m_req, GetUtcCaressing() });//add by wzp 2018-11-28 record the request info.
 	//send data to bridge
 	if (!SendDataToBridge(&data)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"ProcessMsgUp:send data to bridge failed!");
 		OutputDebugString("ERR:ProcessMsgUp:send data failed!");
 	}
 
-	//clear m_req;
 	memset(&m_req, 0, sizeof(struct RequestInfo));
 }
 
@@ -996,32 +1013,114 @@ bool DealerService::BusinessJudge(RequestInfo *req){
 	}
 }
 
-bool  DealerService::SendDataToBridge( dealer::RequestInfo *msg)
-{
-	string send_buf;
-	if (msg == NULL){
-		OutputDebugString("ERR:SendDataToBridge");
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"SendDataToBridge failed!");
-		return false;
+//bool  DealerService::SendDataToBridge( dealer::RequestInfo *msg)
+//{
+//	string send_buf;
+//	zmq::context_t ctx(1);
+//	zmq::socket_t sock(ctx, ZMQ_DEALER);
+//	string tmp_addr ="tcp://"+ m_config["bridge_ip"] + ":" + m_config["bridge_port"];
+//	try{
+//
+//		sock.connect(tmp_addr);
+//	
+//		if (msg == NULL){
+//			OutputDebugString("ERR:SendDataToBridge");
+//			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"SendDataToBridge failed!");
+//			return false;
+//		}
+//		//compose msg 
+//		msg->SerializeToString(&send_buf);
+//		zmq::message_t reply(send_buf.length());
+//		memcpy((void*)reply.data(), send_buf.c_str(), send_buf.length());
+//		//send msg
+//		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Begin SendDataToBridge:send data  ! req_id:" << m_req.id << "order:" << m_req.trade.order);
+//		if (!sock.send(reply, ZMQ_DONTWAIT)){
+//			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "SendDataToBridge:send data failed ! req_id:" << m_req.id << "order:" << m_req.trade.order);
+//		}
+//		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "End SendDataToBridge:send data  ! req_id:" << m_req.id << "order:" << m_req.trade.order);
+//
+//		sock.disconnect(tmp_addr);
+//		sock.close();
+//	}
+//	catch (exception &e){
+//		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "SendDataToBridge:send data  ! req_id:" << m_req.id << " order: " << m_req.trade.order<<"ex:" << e.what());
+//	}
+//	return true;
+//
+//}
+//create socket  add by wzp 2018-12-07
+zmq::socket_t * DealerService::CreateClientSocket(zmq::context_t & context) {
+	std::cout << "I: connecting to server..." << std::endl;
+	zmq::socket_t * client = new zmq::socket_t(context, ZMQ_REQ);
+	string tmp_addr = "tcp://" + m_config["bridge_ip"] + ":" + m_config["bridge_port"];
+	client->connect(tmp_addr);
+
+	//  Configure socket to not wait at close time
+	int linger = 0;
+	client->setsockopt(ZMQ_LINGER, &linger, sizeof (linger));
+
+	return client;
+}
+
+bool  DealerService::SendDataToBridge(dealer::RequestInfo *msg){
+	zmq::socket_t *Client = CreateClientSocket(m_context);
+	int retries_left = REQUEST_RETRIES;
+	//encode msg process
+	string request;
+	std::stringstream sequence;
+	sequence << msg->id() << "_" << msg->trade().order();
+	string strsequence = sequence.str();
+	msg->SerializeToString(&request);
+	//send msg to server.
+	if (!s_send(*Client, request)){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "s_send(*Client, request.str()))");
+	//	std::cout << "s_send(*Client, request.str()))" << std::endl;
+	}
+	//begin recv reply msg from sever.
+	bool expect_reply = true;
+
+	while (expect_reply) {
+		//  Poll socket for a reply, with timeout
+		zmq::pollitem_t Items[] = { { *Client, 0, ZMQ_POLLIN, 0 } };
+		zmq::poll(&Items[0], 1, REQUEST_TIMEOUT);
+
+		//  If we got a reply, process it
+		if (Items[0].revents & ZMQ_POLLIN) {
+			//  We got a reply from the server, must match sequence
+			string reply = s_recv(*Client);
+
+			if (reply == strsequence) {
+				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "I: server replied OK (" << reply << ")");
+			//	std::cout << "I: server replied OK (" << reply << ")" << std::endl;
+				//	retries_left = REQUEST_RETRIES;
+				expect_reply = false;
+				delete Client;
+				return true;
+			} else {
+				//std::cout << "E: malformed reply from server: " << reply << std::endl;
+				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "E: malformed reply from server: ");
+			}
+		} else if (--retries_left == 0) {
+			//std::cout << "E: server seems to be offline, abandoning" << std::endl;
+			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "E: server seems to be offline, abandoning");
+			expect_reply = false;
+			break;
+		} else {
+		//	std::cout << "W: no response from server, retrying..." << std::endl;
+			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "W: no response from server, retrying...");
+			//  Old socket will be confused; close it and open a new one
+			delete Client;
+			Client = CreateClientSocket(m_context);
+			//  Send request again, on new socket
+			if (!s_send(*Client, request)){
+				//std::cout << "s_send(*Client, request.str()))" << std::endl;
+				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "s_send(*Client, request.str()))");
+			}
+		}
 	}
 
-	msg->SerializeToString(&send_buf);
-	//if the connection disconnect i need to reset link. 
-	if (!m_socket.connected()){
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"the socket disconnect no zmq context req_id:" <<  m_req.id << "order:" << m_req.trade.order);
-		return false;
-	}
-
-	zmq::message_t reply(send_buf.length());
-	memcpy((void*)reply.data(), send_buf.c_str(), send_buf.length());
-	bool res = m_socket.send(reply);
-
-	if (!res){
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "SendDataToBridge:send data failed ! req_id:" << m_req.id << "order:" << m_req.trade.order);
-		return false; 
-	}
-
-	return true;
+	delete Client;
+	return false;
 }
 
 void DealerService::InitThread(){
@@ -1034,6 +1133,7 @@ void DealerService::InitThread(){
 
 DWORD WINAPI TransferMsgFromBridgeToMT4(LPVOID lparamter){
 	DealerService::GetInstance()->ProcessMsgDown();
+	//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "TransferMsgFromBridgeToMT4");
 	return 1;
 }
 
@@ -1066,7 +1166,61 @@ void DealerService::KeepLiveLinkMT4(){
 		//delete sl tp so temp order
 		DeleteOrderRecord();//add by wzp 2018-07-04
 		//DealerService::GetInstance()->SendWarnMail("Test","KeepLiveLinkMT4");//test to use 2018-07-25
+		CheckDealerReqInfo();
+		//check if have some Request don't immediately process delay to 5 seconds.
 		Sleep(2000);
+	}
+}
+
+void DealerService::CheckDealerReqInfo(){
+	// this is the normal condition no Req info in the queue.
+	if (m_Reqs.Empty()){
+		return;
+	}
+
+	cout << "m_Reqs.Empty()" <<endl;
+	bool Flag = false;
+	stack<int> st;
+	m_Reqs.m_mutex.lock();
+	map<int, ReqValue>::iterator iter = m_Reqs.m_queue.begin();
+	//check all the ReqInfo if over the time TIME_REQ_GAP need to process and send ReqInfo to mt4.
+	while (iter != m_Reqs.m_queue.end()){
+		time_t now = GetUtcCaressing();
+
+		if ((now - (iter->second.timestrap)) >= TIME_REQ_GAP){
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "now - iter->second.timestrap >= TIME_REQ_GAP");
+			m_Reqs.m_mutex.unlock();
+			DealerSend(iter->second.ReqInfo, 2);
+			m_Reqs.m_mutex.lock();
+			st.push(iter->first);
+			Flag = true;
+		}
+		
+		iter++;
+	}
+
+	m_Reqs.m_mutex.unlock();
+	//if have some Request info delay Need to send warn mail 
+	if (Flag){
+		Count++;
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Dealer RequestInfo delay or lost msg from Bridge");
+		SendWarnMail("ERROR", "Dealer RequestInfo delay or lost msg from Bridge");
+	}else{
+		Count = 0;
+		return;
+	}
+	//del some Request info from the Req queue.
+	while (!st.empty()){
+		m_Reqs.Delete(st.top());
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "CheckDealerReqInfo ReqID:" << st.top()); //add by wzp 2018 - 10 - 26
+		st.pop();
+	}
+	//if appear three times delay to process Request I need Restart Service.
+	if (Count == 3){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "stop dealer service and restart service");
+		SendWarnMail("ERROR", "Stop dealer service and restart service");
+		Sleep(2000);
+		abort();
 	}
 }
 
@@ -1110,11 +1264,31 @@ void DealerService::DeleteOrderRecord(){
 		if ((nTmp >= TIME_GAP && 2 == iter->second.status) || nTmp >= TIME_GAP_FAIL){ //add by wzp 2018-10-16 delete the modify
 			//need to delete this order.
 			st.push(iter->first);
-			//m_Orders.m_queue.erase(iter->first);
-//			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord!"); //add by wzp 2018-10-26
-//			OutputDebugString("INFO:GetUtcCaressing() - iter->second.timestrap>= 2000000000");
-			//iter = m_Orders.m_queue.begin();
-		} 
+		} else if (0 == iter->second.status && nTmp >= TIME_GAP){
+			//if recv msg from bridge delay need auto to process
+			if (!strcmp(iter->second.rec.comment,"MANAGER")){
+				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord Pump find manager order can not recv from Bridge Order:" << iter->second.rec.order);
+				SendWarnMail("ERROR", "DeleteOrderRecord Pump find manager order can not recv from Bridge Order");
+				st.push(iter->first);
+				iter++;
+				continue;
+			}
+
+			int type = 0;
+
+			if (iter->second.rec.activation == ACTIVATION_PENDING){
+				type = TT_BR_ORDER_ACTIVATE;
+			} else{
+				type = TT_BR_ORDER_CLOSE;
+			}
+
+			m_Orders.m_mutex.unlock();
+			if (!PumpSendDataToMT4(iter->second.rec, type, iter->second.grp_name)){
+				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "DeleteOrderRecord Pump auto process order to MT4 info orderID:"<<iter->second.rec.order);
+				SendWarnMail("ERROR", "DeleteOrderRecord Pump auto process order to MT4 info");
+			}
+			m_Orders.m_mutex.lock();
+		}
 
 		iter++;
 	}
@@ -1132,38 +1306,61 @@ void DealerService::DeleteOrderRecord(){
 	m_Orders.m_mutex.unlock();
 }
 
-bool DealerService::ProcessMsgDown()
-{
+//bool DealerService::ProcessMsgDown()
+//{
+//	dealer::resp_msg msg{};
+//	zmq::message_t request;
+//
+//	zmq::context_t ctx(1);
+//	zmq::socket_t sock(ctx, ZMQ_DEALER);
+//	//string tmp_addr = "tcp://*:8101";
+//	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tcp://*:" + m_config["local_port"]);
+//	sock.bind("tcp://*:" + m_config["local_port"]);
+//
+//	while (true){
+//		sock.recv(&request);
+//		std::string data(static_cast<char*>(request.data()), request.size());
+//		//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "sock.recv(&request)!");
+//		if (!msg.ParseFromString(data)){
+//			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: ParseFromString failed !");
+//			OutputDebugString("ERR:Bridge: ParseFromString failed !");
+//		} else {
+//			if (!SendDataToMT4(msg)){	//send info to MT4
+//				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: send data to MT4 failed !");
+//				OutputDebugString("ERR:Bridge: send data to MT4 failed !");
+//			}
+//		}
+//
+//		msg.Clear();
+//		request.rebuild();
+//	}
+//
+//	return true;
+//}
+
+bool DealerService::ProcessMsgDown(){
+	zmq::socket_t Server = zmq::socket_t(m_context, ZMQ_REP);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tcp://*:" + m_config["local_port"]);
+	Server.bind("tcp://*:" + m_config["local_port"]);
 	dealer::resp_msg msg{};
-	zmq::message_t request;
-	zmq::pollitem_t items[] = {{m_socket,0,ZMQ_POLLIN,0}};
 
-	while (true){
-		zmq::poll(items, 1, 0);
+	while (1) {
+		std::string request = s_recv(Server);
+		std::cout << "I: normal request (" << request << ")" << std::endl;
 
-		if (items[0].revents & ZMQ_POLLIN){
-			bool res = m_socket.recv(&request);
+		if (!msg.ParseFromString(request)){
+			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: ParseFromString failed !");
+			OutputDebugString("ERR:Bridge: ParseFromString failed !");
+		} else {
+			stringstream sequence;
+			sequence << msg.info().id()<< "_"<< msg.info().trade().order();
 
-			if (!res){
-				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: recv data failed !");
-				OutputDebugString("ERR:Bridge: recv data failed !");
-				continue;
+			s_send(Server, sequence.str());
+
+			if (!SendDataToMT4(msg)){	//send info to MT4
+				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: send data to MT4 failed !");
+				OutputDebugString("ERR:Bridge: send data to MT4 failed !");
 			}
-
-			std::string data(static_cast<char*>(request.data()), request.size());
-
-			if (!msg.ParseFromString(data)){
-				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: ParseFromString failed !");
-				OutputDebugString("ERR:Bridge: ParseFromString failed !");
-			}else{
-				if (!SendDataToMT4(msg)){	//send info to MT4
-					LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge: send data to MT4 failed !");
-					OutputDebugString("ERR:Bridge: send data to MT4 failed !");
-				}
-			}
-
-			msg.Clear();
-			request.rebuild();
 		}
 	}
 
@@ -1172,23 +1369,24 @@ bool DealerService::ProcessMsgDown()
 
 void DealerService::Close(void)
 {
-	if (m_socket.connected())
-	{
-		string tmp_addr = "tcp:://";
-		tmp_addr += m_config["bridge_ip"] + ":" + m_config["bridge_port"];
-		m_socket.disconnect(tmp_addr);
-		m_socket.close();
-	}
+	//if (m_socket.connected())
+	//{
+	//	string tmp_addr = "tcp:://";
+	//	tmp_addr += m_config["bridge_ip"] + ":" + m_config["bridge_port"];
+	//	m_socket.disconnect(tmp_addr);
+	//	m_socket.close();
+	//}
 }
 
 bool DealerService::SendDataToMT4(const dealer::resp_msg &ret)
 {
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "BEGIN:SendDataToMT4-----------------:" << ret.info().id());
-	OutputDebugString("INFO:BEGIN:SendDataToMT4-------------");
+	//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "BEGIN:SendDataToMT4-----------------:" << ret.info().id());
+//	OutputDebugString("INFO:BEGIN:SendDataToMT4-------------");
 	//manager order dont need reply to mt4.//here need note some 
 	if (string::npos != ret.info().trade().comment().find(MANAGER)){
+		m_Orders.Delete(ret.info().trade().order());//delete order from the m_Orders
 		OutputDebugString("SendDataToMT4 find manager response");
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:SendDataToMT4 this is manager open order:" << ret.info().id() << " bridge price:" << ret.info().trade().price());
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:SendDataToMT4 this is manager open order:" << ret.info().trade().order() << " bridge price:" << ret.info().trade().price());
 		return true;
 	}
 
@@ -1208,15 +1406,15 @@ bool DealerService::SendDataToMT4(const dealer::resp_msg &ret)
 		}
 	}
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:SendDataToMT4-----------------:" << ret.info().id());
-	OutputDebugString("IINFO:END:SendDataToMT4-------------");
+	//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:SendDataToMT4-----------------:" << ret.info().id());
+	//OutputDebugString("IINFO:END:SendDataToMT4-------------");
 	return true;
 }
 
 
 bool DealerService::DealerSendDataToMT4(const dealer::resp_msg &ret){
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "BEGIN:DealerSendDataToMT4-----------------:" << ret.info().id());
-	OutputDebugString("INFO:BEGIN:DealerSendDataToMT4-------------");
+//	OutputDebugString("INFO:BEGIN:DealerSendDataToMT4-------------");
 	int res = 0;
 	bool flag = true;
 	//dealer process message
@@ -1224,82 +1422,90 @@ bool DealerService::DealerSendDataToMT4(const dealer::resp_msg &ret){
 	switch (ret.ret_type())
 	{
 	case SEND:
-		flag  = DealerSend(ret);
+		if (!TransferProtoToMsg(&ret)){
+			flag = false;
+		} else{
+			flag = DealerSend(m_req_recv, ret.finish_status());
+		}
 		break;
 	case REJECT:
-		DealerReject(ret);
+		DealerReject(ret.info().id());
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_ExtDealer->DealerReject() req_id:" << ret.info().id() << " order:" << ret.info().trade().order() << " bridge_reason:" << ret.comment().c_str());
 		break;
 	case RESET:
-		DealerReset(ret);
+		DealerReset(ret.info().id());
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_ExtDealer->DealerReset() req_id:" << ret.info().id() << " order:" << ret.info().trade().order() << " bridge_reason:" << ret.comment().c_str());
 		break;
 	default:
 		break;
 	}
 
+	m_Reqs.Delete(ret.info().id());//add by wzp 2018-11-28 when recv the msg from bridge need del the 
 	memset(&m_req_recv, 0, sizeof(struct RequestInfo));
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:SendDataToMT4---------------------------:" << ret.info().id());
-	OutputDebugString("END:SendDataToMT4-------------");
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "END:DealerSendDataToMT4---------------------------:" << ret.info().id());
+//	OutputDebugString("END:SendDataToMT4-------------");
 	return flag;
 }
 
-bool DealerService::DealerSend(const dealer::resp_msg &ret){
-	if (!TransferProtoToMsg(&ret)){
+bool DealerService::DealerSend(RequestInfo &info, const int finish_status){
+	//the mormal condition the m_Reqs have a bakup info about Req info from mt4 when this msg back from bridge will del this req info.
+	if (!m_Reqs.IsExit(info.id)){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "this Reqest to confirm is too late to process RequestInfo.id: " << info.id << ", order:%d" << m_req_recv.trade.order);
 		return false;
 	}
 
-	if (0.0 >= m_req_recv.trade.price){
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (0.0 == m_req_recv.trade.price) req_id:" << m_req_recv.id << ", order:%d" << m_req_recv.trade.order);
+	if (0.0 >= info.trade.price){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (0.0 == m_req_recv.trade.price) req_id:" << info.id << ", order:%d" << m_req_recv.trade.order);
 		m_Dealer_mutex.lock();
-		m_ExtDealer->DealerReject(m_req_recv.id);
+		m_ExtDealer->DealerReject(info.id);
 		m_Dealer_mutex.unlock();
 		DealerService::GetInstance()->SendWarnMail("ERROR", "0.0 == m_req_recv.trade.price");
 		return false;
 	}
 
-	if (!CaculateAskBidAndSpread(m_req_recv)){
-		memset(&m_req_recv, 0, sizeof(struct RequestInfo));
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "BackFillAskAndBid failed ! req_id:" << m_req_recv.id << ", order:%d" << m_req_recv.trade.order);
+	if (!CaculateAskBidAndSpread(info)){
+		memset(&info, 0, sizeof(struct RequestInfo));
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "BackFillAskAndBid failed ! req_id:" << info.id << ", order:%d" << info.trade.order);
 		OutputDebugString("ERR:BackFillAskAndBid failed !");
-		m_ExtDealer->DealerReject(m_req_recv.id);
-		MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
+		m_ExtDealer->DealerReject(info.id);
+		MakeNewOrderForClient(info.trade, info.login);//add new order for client.2018-06-25
 		DealerService::GetInstance()->SendWarnMail("ERROR", "CaculateAskBidAndSpread DealerSend have a error");
-		memset(&m_req_recv, 0, sizeof(struct RequestInfo));
+		memset(&info, 0, sizeof(struct RequestInfo));
 		return false;
 	}
 
-	PrintResponse(ret, &m_req_recv);
+	PrintResponse(finish_status, &info);
 	m_Dealer_mutex.lock();
-	int res = m_ExtDealer->DealerSend(&m_req_recv, true, false);//test
+	int res = m_ExtDealer->DealerSend(&info, true, false);//test
 
 	if (res != RET_OK){
 		OutputDebugString("ERR: m_ExtDealer->DealerSend(&m_req_recv, true, false)");
-		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "code:" << m_ExtDealer->ErrorDescription(res) << " req_id:" << m_req_recv.id << ", order: " << m_req_recv.trade.order << " m_ExtDealer->DealerSend(&m_req_recv, true, false)");
-		m_ExtDealer->DealerReject(m_req_recv.id);
-		MakeNewOrderForClient(m_req_recv.trade, m_req_recv.login);//add new order for client.2018-06-25
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "code:" << m_ExtDealer->ErrorDescription(res) << " req_id:" << info.id << ", order: " << info.trade.order << " m_ExtDealer->DealerSend(&m_req_recv, true, false)");
+		m_ExtDealer->DealerReject(info.id);
+		MakeNewOrderForClient(info.trade, info.login);//add new order for client.2018-06-25
 		DealerService::GetInstance()->SendWarnMail("ERROR", "DealerSend have a error");
-		memset(&m_req_recv, 0, sizeof(struct RequestInfo));
+		memset(&info, 0, sizeof(struct RequestInfo));
 	}
 
 	m_Dealer_mutex.unlock();
-	
 	time_t tmp = GetUtcCaressing();
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "End:GetUtcCaressing::" << tmp);
 	return true;
 }
 
-bool DealerService::DealerReject(const dealer::resp_msg &ret){
+bool DealerService::DealerReject(const int id){
 	m_Dealer_mutex.lock();
-	m_ExtDealer->DealerReject(ret.info().id());
+	m_ExtDealer->DealerReject(id);
 	m_Dealer_mutex.unlock();
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_ExtDealer->DealerReject() req_id:" << ret.info().id() << " order:" << ret.info().trade().order() << " bridge_reason:" << ret.comment().c_str());
+//	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_ExtDealer->DealerReject() req_id:" << id << " order:" << ret.info().trade().order() << " bridge_reason:" << ret.comment().c_str());
 	return true;
 }
 
-bool DealerService::DealerReset(const dealer::resp_msg &ret){
+bool DealerService::DealerReset(const int id){
 	m_Dealer_mutex.lock();
-	m_ExtDealer->DealerReset(ret.info().id());
+	m_ExtDealer->DealerReset(id);
 	m_Dealer_mutex.unlock();
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_ExtDealer->DealerReset() req_id:" << ret.info().id() << " order:" << ret.info().trade().order() << " bridge_reason:" << ret.comment().c_str());
+	//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "m_ExtDealer->DealerReset() req_id:" << ret.info().id() << " order:" << ret.info().trade().order() << " bridge_reason:" << ret.comment().c_str());
 	return true;
 }
 
@@ -1349,10 +1555,10 @@ bool DealerService::PumpSendDataToMT4(const dealer::resp_msg &ret){
 	return true;
 }
 
-bool DealerService::PumpSendDataToMT4(const TradeRecord &record){
+bool DealerService::PumpSendDataToMT4(const TradeRecord &record,UCHAR type,const string &group){
 	TradeTransInfo info{};
-
-	info.type = TT_BR_ORDER_DELETE;
+	cout << "begin auto process to mt4" << endl;
+	info.type = type;
 	info.order = record.order;
 	info.cmd = record.cmd;
 	strcpy(info.symbol, record.symbol);
@@ -1362,7 +1568,14 @@ bool DealerService::PumpSendDataToMT4(const TradeRecord &record){
 	info.tp = record.tp;
 	info.expiration = record.expiration;//add by wzp 2018-05-20.
 	strcpy(info.comment, record.comment);
+	//if del a order i don't caculate spread.
+	if (type != TT_BR_ORDER_DELETE){
+		if (!CaculateSpreadForPump(&info, group)){
+			return false;
+		}
+	}
 
+	cout << "end auto process to mt4" << endl;
 	PrintTradeInfo(&info);
 	m_ExtManager_mutex.lock();
 
@@ -1467,39 +1680,39 @@ bool DealerService::TransferProtoToTrade(TradeTransInfo *info, const dealer::res
 	//	return false;
 	//}
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "CaculateSpreadForPump before:" << info->price);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order = " << info->order<<" CaculateSpreadForPump before:" << info->price);
 
-	if (!CaculateSpreadForPump(info, msg)){
+	if (!CaculateSpreadForPump(info,msg.info().group())){
 		return false;
 	}
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "CaculateSpreadForPump after:" << info->price);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order = " << info->order << "CaculateSpreadForPump after:" << info->price);
 
 	return FilterSplitOrder(&msg);
 }
 
-bool DealerService::CaculateSpreadForPump(TradeTransInfo *info, const dealer::resp_msg &msg){
+bool DealerService::CaculateSpreadForPump(TradeTransInfo *info, const string &group){
 	//SymbolInfo  si = { "" };
 	GroupConfigInfo grp{};
 	SymbolsValue sv{};
 	//get symbol info about the ask and bid. add by wzp 2018-08-01
-	if (!GetSymbolInfo(msg.info().trade().symbol(), sv)){
+	if (!GetSymbolInfo(info->symbol, sv)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (!GetAskBidInfo(msg.info().trade().symbol(), sv)) CaculateSpreadForPump: order_id:" << info->order);
 		return false;
 	}
 	//get the group info about the spread info. add by wzp 2018-08-01
-	if (!m_GroupConfigInfo.Get(msg.info().group(), grp)){
+	if (!m_GroupConfigInfo.Get(group, grp)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "CaculateSpreadForPump: order_id:" << info->order);
 		OutputDebugString("ERR:CaculateSpreadForPump");
 		return false;
 	}
 
 	double spread_diff = grp.secgroups[sv.type].spread_diff;
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id: " << info->order << " grp.secgroups[sv.type].spread_diff " << spread_diff);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id: " << info->order << " grp.secgroups[sv.type].spread_diff: " << spread_diff);
 	if (spread_diff != 0){
 		//TT_BR_ORDER_ACTIVATE
-		int cmd = msg.info().trade().cmd();
-		unsigned int type = msg.info().trade().type();
+		int cmd = info->cmd;
+		unsigned int type = info->type;
 		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "order_id: " << info->order << " cmd: " << cmd << " type: " << type);
 		if ((cmd == OP_BUY && type == TT_BR_ORDER_OPEN ) ||
 			((cmd == OP_BUY_LIMIT || cmd == OP_BUY_STOP) && type == TT_BR_ORDER_ACTIVATE) ||
@@ -1554,7 +1767,7 @@ bool DealerService::GetSymbolInfo(const string &symbol, SymbolsValue &sv){
 		
 		m_Symbols.Add(symbol, SymbolsValue{ si.type, si.point, si.digits });
 	} else{
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmp.type:" << sv.type << ",tmp.point:" << sv.point << ",tmp.digits:" << sv.digits);
+	//	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tmp.type:" << sv.type << ",tmp.point:" << sv.point << ",tmp.digits:" << sv.digits);
 	}
 
 	return true;
@@ -1641,7 +1854,7 @@ bool DealerService::CaculateAskBidAndSpread(RequestInfo &req, bool flag)
 
 	//modify order and other don't submit order to bridge.
 	if (!flag || req.prices[0] == 0.0 || req.prices[1] == 0.0){
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "if (!flag || req.prices[0] == 0.0 || req.prices[1] == 0.0)");
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "if (flag=" << flag << " || req.prices[0] = " << req.prices[0] << " || req.prices[1] =" << req.prices[1] << ")");
 		if (!GetSiInfo(req.trade.symbol, si)){
 			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (!GetSiInfo(req.trade.symbol, si))");
 			return false;
@@ -1653,7 +1866,7 @@ bool DealerService::CaculateAskBidAndSpread(RequestInfo &req, bool flag)
 		//sprintf(tmp, "req.prices[0]:%lf,req.prices[1]:%lf", req.prices[0], req.prices[1]);
 	}
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "begin req.prices[0]:" << req.prices[0] << ",req.prices[1]:" << req.prices[1] << ",req.trade.price:" << req.trade.price);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "spread caculate begin:req.id=" << req.id <<" req.trade.order="<< req.trade.order<<" req.prices[0]:" << req.prices[0] << ",req.prices[1]:" << req.prices[1] << ",req.trade.price:" << req.trade.price);
 	if (!m_GroupConfigInfo.Get(req.group, tmpGrp)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "m_GroupConfigInfo: get the group info error: " << req.group);
 		return false;
@@ -1679,7 +1892,7 @@ bool DealerService::CaculateAskBidAndSpread(RequestInfo &req, bool flag)
 		}
 	}
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "end req.prices[0]:" << req.prices[0] << ",req.prices[1]:" << req.prices[1] << ",req.trade.price:" << req.trade.price);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "spread caculate end:req.id=" << req.id << " req.trade.order=" << req.trade.order << " req.prices[0]:" << req.prices[0] << ",req.prices[1]:" << req.prices[1] << ",req.trade.price:" << req.trade.price);
 	return true;
 }
 
@@ -1692,12 +1905,12 @@ double __fastcall NormalizeDouble(const double val, int digits)
 	return((val >= 0.0) ? (double(__int64(val*p + 0.5000001)) / p) : (double(__int64(val*p - 0.5000001)) / p));
 }
 
-bool DealerService::TransferRecordToProto(const TradeRecord &record, dealer::RequestInfo *msg, unsigned int type, string comment){
+bool DealerService::TransferRecordToProto(const TradeRecord &record,const string &grp, dealer::RequestInfo *msg, unsigned int type, string comment){
 	msg->set_login(record.login);
 	//---Begin---get ABOOK or BBOOK type --------add by wzp 2018-06-21
-	string strTmp = GetUserGroup(record.login);
-	msg->set_group(strTmp);
-	msg->set_group_type(GetGroupType(strTmp));
+	//string strTmp = GetUserGroup(record.login);
+	msg->set_group(grp);
+	msg->set_group_type(GetGroupType(grp));
 	//---End---get ABOOK or BBOOK type ---------add by wzp 2018-06-21
 	msg->mutable_trade()->set_type(type);
 	msg->mutable_trade()->set_order(record.order);
@@ -1735,7 +1948,7 @@ bool DealerService::TransferRecordToProto(const TradeRecord &record, dealer::Req
 	//i need apend the comment info to comment tail.
 	//begin------stop out comment added------ by wzp 2018-06-27
 	if (record.activation == ACTIVATION_STOPOUT){
-		tmp = GetMarginInfo(record, strTmp);
+		tmp = GetMarginInfo(record, grp);
 	} else {
 		tmp = comment;//modify by wzp
 	}
@@ -1802,12 +2015,12 @@ bool  DealerService::TransferMsgToProto(dealer::RequestInfo *msg)
 int DealerService::GetGroupType(const string group){
 	//int flag = 0;
 	if (JudgeRegex(m_ARegexArray, group)){
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Abook" << group);
+		//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Abook" << group);
 		return A_BOOK;
 	}
 
 	if (JudgeRegex(m_BRegexArray, group)){
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Bbook" << group);
+		//LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Bbook" << group);
 		return B_BOOK;
 	}
 
@@ -2009,6 +2222,7 @@ static int gettimeofday(struct timeval* tv)
 	return (0);
 }
 
+//获取1970年至今UTC的微秒数
 static time_t GetUtcCaressing()
 {
 	timeval tv;
