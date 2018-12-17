@@ -1351,7 +1351,13 @@ void DealerService::DeleteOrderRecord(){
 bool DealerService::ProcessMsgDown(){
 	zmq::socket_t Server = zmq::socket_t(m_context, ZMQ_REP);
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "tcp://*:" + m_config["local_port"]);
-	Server.bind("tcp://*:" + m_config["local_port"]);
+	try{
+		Server.bind("tcp://*:" + m_config["local_port"]);
+	}
+	catch (std::exception e){
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Server.bind error! " << e.what());
+	}
+	
 	dealer::resp_msg msg{};
 
 	while (1) {
