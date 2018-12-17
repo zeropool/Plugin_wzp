@@ -180,6 +180,8 @@ DealerService::DealerService(const string &lib_path, const string abook, const s
 m_ExtDealer(NULL), m_ExtManagerPump(NULL), m_ExtManager(NULL), m_ExtManager_bak(NULL), m_TradeRecord(NULL)
 	,m_context(1)//, m_socket(m_context, ZMQ_DEALER)
 {
+	m_socket_dealer = NULL;
+	m_socket_pump = NULL;
 	vector<string> m_abook = split(abook, ";");
 	vector<string> m_bbook = split(bbook, ";");
 	vector<string> m_symbols = split(symbols, ";");
@@ -496,7 +498,7 @@ void DealerService::PumpProcessTradeOrder(int code ,int type, void *data){
 		if (send_flag){
 			OutputDebugString("BEGIN:PUMP_UPDATE_TRADES");
 			
-			if (!SendDataToBridge(&info)){
+			if (!SendDataToBridge(&info, &m_socket_pump)){
 				OutputDebugString("SendDataToBridge failed!");
 				LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"SendDataToBridge failed!");
 				DealerService::GetInstance()->SendWarnMail("ERROR", "SendDataToBridge");
@@ -794,7 +796,7 @@ bool DealerService::PumpProcessOtherOrder(int type, dealer::RequestInfo *info)
 			PrintRecord(m_TradeRecord[i], grp);
 			//send msg to bridge
 			if (send_flag){
-				if (!SendDataToBridge(info)){
+				if (!SendDataToBridge(info, &m_socket_pump)){
 					OutputDebugString("ERR:SendDataToBridge failed!");
 				}
 
@@ -978,7 +980,7 @@ void DealerService::ProcessMsgUp(){
 
 	m_Reqs.Add(m_req.id, ReqValue{ m_req, GetUtcCaressing() });//add by wzp 2018-11-28 record the request info.
 	//send data to bridge
-	if (!SendDataToBridge(&data)){
+	if (!SendDataToBridge(&data, &m_socket_dealer)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger,"ProcessMsgUp:send data to bridge failed!");
 		OutputDebugString("ERR:ProcessMsgUp:send data failed!");
 	}
@@ -1062,8 +1064,17 @@ zmq::socket_t * DealerService::CreateClientSocket(zmq::context_t & context) {
 	return client;
 }
 
-bool  DealerService::SendDataToBridge(dealer::RequestInfo *msg){
-	zmq::socket_t *Client = CreateClientSocket(m_context);
+bool  DealerService::SendDataToBridge(dealer::RequestInfo *msg, zmq::socket_t **Client){
+	if (Client == NULL){
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "if (Client == NULL){");
+		return false;
+	}
+
+	if ((*Client) == NULL){
+		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Init *Client = CreateClientSocket(m_context)");
+		*Client = CreateClientSocket(m_context);
+	}
+	//zmq::socket_t *Client = CreateClientSocket(m_context);
 	int retries_left = REQUEST_RETRIES;
 	//encode msg process
 	string request;
@@ -1072,29 +1083,28 @@ bool  DealerService::SendDataToBridge(dealer::RequestInfo *msg){
 	string strsequence = sequence.str();
 	msg->SerializeToString(&request);
 	//send msg to server.
-	if (!s_send(*Client, request)){
+	if (!s_send(**Client, request)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "s_send(*Client, request.str()))");
-	//	std::cout << "s_send(*Client, request.str()))" << std::endl;
 	}
 	//begin recv reply msg from sever.
 	bool expect_reply = true;
 
 	while (expect_reply) {
 		//  Poll socket for a reply, with timeout
-		zmq::pollitem_t Items[] = { { *Client, 0, ZMQ_POLLIN, 0 } };
+		zmq::pollitem_t Items[] = {{ **Client, 0, ZMQ_POLLIN, 0 }};
 		zmq::poll(&Items[0], 1, REQUEST_TIMEOUT);
 
 		//  If we got a reply, process it
 		if (Items[0].revents & ZMQ_POLLIN) {
 			//  We got a reply from the server, must match sequence
-			string reply = s_recv(*Client);
+			string reply = s_recv(**Client);
 
 			if (reply == strsequence) {
 				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "I: server replied OK (" << reply << ")");
 			//	std::cout << "I: server replied OK (" << reply << ")" << std::endl;
 				//	retries_left = REQUEST_RETRIES;
 				expect_reply = false;
-				delete Client;
+			//	delete Client;
 				return true;
 			} else {
 				//std::cout << "E: malformed reply from server: " << reply << std::endl;
@@ -1109,17 +1119,17 @@ bool  DealerService::SendDataToBridge(dealer::RequestInfo *msg){
 		//	std::cout << "W: no response from server, retrying..." << std::endl;
 			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "W: no response from server, retrying...");
 			//  Old socket will be confused; close it and open a new one
-			delete Client;
-			Client = CreateClientSocket(m_context);
+			delete (*Client);
+			(*Client) = CreateClientSocket(m_context);
 			//  Send request again, on new socket
-			if (!s_send(*Client, request)){
+			if (!s_send(**Client, request)){
 				//std::cout << "s_send(*Client, request.str()))" << std::endl;
 				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "s_send(*Client, request.str()))");
 			}
 		}
 	}
 
-	delete Client;
+//	delete Client;
 	return false;
 }
 
@@ -1354,7 +1364,7 @@ bool DealerService::ProcessMsgDown(){
 		} else {
 			stringstream sequence;
 			sequence << msg.info().id()<< "_"<< msg.info().trade().order();
-
+			//reply to client bridge
 			s_send(Server, sequence.str());
 
 			if (!SendDataToMT4(msg)){	//send info to MT4
@@ -1866,7 +1876,7 @@ bool DealerService::CaculateAskBidAndSpread(RequestInfo &req, bool flag)
 		//sprintf(tmp, "req.prices[0]:%lf,req.prices[1]:%lf", req.prices[0], req.prices[1]);
 	}
 
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "spread caculate begin:req.id=" << req.id <<" req.trade.order="<< req.trade.order<<" req.prices[0]:" << req.prices[0] << ",req.prices[1]:" << req.prices[1] << ",req.trade.price:" << req.trade.price);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "spread caculate begin:req.id=" << req.id <<"req.trade.order="<< req.trade.order<<" req.prices[0]:" << req.prices[0] << ",req.prices[1]:" << req.prices[1] << ",req.trade.price:" << req.trade.price);
 	if (!m_GroupConfigInfo.Get(req.group, tmpGrp)){
 		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "m_GroupConfigInfo: get the group info error: " << req.group);
 		return false;

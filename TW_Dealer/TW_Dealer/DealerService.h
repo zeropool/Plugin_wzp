@@ -171,7 +171,9 @@ private:
 	
 	//Bridge relationship info
 	//zmq::context_t					m_context;
-	//zmq::socket_t						m_socket;
+	zmq::socket_t						*m_socket_dealer;
+	zmq::socket_t						*m_socket_pump;
+	//zmq::socket_t						m_socket_bridge;
 	zmq::context_t						m_context;
 
 	//singleton mode
@@ -247,7 +249,7 @@ private:
 	DealerService(const string &lib_path, const string abook, const string bbook, const string symbols);
 	//send data  
 	zmq::socket_t * DealerService::CreateClientSocket(zmq::context_t & context);
-	bool SendDataToBridge(dealer::RequestInfo *send_buf);
+	bool SendDataToBridge(dealer::RequestInfo *msg, zmq::socket_t **Client);
 	bool SendDataToMT4(const dealer::resp_msg &ret);
 	bool DealerSendDataToMT4(const dealer::resp_msg &ret);
 	bool DealerSend(RequestInfo &info, const int finish_status);
