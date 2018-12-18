@@ -1052,7 +1052,7 @@ bool DealerService::BusinessJudge(RequestInfo *req){
 //}
 //create socket  add by wzp 2018-12-07
 zmq::socket_t * DealerService::CreateClientSocket(zmq::context_t & context) {
-	std::cout << "I: connecting to server..." << std::endl;
+	LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "I: connecting to server...");
 	zmq::socket_t * client = new zmq::socket_t(context, ZMQ_REQ);
 	string tmp_addr = "tcp://" + m_config["bridge_ip"] + ":" + m_config["bridge_port"];
 	client->connect(tmp_addr);
@@ -1066,12 +1066,12 @@ zmq::socket_t * DealerService::CreateClientSocket(zmq::context_t & context) {
 
 bool  DealerService::SendDataToBridge(dealer::RequestInfo *msg, zmq::socket_t **Client){
 	if (Client == NULL){
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "if (Client == NULL){");
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "if (Client == NULL){");
 		return false;
 	}
 
 	if ((*Client) == NULL){
-		LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "Init *Client = CreateClientSocket(m_context)");
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Init *Client = CreateClientSocket(m_context)");
 		*Client = CreateClientSocket(m_context);
 	}
 	//zmq::socket_t *Client = CreateClientSocket(m_context);
@@ -1101,29 +1101,27 @@ bool  DealerService::SendDataToBridge(dealer::RequestInfo *msg, zmq::socket_t **
 
 			if (reply == strsequence) {
 				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "I: server replied OK (" << reply << ")");
-			//	std::cout << "I: server replied OK (" << reply << ")" << std::endl;
-				//	retries_left = REQUEST_RETRIES;
 				expect_reply = false;
-			//	delete Client;
+			//	m.unlock();
 				return true;
 			} else {
-				//std::cout << "E: malformed reply from server: " << reply << std::endl;
 				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "E: malformed reply from server: ");
 			}
 		} else if (--retries_left == 0) {
-			//std::cout << "E: server seems to be offline, abandoning" << std::endl;
 			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "E: server seems to be offline, abandoning");
+			//if last time send data to bridge failed i need delete this client. add by pain 2018-12-18
+			delete (*Client);
+			(*Client) = NULL;
 			expect_reply = false;
 			break;
 		} else {
-		//	std::cout << "W: no response from server, retrying..." << std::endl;
 			LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "W: no response from server, retrying...");
 			//  Old socket will be confused; close it and open a new one
 			delete (*Client);
+			
 			(*Client) = CreateClientSocket(m_context);
 			//  Send request again, on new socket
 			if (!s_send(**Client, request)){
-				//std::cout << "s_send(*Client, request.str()))" << std::endl;
 				LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "s_send(*Client, request.str()))");
 			}
 		}
