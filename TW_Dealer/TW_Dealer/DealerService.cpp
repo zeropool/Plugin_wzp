@@ -977,7 +977,7 @@ void DealerService::ProcessMsgUp(){
 		memset(&m_req, 0, sizeof(struct RequestInfo));
 		return;
 	}
-
+	 
 	m_Reqs.Add(m_req.id, ReqValue{ m_req, GetUtcCaressing() });//add by wzp 2018-11-28 record the request info.
 	//send data to bridge
 	if (!SendDataToBridge(&data, &m_socket_dealer)){
