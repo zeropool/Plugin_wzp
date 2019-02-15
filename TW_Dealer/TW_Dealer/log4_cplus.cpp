@@ -33,9 +33,9 @@ DealerLog::DealerLog(const string &path){
 	initialize(path);
 }
 
-void PrintResponse(const int finish_status, const RequestInfo *req){
+void PrintResponse(const dealer::resp_msg &ret, const RequestInfo *req){
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "---Begin----------------PrintResponse-----------------------");
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "ret.finish_status:" << finish_status);
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "ret.finish_status:" << ret.finish_status());
 	PrintRequest(req);
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "---End------------------PrintResponse-----------------------");
 }
@@ -59,9 +59,9 @@ void PrintTradeInfo(const TradeTransInfo *trade){
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "end--------------TradeTransInfo--------------------------");
 }
 
-void PrintRecord(const TradeRecord &record,const string &grp){
+void PrintRecord(const TradeRecord &record){
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "---begin----------------TradeRecord-----------------------");
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "record:{ group:" << grp <<
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "record:{ " <<
 		" order: " << record.order << " login:" << record.login << " symbol:" << record.symbol <<
 		" digits:" << record.digits << " cmd:" << record.cmd << " volume:" << record.volume << " open_time: " << record.open_time <<
 		" state: " << record.state << " open_price: " << record.open_price << " sl: " << record.sl << " tp: " << record.tp <<

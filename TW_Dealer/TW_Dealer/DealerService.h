@@ -5,13 +5,11 @@
 #include <mutex>
 #include <stack>
 #include "zmq.hpp"
-#include "zhelpers.hpp"
 #include "MT4ManagerAPI.h"
 #include "msg_define_new.pb.h"
 #include "get_config.h"
 #include "log4_cplus.h"
 #include "curl/curl.h"
-
 using namespace std;
 //define bridge ret message
 #define SEND 1
@@ -30,12 +28,8 @@ using namespace std;
 #define METAL	"METAL"
 #define ENERGY	"ENERGY"
 #define CFD		"CFD"
-//bridge connection a
-#define REQUEST_RETRIES     3       //  Before we abandon
-#define REQUEST_TIMEOUT     2500    //  msecs, (> 1000!)
 
 #define TIME_GAP      5000000
-#define TIME_REQ_GAP  5000000
 #define TIME_GAP_FAIL 60000000
 
 #define REX_FX		"^(AUD|CAD|CHF|EUR|GBP|NZD|USD)[\\s\\S]*"
@@ -62,17 +56,10 @@ static const double ExtDecimalArray[9] = { 1.0, 10.0, 100.0, 1000.0, 10000.0, 10
 //ReadConfig("test.cfg", m);
 //extern map<string, string> m_config; // config file add by wzp
 struct OrderValue{
-	//int              OrderNum;              // order number
+	int              OrderNum;              // order number
 	time_t			 timestrap;             // time strap
 	int				 status;				//status 0.doing 1.failed 2.done.
-	string			 grp_name;
-	//int				 activation;			
-	TradeRecord      rec;
-};
-
-struct ReqValue{
-	RequestInfo      ReqInfo;              // order number
-	time_t			 timestrap;             // time strap
+	int				 activation;			
 };
 
 struct SymbolsValue{
@@ -134,17 +121,6 @@ template <class K, class V> struct MutexMap{
 		m_mutex.unlock();
 	}
 
-	bool IsExit(const K &key){
-		bool ret = false;
-		m_mutex.lock();
-		if (m_queue.find(key) != m_queue.end()){
-			ret = true;
-		}
-		m_mutex.unlock();
-
-		return ret;
-	}
-
 	// add empty() judge for MutexMap add by wzp.
 	bool Empty(){
 		m_mutex.lock();
@@ -170,11 +146,8 @@ private:
 	//vector<string>					m_symbols;
 	
 	//Bridge relationship info
-	//zmq::context_t					m_context;
-	zmq::socket_t						*m_socket_dealer;
-	zmq::socket_t						*m_socket_pump;
-	//zmq::socket_t						m_socket_bridge;
-	zmq::context_t						m_context;
+	zmq::context_t					m_context;
+	zmq::socket_t					m_socket;
 
 	//singleton mode
 	static DealerService			    *m_DealerService;
@@ -183,7 +156,6 @@ private:
 	MutexMap<string, SymbolsValue>	     m_Symbols;
 
 	MutexMap<int, OrderValue>			 m_Orders;
-	MutexMap<int, ReqValue>			     m_Reqs; //add by wzp 2018-11-28
 	MutexMap<string, int>				 m_SplitOrders;
 	MutexMap<string, SymbolConfigInfo>   m_SymbolConfigInfo;
 	MutexMap<string, GroupConfigInfo>	 m_GroupConfigInfo;
@@ -224,7 +196,7 @@ public:
 	bool Mt4PumpReconnection();
 	bool Mt4DirectReconnection();
 
-	//bool CreateBridgeLink();
+	bool CreateBridgeLink();
 	//init and create thread .
 	bool SwitchMode();
 	void InitThread();
@@ -248,15 +220,14 @@ private:
 	//construct 
 	DealerService(const string &lib_path, const string abook, const string bbook, const string symbols);
 	//send data  
-	zmq::socket_t * DealerService::CreateClientSocket(zmq::context_t & context);
-	bool SendDataToBridge(dealer::RequestInfo *msg, zmq::socket_t **Client);
+	bool SendDataToBridge(dealer::RequestInfo *send_buf);
 	bool SendDataToMT4(const dealer::resp_msg &ret);
 	bool DealerSendDataToMT4(const dealer::resp_msg &ret);
-	bool DealerSend(RequestInfo &info, const int finish_status);
-	bool DealerReject(const int id);
-	bool DealerReset(const int id);
+	bool DealerSend(const dealer::resp_msg &ret);
+	bool DealerReject(const dealer::resp_msg &ret);
+	bool DealerReset(const dealer::resp_msg &ret);
 	bool PumpSendDataToMT4(const dealer::resp_msg &ret);
-	bool PumpSendDataToMT4(const TradeRecord &record, UCHAR type,const string &group);
+	bool PumpSendDataToMT4(const TradeRecord &record);
 	void InitSymbolType();
 	bool FilterSplitOrder(const dealer::resp_msg *msg);
 	bool JudgeRegex(MutexMap<int, SymbolGroupRegex> &regexArray,const string &info);
@@ -272,14 +243,14 @@ private:
 
 	//get spread info 
 	bool CaculateSpread(const SymbolInfo  &si, RequestInfo &m_req, bool flag);
-	bool CaculateSpreadForPump(TradeTransInfo *info,const string &grp);
+	bool CaculateSpreadForPump(TradeTransInfo *info, const dealer::resp_msg &msg);
 	bool CaculateAskBidAndSpread(RequestInfo &m_req, bool flag = true);
 //	bool GetSpreadAndAskBidInfo(const string &symbol, const string &group, SymbolInfo &si, double &spread_diff);
 	bool GetSymbolInfo(const string &symbol, SymbolsValue &sv);
 	//protocbuf and Mt4 msg type transfer 
 	//MT4 msg -> Protoc msg
 	bool TransferMsgToProto(dealer::RequestInfo *msg);
-	bool TransferRecordToProto(const TradeRecord &record,const string &grp, dealer::RequestInfo *msg, unsigned int  type, string comment);
+	bool TransferRecordToProto(const TradeRecord &record, dealer::RequestInfo *msg, unsigned int  type, string comment);
 	//Protoc msg -> MT4 msg
 	bool TransferProtoToMsg(const dealer::resp_msg *msg);
 	bool TransferProtoToTrade(TradeTransInfo *info, const dealer::resp_msg &msg);
@@ -290,15 +261,14 @@ private:
 
 	//connection pool switch
 	void SwitchConnection();
-	bool PumpProcessManagerOrder(TradeRecord * trade, dealer::RequestInfo *info, const int type);
+	bool PumpProcessManagerOrder(const TradeRecord * trade, dealer::RequestInfo *info, const int type);
 	bool PumpProcessOtherOrder(int type, dealer::RequestInfo *info);
 	bool MakeNewOrderForClient(const TradeTransInfo &rec,const int &login);
 
 	//process the sl or tp so order repeat send to dealer.
-	bool FilterRepeatOrder(const TradeRecord &rec, string &grp);
+	bool FilterRepeatOrder(const TradeRecord &rec);
 	void DeleteOrderRecord();
 	void ModifyOrderRecord(const int &OrderNum, const int &status);
-	void CheckDealerReqInfo();
 };
 
 

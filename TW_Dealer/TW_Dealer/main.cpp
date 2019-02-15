@@ -90,6 +90,12 @@ int start_service(){
 		OutputDebugString("ERR:MT4 :GetInstance()->CreateMT4Link failed");
 		return 0;
 	}
+	//create bridge link:Note good
+	if (!DealerService::GetInstance()->CreateBridgeLink()){
+		LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "Bridge:GetInstance()->CreateBridgeLink failed");
+		OutputDebugString("ERR:Bridge:GetInstance()->CreateBridgeLink failed");
+		return 0;
+	}
 
 	//init thread note:read message from bridge then send the message to mt4
 	DealerService::GetInstance()->InitThread();
@@ -102,6 +108,7 @@ int start_service(){
 
 
 int main(int argc, char *argv[]){
+	//start_service();
 
 	SERVICE_TABLE_ENTRY entrytable[2];
 
@@ -115,5 +122,6 @@ int main(int argc, char *argv[]){
 
 	StartServiceCtrlDispatcher(entrytable);
 
+	//system("pause");
 	return 0;
 }
