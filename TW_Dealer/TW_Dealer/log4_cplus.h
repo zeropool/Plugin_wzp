@@ -5,6 +5,7 @@
 #include <log4cplus/ndc.h>
 #include <log4cplus/helpers/loglog.h>
 #include <log4cplus/helpers/property.h>
+#pragma once
 #include <log4cplus/loggingmacros.h>
 #include <log4cplus/initializer.h>
 #include <string.h>
@@ -13,12 +14,13 @@
 #include "MT4ManagerAPI.h"
 #include "msg_define_new.pb.h"
 
+void PrintRequest(const RequestInfo *req);
+void PrintResponse(const dealer::resp_msg &ret, const RequestInfo *req);
+void PrintRecord(const TradeRecord &record);
+void PrintTradeInfo(const TradeTransInfo *trade);
+
 using namespace log4cplus;
 using namespace std;
-void PrintRequest(const RequestInfo *req);
-void PrintResponse(const int finish_status, const RequestInfo *req);
-void PrintTradeInfo(const TradeTransInfo *trade);
-void PrintRecord(const TradeRecord &record, const string &group);
 
 const int LOOP_COUNT = 20000;
 
