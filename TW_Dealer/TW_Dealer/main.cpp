@@ -108,9 +108,9 @@ int start_service(){
 
 
 int main(int argc, char *argv[]){
-	//start_service();
+	start_service();
 
-	SERVICE_TABLE_ENTRY entrytable[2];
+	/*SERVICE_TABLE_ENTRY entrytable[2];
 
 	entrytable[0].lpServiceName = "DealerService";
 
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]){
 
 	entrytable[1].lpServiceProc = NULL;
 
-	StartServiceCtrlDispatcher(entrytable);
+	StartServiceCtrlDispatcher(entrytable);*/
 
 	//system("pause");
 	return 0;

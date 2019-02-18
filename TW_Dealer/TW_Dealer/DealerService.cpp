@@ -846,8 +846,6 @@ void DealerService::CheckPumpActivateReqInfo()
 
 		if ((now - (iter->second.timestrap)) >= TIME_REQ_GAP){
 			LOG4CPLUS_ERROR(DealerLog::GetInstance()->m_Logger, "PumpActivate: now - iter->second.timestrap >= TIME_REQ_GAP");
-			m_ActivateReqs.m_mutex.unlock();
-			
 			
 			int res = m_ExtManager->TradeTransaction(&(iter->second.ReqInfo.trade));
 			if (RET_OK != res){
@@ -859,10 +857,7 @@ void DealerService::CheckPumpActivateReqInfo()
 					m_ExtManager_mutex.unlock();
 				}
 			}
-			m_ActivateReqs.Delete(iter->first);
 			ModifyOrderRecord(iter->second.ReqInfo.trade.order, 2);
-			m_ActivateReqs.m_mutex.lock();
-
 
 			st.push(iter->first);
 			Flag = true;
