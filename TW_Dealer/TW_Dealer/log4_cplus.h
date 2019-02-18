@@ -15,7 +15,7 @@
 #include "msg_define_new.pb.h"
 
 void PrintRequest(const RequestInfo *req);
-void PrintResponse(const dealer::resp_msg &ret, const RequestInfo *req);
+void PrintResponse(const int finish_status, const RequestInfo *req);
 void PrintRecord(const TradeRecord &record);
 void PrintTradeInfo(const TradeTransInfo *trade);
 

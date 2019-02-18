@@ -33,9 +33,9 @@ DealerLog::DealerLog(const string &path){
 	initialize(path);
 }
 
-void PrintResponse(const dealer::resp_msg &ret, const RequestInfo *req){
+void PrintResponse(const int finish_status, const RequestInfo *req){
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "---Begin----------------PrintResponse-----------------------");
-	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "ret.finish_status:" << ret.finish_status());
+	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "ret.finish_status:" << finish_status);
 	PrintRequest(req);
 	LOG4CPLUS_INFO(DealerLog::GetInstance()->m_Logger, "---End------------------PrintResponse-----------------------");
 }

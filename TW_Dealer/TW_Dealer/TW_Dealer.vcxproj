@@ -109,6 +109,7 @@
     <Link>
       <AdditionalDependencies>ws2_32.lib;libcurl.lib;wldap32.lib;libprotobuf.lib;libprotobuf-lite.lib;libzmq-v120-mt-4_0_4.lib;log4cplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Package\curl-7.61.0-win64;..\Package\log4cplusInterface;..\Package\ZeroMQ 4.0.4\lib;..\Package\protocbuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

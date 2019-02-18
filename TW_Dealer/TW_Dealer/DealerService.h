@@ -30,6 +30,7 @@ using namespace std;
 #define CFD		"CFD"
 
 #define TIME_GAP      5000000
+#define TIME_REQ_GAP  5000000
 #define TIME_GAP_FAIL 60000000
 
 #define REX_FX		"^(AUD|CAD|CHF|EUR|GBP|NZD|USD)[\\s\\S]*"
@@ -90,6 +91,11 @@ struct GroupConfigInfo{
 	ConGroupSec  secgroups[MAX_SEC_GROUPS];//record the spread info.
 };
 
+struct ReqValue{
+	RequestInfo      ReqInfo;              // order number
+	time_t			 timestrap;             // time strap
+};
+
 
 template <class K, class V> struct MutexMap{
 	map<K, V> m_queue;
@@ -119,6 +125,17 @@ template <class K, class V> struct MutexMap{
 			 m_queue.erase(key);
 		}
 		m_mutex.unlock();
+	}
+
+	bool IsExit(const K &key){
+		bool ret = false;
+		m_mutex.lock();
+		if (m_queue.find(key) != m_queue.end()){
+			ret = true;
+		}
+		m_mutex.unlock();
+
+		return ret;
 	}
 
 	// add empty() judge for MutexMap add by wzp.
@@ -156,6 +173,8 @@ private:
 	MutexMap<string, SymbolsValue>	     m_Symbols;
 
 	MutexMap<int, OrderValue>			 m_Orders;
+	MutexMap<int, ReqValue>			     m_Reqs; //add by wzp 2018-11-28
+	MutexMap<int, ReqValue>              m_ActivateReqs;
 	MutexMap<string, int>				 m_SplitOrders;
 	MutexMap<string, SymbolConfigInfo>   m_SymbolConfigInfo;
 	MutexMap<string, GroupConfigInfo>	 m_GroupConfigInfo;
@@ -223,9 +242,10 @@ private:
 	bool SendDataToBridge(dealer::RequestInfo *send_buf);
 	bool SendDataToMT4(const dealer::resp_msg &ret);
 	bool DealerSendDataToMT4(const dealer::resp_msg &ret);
-	bool DealerSend(const dealer::resp_msg &ret);
-	bool DealerReject(const dealer::resp_msg &ret);
-	bool DealerReset(const dealer::resp_msg &ret);
+	/*bool DealerSend(const dealer::resp_msg &ret);*/
+	bool DealerSend(RequestInfo &info, const int finish_status);
+	bool DealerReject(const int id);
+	bool DealerReset(const int id);
 	bool PumpSendDataToMT4(const dealer::resp_msg &ret);
 	bool PumpSendDataToMT4(const TradeRecord &record);
 	void InitSymbolType();
@@ -269,6 +289,10 @@ private:
 	bool FilterRepeatOrder(const TradeRecord &rec);
 	void DeleteOrderRecord();
 	void ModifyOrderRecord(const int &OrderNum, const int &status);
+	//regularly check and delete order
+	void CheckDealerReqInfo();
+	void CheckPumpActivateReqInfo();
+	bool ProtoReq2MT4Req(const dealer::RequestInfo * const in, RequestInfo& out);
 };
 
 
