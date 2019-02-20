@@ -3,8 +3,7 @@
 #include <time.h>
 #include <regex>
 #include <sys/timeb.h>
-#include <thread>
-#include <chrono>
+
 using namespace std;
 
 static int Count = 0;//record the dealer add by wzp process order 
@@ -1311,7 +1310,7 @@ bool DealerService::ProcessMsgDown()
 	zmq::pollitem_t items[] = { { m_socket, 0, ZMQ_POLLIN, 100 } };
 
 	while (true){
-		zmq::poll(items, 1, 0);
+		zmq::poll(items, 1, 100);
 
 		if (items[0].revents & ZMQ_POLLIN){
 			bool res = m_socket.recv(&request);

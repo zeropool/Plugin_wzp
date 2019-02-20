@@ -1,0 +1,818 @@
+[2019-02-19 05:00:25,131.682] [8864] INFO  - m_ExtManager reconnect the link
+ [2019-02-19 10:38:30,921.901] [6100] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 10:38:30,922.875] [6100] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 10:38:31,038.127] [6100] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 10:38:31,038.127] [6100] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 10:38:31,038.127] [6100] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 10:38:31,038.127] [6100] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 10:38:31,039.096] [6100] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 10:38:31,039.096] [6100] INFO  - m_ExtDealer == NULL
+ [2019-02-19 10:38:31,039.096] [6100] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 10:38:31,039.096] [6100] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 10:38:31,039.096] [6100] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 10:38:31,461.973] [9128] INFO  - begin curl:
+ [2019-02-19 10:38:31,461.973] [9128] INFO  - mid curl:
+ [2019-02-19 10:38:31,484.428] [8516] INFO  - PUMP_START_PUMPING
+ [2019-02-19 10:38:31,484.428] [8516] INFO  - begin curl:
+ [2019-02-19 10:38:31,484.428] [8516] INFO  - mid curl:
+ [2019-02-19 10:38:31,577.201] [9128] INFO  - end curl:
+ [2019-02-19 10:38:31,577.201] [9128] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 10:38:31,577.201] [9128] INFO  - DEAL_START_DEALING
+ [2019-02-19 10:38:31,591.846] [8516] INFO  - end curl:
+ [2019-02-19 10:38:31,591.846] [8516] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 10:42:58,261.655] [9128] INFO  - begin curl:
+ [2019-02-19 10:42:58,261.655] [9128] INFO  - mid curl:
+ [2019-02-19 10:42:58,263.598] [9128] INFO  - end curl:
+ [2019-02-19 10:42:58,263.598] [9128] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 10:42:58,263.598] [9128] INFO  - DEAL_STOP_DEALING
+ [2019-02-19 10:42:58,295.820] [8516] INFO  - begin curl:
+ [2019-02-19 10:42:58,295.820] [8516] INFO  - mid curl:
+ [2019-02-19 10:42:58,296.796] [8516] INFO  - end curl:
+ [2019-02-19 10:42:58,296.796] [8516] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 10:42:58,296.796] [8516] INFO  - PUMP_STOP_PUMPING
+ [2019-02-19 10:42:59,598.548] [3040] INFO  - begin curl:
+ [2019-02-19 10:42:59,598.548] [3040] INFO  - mid curl:
+ [2019-02-19 10:42:59,599.522] [3040] INFO  - end curl:
+ [2019-02-19 10:42:59,599.522] [3040] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 10:42:59,599.522] [3040] ERROR - m_ExtManagerPump reconnect the link
+ [2019-02-19 10:43:02,955.957] [8940] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 10:43:02,956.937] [8940] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - m_ExtDealer == NULL
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 10:43:03,075.081] [8940] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 10:43:04,601.437] [3040] ERROR - Connect MT4: connect failed. errcode:No connection
+ [2019-02-19 10:43:08,081.885] [8940] ERROR - Connect MT4: connect failed. errcode:No connection
+ [2019-02-19 10:43:09,608.589] [3040] ERROR - Connect MT4: connect failed. errcode:No connection
+ [2019-02-19 10:43:13,085.763] [8940] ERROR - Connect MT4: connect failed. errcode:No connection
+ [2019-02-19 10:43:18,090.627] [8940] ERROR - Connect MT4: connect failed. errcode:No connection
+ [2019-02-19 10:43:23,095.426] [8940] ERROR - Connect MT4: connect failed. errcode:No connection
+ [2019-02-19 10:43:28,100.180] [8940] ERROR - Connect MT4: connect failed. errcode:No connection
+ [2019-02-19 10:43:28,403.879] [4540] INFO  - begin curl:
+ [2019-02-19 10:43:28,403.879] [4540] INFO  - mid curl:
+ [2019-02-19 10:43:28,405.832] [4540] INFO  - end curl:
+ [2019-02-19 10:43:28,405.832] [4540] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 10:43:28,405.832] [4540] INFO  - DEAL_START_DEALING
+ [2019-02-19 10:43:28,429.272] [2000] INFO  - PUMP_START_PUMPING
+ [2019-02-19 10:43:28,429.272] [2000] INFO  - begin curl:
+ [2019-02-19 10:43:28,429.272] [2000] INFO  - mid curl:
+ [2019-02-19 10:43:28,431.234] [2000] INFO  - end curl:
+ [2019-02-19 10:43:28,431.234] [2000] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 10:43:29,241.833] [2212] INFO  - m_ExtManager reconnect the link
+ [2019-02-19 11:56:28,547.261] [7024] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 11:56:28,551.169] [7024] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 11:56:28,672.292] [7024] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 11:56:28,672.292] [7024] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 11:56:28,672.292] [7024] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 11:56:28,673.262] [7024] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 11:56:28,673.262] [7024] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 11:56:28,673.262] [7024] INFO  - m_ExtDealer == NULL
+ [2019-02-19 11:56:28,674.242] [7024] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 11:56:28,674.242] [7024] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 11:56:28,675.216] [7024] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 11:56:29,119.656] [7336] INFO  - begin curl:
+ [2019-02-19 11:56:29,119.656] [7336] INFO  - mid curl:
+ [2019-02-19 11:56:29,141.132] [5888] INFO  - PUMP_START_PUMPING
+ [2019-02-19 11:56:29,141.132] [5888] INFO  - begin curl:
+ [2019-02-19 11:56:29,141.132] [5888] INFO  - mid curl:
+ [2019-02-19 11:56:29,231.946] [7336] INFO  - end curl:
+ [2019-02-19 11:56:29,231.946] [7336] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 11:56:29,231.946] [7336] INFO  - DEAL_START_DEALING
+ [2019-02-19 11:56:29,248.551] [5888] INFO  - end curl:
+ [2019-02-19 11:56:29,248.551] [5888] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:32:30,175.755] [8872] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 17:32:30,176.731] [8872] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 17:32:30,294.537] [8872] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:32:30,294.537] [8872] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 17:32:30,294.537] [8872] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:32:30,294.537] [8872] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:32:30,294.537] [8872] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:32:30,294.537] [8872] INFO  - m_ExtDealer == NULL
+ [2019-02-19 17:32:30,294.537] [8872] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 17:32:30,294.537] [8872] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:32:30,295.011] [8872] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:32:30,717.721] [7392] INFO  - begin curl:
+ [2019-02-19 17:32:30,717.721] [7392] INFO  - mid curl:
+ [2019-02-19 17:32:30,746.051] [1364] INFO  - PUMP_START_PUMPING
+ [2019-02-19 17:32:30,746.051] [1364] INFO  - begin curl:
+ [2019-02-19 17:32:30,746.051] [1364] INFO  - mid curl:
+ [2019-02-19 17:32:31,227.456] [7392] INFO  - end curl:
+ [2019-02-19 17:32:31,227.456] [7392] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:32:31,227.456] [7392] INFO  - DEAL_START_DEALING
+ [2019-02-19 17:32:31,258.701] [1364] INFO  - end curl:
+ [2019-02-19 17:32:31,258.701] [1364] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:33:54,361.686] [7392] INFO  - Begin:GetUtcCaressing:1550568834361686
+ [2019-02-19 17:33:54,361.686] [7392] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:33:54,362.692] [7392] INFO  - RequestInfo:{id: 1 status: 2 time: 924211045 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.77 prices[1]: 110.751 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.77 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1824844354} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:33:54,362.692] [7392] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:33:54,362.692] [7392] INFO  - AbookSTP
+ [2019-02-19 17:34:00,758.306] [8244] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - begin req.prices[0]:110.77,req.prices[1]:110.751,req.trade.price:110.77
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - end req.prices[0]:110.77,req.prices[1]:110.77,req.trade.price:110.77
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - ret.finish_status:2
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - RequestInfo:{id: 1 status: 2 time: 924211045 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.77 prices[1]: 110.77 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.77 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1824844354} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:34:00,758.805] [8244] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:34:00,759.630] [8244] INFO  - End:GetUtcCaressing::1550568840759630
+ [2019-02-19 17:34:00,759.630] [8244] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:34:00,759.630] [8244] INFO  - begin curl:
+ [2019-02-19 17:34:00,759.630] [8244] INFO  - mid curl:
+ [2019-02-19 17:34:00,760.613] [8244] INFO  - end curl:
+ [2019-02-19 17:34:00,760.613] [8244] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:34:00,761.602] [8244] INFO  - CheckDealerReqInfo ReqID:1
+ [2019-02-19 17:34:07,316.761] [7392] INFO  - Begin:GetUtcCaressing:1550568847316761
+ [2019-02-19 17:34:07,316.761] [7392] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:34:07,317.747] [7392] INFO  - RequestInfo:{id: 2 status: 2 time: 924211053 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.768 prices[1]: 110.748 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.768 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 756388145} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:34:07,317.747] [7392] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:34:07,317.747] [7392] INFO  - AbookSTP
+ [2019-02-19 17:34:12,766.525] [8244] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:34:12,766.525] [8244] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:34:12,766.525] [8244] INFO  - begin req.prices[0]:110.768,req.prices[1]:110.748,req.trade.price:110.768
+ [2019-02-19 17:34:12,766.525] [8244] INFO  - end req.prices[0]:110.768,req.prices[1]:110.768,req.trade.price:110.768
+ [2019-02-19 17:34:12,766.525] [8244] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:34:12,766.525] [8244] INFO  - ret.finish_status:2
+ [2019-02-19 17:34:12,767.506] [8244] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:34:12,767.506] [8244] INFO  - RequestInfo:{id: 2 status: 2 time: 924211053 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.768 prices[1]: 110.768 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.768 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 756388145} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:34:12,767.506] [8244] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:34:12,767.506] [8244] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:34:12,767.506] [8244] INFO  - End:GetUtcCaressing::1550568852767506
+ [2019-02-19 17:34:12,767.506] [8244] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:34:12,767.506] [8244] INFO  - begin curl:
+ [2019-02-19 17:34:12,767.506] [8244] INFO  - mid curl:
+ [2019-02-19 17:34:12,769.457] [8244] INFO  - end curl:
+ [2019-02-19 17:34:12,769.457] [8244] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:34:12,769.457] [8244] INFO  - CheckDealerReqInfo ReqID:2
+ [2019-02-19 17:34:57,500.400] [7392] INFO  - Begin:GetUtcCaressing:1550568897500400
+ [2019-02-19 17:34:57,501.372] [7392] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:34:57,501.372] [7392] INFO  - RequestInfo:{id: 3 status: 2 time: 924211083 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.775 prices[1]: 110.756 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.775 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 561133571} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:34:57,501.372] [7392] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:34:57,501.372] [7392] INFO  - AbookSTP
+ [2019-02-19 17:35:02,791.017] [8244] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - begin req.prices[0]:110.775,req.prices[1]:110.756,req.trade.price:110.775
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - end req.prices[0]:110.775,req.prices[1]:110.775,req.trade.price:110.775
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - ret.finish_status:2
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - RequestInfo:{id: 3 status: 2 time: 924211083 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.775 prices[1]: 110.775 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.775 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 561133571} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - End:GetUtcCaressing::1550568902791983
+ [2019-02-19 17:35:02,791.983] [8244] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - begin curl:
+ [2019-02-19 17:35:02,791.983] [8244] INFO  - mid curl:
+ [2019-02-19 17:35:02,793.957] [8244] INFO  - end curl:
+ [2019-02-19 17:35:02,793.957] [8244] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:35:02,793.957] [8244] INFO  - CheckDealerReqInfo ReqID:3
+ [2019-02-19 17:38:01,590.300] [7392] INFO  - Begin:GetUtcCaressing:1550569081590300
+ [2019-02-19 17:38:01,591.260] [7392] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:38:01,591.260] [7392] INFO  - RequestInfo:{id: 4 status: 2 time: 924211192 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.769 prices[1]: 110.749 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.769 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 443830641} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:38:01,591.260] [7392] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:38:01,591.260] [7392] INFO  - AbookSTP
+ [2019-02-19 17:38:06,870.217] [8244] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:38:06,870.217] [8244] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:38:06,870.217] [8244] INFO  - begin req.prices[0]:110.769,req.prices[1]:110.749,req.trade.price:110.769
+ [2019-02-19 17:38:06,870.217] [8244] INFO  - end req.prices[0]:110.769,req.prices[1]:110.769,req.trade.price:110.769
+ [2019-02-19 17:38:06,870.217] [8244] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:38:06,870.217] [8244] INFO  - ret.finish_status:2
+ [2019-02-19 17:38:06,870.217] [8244] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:38:06,870.217] [8244] INFO  - RequestInfo:{id: 4 status: 2 time: 924211192 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.769 prices[1]: 110.769 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.769 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 443830641} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:38:06,871.192] [8244] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:38:06,871.192] [8244] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:38:07,090.900] [8244] INFO  - End:GetUtcCaressing::1550569087090900
+ [2019-02-19 17:38:07,090.900] [8244] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:38:07,091.880] [8244] INFO  - begin curl:
+ [2019-02-19 17:38:07,091.880] [8244] INFO  - mid curl:
+ [2019-02-19 17:38:07,092.854] [8244] INFO  - end curl:
+ [2019-02-19 17:38:07,092.854] [8244] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:38:07,092.854] [8244] INFO  - CheckDealerReqInfo ReqID:4
+ [2019-02-19 17:38:17,031.685] [3524] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 17:38:17,031.685] [3524] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 17:38:17,150.816] [3524] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:38:17,150.816] [3524] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 17:38:17,150.816] [3524] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:38:17,150.816] [3524] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:38:17,150.816] [3524] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:38:17,150.816] [3524] INFO  - m_ExtDealer == NULL
+ [2019-02-19 17:38:17,150.816] [3524] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 17:38:17,150.816] [3524] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:38:17,151.790] [3524] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:38:17,575.584] [3360] INFO  - begin curl:
+ [2019-02-19 17:38:17,575.584] [3360] INFO  - mid curl:
+ [2019-02-19 17:38:17,584.395] [3360] INFO  - end curl:
+ [2019-02-19 17:38:17,584.395] [3360] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:38:17,584.395] [3360] INFO  - DEAL_START_DEALING
+ [2019-02-19 17:38:17,610.778] [5196] INFO  - PUMP_START_PUMPING
+ [2019-02-19 17:38:17,610.778] [5196] INFO  - begin curl:
+ [2019-02-19 17:38:17,610.778] [5196] INFO  - mid curl:
+ [2019-02-19 17:38:17,631.248] [5196] INFO  - end curl:
+ [2019-02-19 17:38:17,631.248] [5196] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:38:40,335.851] [3360] INFO  - Begin:GetUtcCaressing:1550569120335851
+ [2019-02-19 17:38:40,335.851] [3360] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:38:40,336.826] [3360] INFO  - RequestInfo:{id: 5 status: 2 time: 924211216 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.768 prices[1]: 110.749 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.768 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1769157283} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:38:40,336.826] [3360] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:38:40,336.826] [3360] INFO  - AbookSTP
+ [2019-02-19 17:38:45,586.486] [7720] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - begin req.prices[0]:110.768,req.prices[1]:110.749,req.trade.price:110.768
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - end req.prices[0]:110.768,req.prices[1]:110.768,req.trade.price:110.768
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - ret.finish_status:2
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - RequestInfo:{id: 5 status: 2 time: 924211216 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.768 prices[1]: 110.768 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.768 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1769157283} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:38:45,587.464] [7720] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:38:45,588.439] [7720] INFO  - End:GetUtcCaressing::1550569125588439
+ [2019-02-19 17:38:45,588.439] [7720] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:38:45,588.439] [7720] INFO  - begin curl:
+ [2019-02-19 17:38:45,588.439] [7720] INFO  - mid curl:
+ [2019-02-19 17:38:45,590.395] [7720] INFO  - end curl:
+ [2019-02-19 17:38:45,590.395] [7720] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:38:45,590.395] [7720] INFO  - CheckDealerReqInfo ReqID:5
+ [2019-02-19 17:40:24,861.038] [3360] INFO  - Begin:GetUtcCaressing:1550569224861038
+ [2019-02-19 17:40:24,862.011] [3360] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:40:24,862.011] [3360] INFO  - RequestInfo:{id: 6 status: 2 time: 924211278 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.761 prices[1]: 110.742 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.761 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 408482321} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:40:24,862.011] [3360] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:40:24,862.011] [3360] INFO  - AbookSTP
+ [2019-02-19 17:40:31,683.041] [7720] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:40:31,683.041] [7720] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:40:31,683.041] [7720] INFO  - begin req.prices[0]:110.761,req.prices[1]:110.742,req.trade.price:110.761
+ [2019-02-19 17:40:31,683.041] [7720] INFO  - end req.prices[0]:110.761,req.prices[1]:110.761,req.trade.price:110.761
+ [2019-02-19 17:40:31,683.041] [7720] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:40:31,683.041] [7720] INFO  - ret.finish_status:2
+ [2019-02-19 17:40:31,683.041] [7720] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:40:31,684.036] [7720] INFO  - RequestInfo:{id: 6 status: 2 time: 924211278 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.761 prices[1]: 110.761 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.761 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 408482321} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:40:31,684.036] [7720] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:40:31,684.036] [7720] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:40:31,684.036] [7720] INFO  - End:GetUtcCaressing::1550569231684036
+ [2019-02-19 17:40:31,684.036] [7720] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:40:31,684.036] [7720] INFO  - begin curl:
+ [2019-02-19 17:40:31,684.036] [7720] INFO  - mid curl:
+ [2019-02-19 17:40:31,685.981] [7720] INFO  - end curl:
+ [2019-02-19 17:40:31,685.981] [7720] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:40:31,685.981] [7720] INFO  - CheckDealerReqInfo ReqID:6
+ [2019-02-19 17:42:23,465.483] [3360] INFO  - Begin:GetUtcCaressing:1550569343465483
+ [2019-02-19 17:42:23,466.478] [3360] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:42:23,466.478] [3360] INFO  - RequestInfo:{id: 7 status: 2 time: 924211349 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.767 prices[1]: 110.748 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.767 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1442746035} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:42:23,466.478] [3360] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:42:23,466.478] [3360] INFO  - AbookSTP
+ [2019-02-19 17:42:29,743.718] [7720] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:42:29,743.718] [7720] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:42:29,743.718] [7720] INFO  - begin req.prices[0]:110.767,req.prices[1]:110.748,req.trade.price:110.767
+ [2019-02-19 17:42:29,743.718] [7720] INFO  - end req.prices[0]:110.767,req.prices[1]:110.767,req.trade.price:110.767
+ [2019-02-19 17:42:29,743.718] [7720] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:42:29,743.718] [7720] INFO  - ret.finish_status:2
+ [2019-02-19 17:42:29,743.718] [7720] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:42:29,744.692] [7720] INFO  - RequestInfo:{id: 7 status: 2 time: 924211349 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.767 prices[1]: 110.767 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.767 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1442746035} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:42:29,744.692] [7720] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:42:29,744.692] [7720] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:42:29,744.692] [7720] INFO  - End:GetUtcCaressing::1550569349744692
+ [2019-02-19 17:42:29,744.692] [7720] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:42:29,744.692] [7720] INFO  - begin curl:
+ [2019-02-19 17:42:29,744.692] [7720] INFO  - mid curl:
+ [2019-02-19 17:42:29,745.668] [7720] INFO  - end curl:
+ [2019-02-19 17:42:29,745.668] [7720] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:42:29,746.644] [7720] INFO  - CheckDealerReqInfo ReqID:7
+ [2019-02-19 17:42:57,159.387] [3844] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 17:42:57,159.387] [3844] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 17:42:57,274.614] [3844] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:42:57,274.614] [3844] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 17:42:57,274.614] [3844] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:42:57,274.614] [3844] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:42:57,274.614] [3844] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:42:57,274.614] [3844] INFO  - m_ExtDealer == NULL
+ [2019-02-19 17:42:57,274.614] [3844] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 17:42:57,275.590] [3844] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:42:57,275.590] [3844] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:42:57,697.471] [556] INFO  - begin curl:
+ [2019-02-19 17:42:57,697.471] [556] INFO  - mid curl:
+ [2019-02-19 17:42:57,715.046] [556] INFO  - end curl:
+ [2019-02-19 17:42:57,715.046] [556] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:42:57,715.046] [556] INFO  - DEAL_START_DEALING
+ [2019-02-19 17:42:57,725.801] [4136] INFO  - PUMP_START_PUMPING
+ [2019-02-19 17:42:57,725.801] [4136] INFO  - begin curl:
+ [2019-02-19 17:42:57,725.801] [4136] INFO  - mid curl:
+ [2019-02-19 17:42:57,746.290] [4136] INFO  - end curl:
+ [2019-02-19 17:42:57,746.290] [4136] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:43:03,770.625] [556] INFO  - Begin:GetUtcCaressing:1550569383770625
+ [2019-02-19 17:43:03,771.609] [556] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:43:03,771.609] [556] INFO  - RequestInfo:{id: 8 status: 2 time: 924211373 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.768 prices[1]: 110.749 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.768 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1038902733} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:43:03,771.609] [556] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:43:03,771.609] [556] INFO  - AbookSTP
+ [2019-02-19 17:43:09,705.117] [7692] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - begin req.prices[0]:110.768,req.prices[1]:110.749,req.trade.price:110.768
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - end req.prices[0]:110.768,req.prices[1]:110.768,req.trade.price:110.768
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - ret.finish_status:2
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - RequestInfo:{id: 8 status: 2 time: 924211373 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.768 prices[1]: 110.768 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.768 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1038902733} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:43:09,706.094] [7692] INFO  - End:GetUtcCaressing::1550569389706094
+ [2019-02-19 17:43:09,706.094] [7692] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:43:09,707.070] [7692] INFO  - begin curl:
+ [2019-02-19 17:43:09,707.070] [7692] INFO  - mid curl:
+ [2019-02-19 17:43:09,708.047] [7692] INFO  - end curl:
+ [2019-02-19 17:43:09,708.047] [7692] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:43:09,708.047] [7692] INFO  - CheckDealerReqInfo ReqID:8
+ [2019-02-19 17:44:49,160.603] [7020] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 17:44:49,160.603] [7020] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - m_ExtDealer == NULL
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:44:49,281.695] [7020] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:44:49,706.509] [3636] INFO  - DEAL_START_DEALING
+ [2019-02-19 17:44:49,733.857] [6048] INFO  - PUMP_START_PUMPING
+ [2019-02-19 17:44:55,982.905] [556] INFO  - Begin:GetUtcCaressing:1550569495982905
+ [2019-02-19 17:44:55,982.905] [556] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:44:55,983.881] [556] INFO  - RequestInfo:{id: 9 status: 2 time: 924211440 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.773 prices[1]: 110.753 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.773 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -837757839} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:44:55,983.881] [556] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:44:55,983.881] [556] INFO  - AbookSTP
+ [2019-02-19 17:45:01,783.725] [7692] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:45:01,783.725] [7692] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:45:01,783.725] [7692] INFO  - begin req.prices[0]:110.773,req.prices[1]:110.753,req.trade.price:110.773
+ [2019-02-19 17:45:01,783.725] [7692] INFO  - end req.prices[0]:110.773,req.prices[1]:110.773,req.trade.price:110.773
+ [2019-02-19 17:45:01,783.725] [7692] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:45:01,783.725] [7692] INFO  - ret.finish_status:2
+ [2019-02-19 17:45:01,784.701] [7692] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:45:01,784.701] [7692] INFO  - RequestInfo:{id: 9 status: 2 time: 924211440 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.773 prices[1]: 110.773 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.773 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -837757839} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:45:01,784.701] [7692] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:45:01,784.701] [7692] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:45:01,784.701] [7692] INFO  - End:GetUtcCaressing::1550569501784701
+ [2019-02-19 17:45:01,784.701] [7692] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:45:01,784.701] [7692] INFO  - begin curl:
+ [2019-02-19 17:45:01,784.701] [7692] INFO  - mid curl:
+ [2019-02-19 17:45:01,793.511] [7692] INFO  - end curl:
+ [2019-02-19 17:45:01,793.511] [7692] ERROR - curl_easy_perform() failed: Couldn't resolve host name
+ [2019-02-19 17:45:01,793.511] [7692] INFO  - CheckDealerReqInfo ReqID:9
+ [2019-02-19 17:45:22,214.523] [3636] INFO  - Begin:GetUtcCaressing:1550569522214523
+ [2019-02-19 17:45:22,215.504] [3636] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:45:22,215.504] [3636] INFO  - RequestInfo:{id: 10 status: 2 time: 924211455 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.757 prices[1]: 110.776 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.757 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 1149792048} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:45:22,215.504] [3636] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:45:22,215.504] [3636] INFO  - AbookSTP
+ [2019-02-19 17:45:27,723.456] [940] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:45:27,723.456] [940] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:45:27,723.456] [940] INFO  - begin req.prices[0]:110.757,req.prices[1]:110.776,req.trade.price:110.757
+ [2019-02-19 17:45:27,724.460] [940] INFO  - end req.prices[0]:110.757,req.prices[1]:110.776,req.trade.price:110.757
+ [2019-02-19 17:45:27,724.460] [940] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:45:27,724.460] [940] INFO  - ret.finish_status:2
+ [2019-02-19 17:45:27,724.460] [940] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:45:27,724.460] [940] INFO  - RequestInfo:{id: 10 status: 2 time: 924211455 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 110.757 prices[1]: 110.776 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.757 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 1149792048} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:45:27,724.460] [940] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:45:27,724.460] [940] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:45:27,724.460] [940] INFO  - End:GetUtcCaressing::1550569527724460
+ [2019-02-19 17:45:27,724.460] [940] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:45:27,724.460] [940] INFO  - CheckDealerReqInfo ReqID:10
+ [2019-02-19 17:45:35,705.110] [3636] INFO  - Begin:GetUtcCaressing:1550569535705110
+ [2019-02-19 17:45:35,705.110] [3636] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:45:35,705.110] [3636] INFO  - RequestInfo:{id: 11 status: 2 time: 924211463 manager: 1 login: 851135 group: STP balance: 999963 credit: 0 prices[0]: 0 prices[1]: 0 trade:{type: 74 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 0 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 2141617936} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:45:35,705.110] [3636] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:45:35,706.085] [3636] INFO  - if (!flag || req.prices[0] == 0.0 || req.prices[1] == 0.0)
+ [2019-02-19 17:45:35,706.085] [3636] INFO  - begin req.prices[0]:110.755,req.prices[1]:110.775,req.trade.price:0
+ [2019-02-19 17:45:35,706.085] [3636] INFO  - end req.prices[0]:110.755,req.prices[1]:110.775,req.trade.price:0
+ [2019-02-19 17:47:08,388.151] [4232] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 17:47:08,389.137] [4232] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 17:47:08,512.183] [4232] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:47:08,512.183] [4232] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 17:47:08,512.183] [4232] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:47:08,512.183] [4232] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:47:08,512.183] [4232] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:47:08,512.183] [4232] INFO  - m_ExtDealer == NULL
+ [2019-02-19 17:47:08,513.155] [4232] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 17:47:08,513.155] [4232] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:47:08,513.155] [4232] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:47:08,936.017] [2196] INFO  - DEAL_START_DEALING
+ [2019-02-19 17:47:08,965.308] [4552] INFO  - PUMP_START_PUMPING
+ [2019-02-19 17:47:15,547.515] [2196] INFO  - Begin:GetUtcCaressing:1550569635547515
+ [2019-02-19 17:47:15,547.515] [2196] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:47:15,548.500] [2196] INFO  - RequestInfo:{id: 12 status: 2 time: 924211523 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.781 prices[1]: 110.762 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.781 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 1081870673} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:47:15,548.500] [2196] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:47:15,548.500] [2196] INFO  - AbookSTP
+ [2019-02-19 17:47:20,941.223] [9140] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - begin req.prices[0]:110.781,req.prices[1]:110.762,req.trade.price:110.781
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - end req.prices[0]:110.781,req.prices[1]:110.781,req.trade.price:110.781
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - ret.finish_status:2
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - RequestInfo:{id: 12 status: 2 time: 924211523 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.781 prices[1]: 110.781 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.781 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 1081870673} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:47:20,942.194] [9140] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:47:20,943.164] [9140] INFO  - End:GetUtcCaressing::1550569640943164
+ [2019-02-19 17:47:20,943.164] [9140] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:47:20,943.164] [9140] INFO  - CheckDealerReqInfo ReqID:12
+ [2019-02-19 17:48:33,023.510] [3584] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 17:48:33,027.418] [3584] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 17:48:33,148.518] [3584] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:48:33,148.518] [3584] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 17:48:33,149.503] [3584] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:48:33,149.503] [3584] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:48:33,150.477] [3584] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:48:33,150.477] [3584] INFO  - m_ExtDealer == NULL
+ [2019-02-19 17:48:33,150.477] [3584] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 17:48:33,151.452] [3584] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:48:33,151.452] [3584] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:48:33,588.973] [6100] INFO  - DEAL_START_DEALING
+ [2019-02-19 17:48:33,638.781] [5672] INFO  - PUMP_START_PUMPING
+ [2019-02-19 17:49:00,291.334] [6100] INFO  - Begin:GetUtcCaressing:1550569740291334
+ [2019-02-19 17:49:00,292.319] [6100] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:49:00,292.319] [6100] INFO  - RequestInfo:{id: 13 status: 2 time: 924211585 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.785 prices[1]: 110.765 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.785 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 2034991804} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:49:00,292.319] [6100] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:49:00,293.288] [6100] INFO  - AbookSTP
+ [2019-02-19 17:49:05,659.750] [9096] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - begin req.prices[0]:110.785,req.prices[1]:110.765,req.trade.price:110.785
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - end req.prices[0]:110.785,req.prices[1]:110.785,req.trade.price:110.785
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - ret.finish_status:2
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - RequestInfo:{id: 13 status: 2 time: 924211585 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.785 prices[1]: 110.785 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.785 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 2034991804} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 17:49:05,660.726] [9096] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 17:49:05,661.696] [9096] INFO  - End:GetUtcCaressing::1550569745661696
+ [2019-02-19 17:49:05,661.696] [9096] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 17:49:05,661.696] [9096] INFO  - CheckDealerReqInfo ReqID:13
+ [2019-02-19 17:52:52,276.154] [1524] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 17:52:52,279.081] [1524] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 17:52:52,399.206] [1524] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:52:52,399.206] [1524] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 17:52:52,400.189] [1524] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:52:52,400.189] [1524] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:52:52,400.189] [1524] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 17:52:52,400.189] [1524] INFO  - m_ExtDealer == NULL
+ [2019-02-19 17:52:52,401.169] [1524] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 17:52:52,401.169] [1524] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:52:52,402.158] [1524] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 17:52:52,840.651] [6644] INFO  - DEAL_START_DEALING
+ [2019-02-19 17:52:52,870.917] [7792] INFO  - PUMP_START_PUMPING
+ [2019-02-19 18:00:28,984.465] [4744] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 18:00:28,992.274] [4744] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 18:00:29,110.438] [4744] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:00:29,111.418] [4744] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 18:00:29,111.418] [4744] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:00:29,111.418] [4744] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:00:29,112.385] [4744] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:00:29,112.385] [4744] INFO  - m_ExtDealer == NULL
+ [2019-02-19 18:00:29,112.385] [4744] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 18:00:29,113.365] [4744] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:00:29,114.349] [4744] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:00:29,543.039] [4744] ERROR - Bridge:GetInstance()->CreateBridgeLink success
+ [2019-02-19 18:00:29,549.887] [6368] INFO  - DEAL_START_DEALING
+ [2019-02-19 18:00:29,575.253] [4724] INFO  - PUMP_START_PUMPING
+ [2019-02-19 18:01:05,113.919] [8588] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 18:01:05,116.838] [8588] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 18:01:05,242.149] [8588] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:01:05,242.149] [8588] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 18:01:05,243.128] [8588] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:01:05,244.110] [8588] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:01:05,244.110] [8588] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:01:05,244.110] [8588] INFO  - m_ExtDealer == NULL
+ [2019-02-19 18:01:05,245.091] [8588] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 18:01:05,246.068] [8588] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:01:05,248.011] [8588] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:01:05,685.506] [8588] INFO  - Bridge:GetInstance()->CreateBridgeLink success
+ [2019-02-19 18:01:05,692.314] [1184] INFO  - DEAL_START_DEALING
+ [2019-02-19 18:01:05,719.652] [5044] INFO  - PUMP_START_PUMPING
+ [2019-02-19 18:01:14,319.742] [1184] INFO  - Begin:GetUtcCaressing:1550570474319742
+ [2019-02-19 18:01:14,320.726] [1184] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:01:14,320.726] [1184] INFO  - RequestInfo:{id: 14 status: 2 time: 924212023 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.779 prices[1]: 110.759 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.779 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 735403320} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:01:14,320.726] [1184] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:01:14,322.697] [1184] INFO  - AbookSTP
+ [2019-02-19 18:01:19,726.678] [7524] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - begin req.prices[0]:110.779,req.prices[1]:110.759,req.trade.price:110.779
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - end req.prices[0]:110.779,req.prices[1]:110.779,req.trade.price:110.779
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - ret.finish_status:2
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - RequestInfo:{id: 14 status: 2 time: 924212023 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.779 prices[1]: 110.779 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.779 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 735403320} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:01:19,727.640] [7524] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:01:19,728.616] [7524] INFO  - End:GetUtcCaressing::1550570479728616
+ [2019-02-19 18:01:19,728.616] [7524] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:01:19,728.616] [7524] INFO  - CheckDealerReqInfo ReqID:14
+ [2019-02-19 18:01:42,266.136] [1184] INFO  - Begin:GetUtcCaressing:1550570502266136
+ [2019-02-19 18:01:42,267.113] [1184] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:01:42,267.113] [1184] INFO  - RequestInfo:{id: 15 status: 2 time: 924212039 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.785 prices[1]: 110.765 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.785 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 262469157} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:01:42,267.113] [1184] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:01:42,269.057] [1184] INFO  - AbookSTP
+ [2019-02-19 18:02:01,401.504] [7524] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - begin req.prices[0]:110.785,req.prices[1]:110.765,req.trade.price:110.785
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - end req.prices[0]:110.785,req.prices[1]:110.785,req.trade.price:110.785
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - ret.finish_status:2
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - RequestInfo:{id: 15 status: 2 time: 924212039 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.785 prices[1]: 110.785 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.785 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 262469157} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:02:01,402.477] [7524] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:02:01,403.451] [7524] INFO  - End:GetUtcCaressing::1550570521403451
+ [2019-02-19 18:02:01,403.451] [7524] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:02:01,403.451] [7524] INFO  - CheckDealerReqInfo ReqID:15
+ [2019-02-19 18:03:04,823.782] [1184] INFO  - Begin:GetUtcCaressing:1550570584823782
+ [2019-02-19 18:03:04,823.782] [1184] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:03:04,823.782] [1184] INFO  - RequestInfo:{id: 16 status: 2 time: 924212089 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.785 prices[1]: 110.765 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.785 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1409106625} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:03:04,823.782] [1184] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:03:04,825.736] [1184] INFO  - AbookSTP
+ [2019-02-19 18:03:10,888.781] [7524] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:03:10,888.781] [7524] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:03:10,888.781] [7524] INFO  - begin req.prices[0]:110.785,req.prices[1]:110.765,req.trade.price:110.785
+ [2019-02-19 18:03:10,888.781] [7524] INFO  - end req.prices[0]:110.785,req.prices[1]:110.785,req.trade.price:110.785
+ [2019-02-19 18:03:10,888.781] [7524] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:03:10,888.781] [7524] INFO  - ret.finish_status:2
+ [2019-02-19 18:03:10,888.781] [7524] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:03:10,888.781] [7524] INFO  - RequestInfo:{id: 16 status: 2 time: 924212089 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.785 prices[1]: 110.785 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.785 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1409106625} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:03:10,888.781] [7524] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:03:10,889.756] [7524] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:03:10,889.756] [7524] INFO  - End:GetUtcCaressing::1550570590889756
+ [2019-02-19 18:03:10,889.756] [7524] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:03:10,889.756] [7524] INFO  - CheckDealerReqInfo ReqID:16
+ [2019-02-19 18:12:53,098.314] [9188] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 18:12:53,103.193] [9188] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 18:12:53,228.203] [9188] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:12:53,228.203] [9188] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 18:12:53,229.177] [9188] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:12:53,229.177] [9188] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:12:53,230.150] [9188] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:12:53,230.150] [9188] INFO  - m_ExtDealer == NULL
+ [2019-02-19 18:12:53,230.150] [9188] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 18:12:53,231.144] [9188] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:12:53,232.102] [9188] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:12:53,666.680] [9188] INFO  - Bridge:GetInstance()->CreateBridgeLink success
+ [2019-02-19 18:12:53,678.404] [7692] INFO  - DEAL_START_DEALING
+ [2019-02-19 18:12:53,703.790] [472] INFO  - PUMP_START_PUMPING
+ [2019-02-19 18:13:05,361.086] [7692] INFO  - Begin:GetUtcCaressing:1550571185361086
+ [2019-02-19 18:13:05,361.086] [7692] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:13:05,362.064] [7692] INFO  - RequestInfo:{id: 17 status: 2 time: 924212446 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.806 prices[1]: 110.787 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.806 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 927343187} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:13:05,362.064] [7692] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:13:05,364.049] [7692] INFO  - AbookSTP
+ [2019-02-19 18:13:10,778.120] [2372] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - begin req.prices[0]:110.806,req.prices[1]:110.787,req.trade.price:110.806
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - end req.prices[0]:110.806,req.prices[1]:110.806,req.trade.price:110.806
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - ret.finish_status:2
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - RequestInfo:{id: 17 status: 2 time: 924212446 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.806 prices[1]: 110.806 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.806 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 927343187} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:13:10,779.103] [2372] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:13:10,780.079] [2372] INFO  - End:GetUtcCaressing::1550571190780079
+ [2019-02-19 18:13:10,780.079] [2372] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:13:10,780.079] [2372] INFO  - CheckDealerReqInfo ReqID:17
+ [2019-02-19 18:13:24,124.932] [7692] INFO  - Begin:GetUtcCaressing:1550571204124932
+ [2019-02-19 18:13:24,125.914] [7692] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:13:24,125.914] [7692] INFO  - RequestInfo:{id: 18 status: 2 time: 924212458 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.806 prices[1]: 110.786 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.806 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -180816623} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:13:24,125.914] [7692] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:13:24,127.863] [7692] INFO  - AbookSTP
+ [2019-02-19 18:13:29,793.082] [2372] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:13:29,793.082] [2372] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:13:29,793.082] [2372] INFO  - begin req.prices[0]:110.806,req.prices[1]:110.786,req.trade.price:110.806
+ [2019-02-19 18:13:29,794.062] [2372] INFO  - end req.prices[0]:110.806,req.prices[1]:110.806,req.trade.price:110.806
+ [2019-02-19 18:13:29,794.062] [2372] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:13:29,794.062] [2372] INFO  - ret.finish_status:2
+ [2019-02-19 18:13:29,794.062] [2372] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:13:29,794.062] [2372] INFO  - RequestInfo:{id: 18 status: 2 time: 924212458 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.806 prices[1]: 110.806 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.806 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -180816623} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:13:29,794.062] [2372] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:13:29,794.062] [2372] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:13:29,795.063] [2372] INFO  - End:GetUtcCaressing::1550571209795063
+ [2019-02-19 18:13:29,795.063] [2372] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:13:29,795.063] [2372] INFO  - CheckDealerReqInfo ReqID:18
+ [2019-02-19 18:14:10,968.226] [7692] INFO  - Begin:GetUtcCaressing:1550571250968226
+ [2019-02-19 18:14:10,969.207] [7692] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:14:10,969.207] [7692] INFO  - RequestInfo:{id: 19 status: 2 time: 924212486 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.787 prices[1]: 110.807 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.787 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1553273759} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:14:10,969.207] [7692] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:14:10,971.162] [7692] INFO  - AbookSTP
+ [2019-02-19 18:14:16,027.019] [2372] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - begin req.prices[0]:110.787,req.prices[1]:110.807,req.trade.price:110.787
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - end req.prices[0]:110.787,req.prices[1]:110.807,req.trade.price:110.787
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - ret.finish_status:2
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - RequestInfo:{id: 19 status: 2 time: 924212486 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.787 prices[1]: 110.807 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.787 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1553273759} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:14:16,027.973] [2372] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:14:16,028.950] [2372] INFO  - End:GetUtcCaressing::1550571256028950
+ [2019-02-19 18:14:16,028.950] [2372] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:14:16,028.950] [2372] INFO  - CheckDealerReqInfo ReqID:19
+ [2019-02-19 18:14:21,598.466] [7692] INFO  - Begin:GetUtcCaressing:1550571261598466
+ [2019-02-19 18:14:21,599.456] [7692] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:14:21,599.456] [7692] INFO  - RequestInfo:{id: 20 status: 2 time: 924212492 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.786 prices[1]: 110.805 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.786 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1164632631} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:14:21,599.456] [7692] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:14:21,601.390] [7692] INFO  - AbookSTP
+ [2019-02-19 18:14:28,065.480] [2372] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:14:28,069.927] [2372] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:14:28,069.927] [2372] INFO  - begin req.prices[0]:110.786,req.prices[1]:110.805,req.trade.price:110.786
+ [2019-02-19 18:14:28,069.927] [2372] INFO  - end req.prices[0]:110.786,req.prices[1]:110.805,req.trade.price:110.786
+ [2019-02-19 18:14:28,069.927] [2372] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:14:28,069.927] [2372] INFO  - ret.finish_status:2
+ [2019-02-19 18:14:28,070.504] [2372] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:14:28,070.504] [2372] INFO  - RequestInfo:{id: 20 status: 2 time: 924212492 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.786 prices[1]: 110.805 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.786 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1164632631} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:14:28,070.504] [2372] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:14:28,070.504] [2372] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:14:28,071.320] [2372] INFO  - End:GetUtcCaressing::1550571268071320
+ [2019-02-19 18:14:28,071.320] [2372] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:14:28,071.320] [2372] INFO  - CheckDealerReqInfo ReqID:20
+ [2019-02-19 18:14:41,837.378] [7692] INFO  - Begin:GetUtcCaressing:1550571281837378
+ [2019-02-19 18:14:41,838.360] [7692] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:14:41,838.360] [7692] INFO  - RequestInfo:{id: 21 status: 2 time: 924212504 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.79 prices[1]: 110.81 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.79 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 1408161094} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:14:41,838.360] [7692] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:14:41,840.305] [7692] INFO  - AbookSTP
+ [2019-02-19 18:14:48,112.971] [2372] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:14:48,112.971] [2372] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:14:48,112.971] [2372] INFO  - begin req.prices[0]:110.79,req.prices[1]:110.81,req.trade.price:110.79
+ [2019-02-19 18:14:48,112.971] [2372] INFO  - end req.prices[0]:110.79,req.prices[1]:110.81,req.trade.price:110.79
+ [2019-02-19 18:14:48,112.971] [2372] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:14:48,112.971] [2372] INFO  - ret.finish_status:2
+ [2019-02-19 18:14:48,112.971] [2372] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:14:48,112.971] [2372] INFO  - RequestInfo:{id: 21 status: 2 time: 924212504 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.79 prices[1]: 110.81 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.79 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 1408161094} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:14:48,113.957] [2372] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:14:48,113.957] [2372] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:14:48,113.957] [2372] INFO  - End:GetUtcCaressing::1550571288113957
+ [2019-02-19 18:14:48,113.957] [2372] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:14:48,113.957] [2372] INFO  - CheckDealerReqInfo ReqID:21
+ [2019-02-19 18:17:05,035.671] [2004] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 18:17:05,041.517] [2004] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 18:17:05,165.555] [2004] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:17:05,165.555] [2004] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 18:17:05,169.969] [2004] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:17:05,170.548] [2004] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:17:05,170.792] [2004] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:17:05,170.792] [2004] INFO  - m_ExtDealer == NULL
+ [2019-02-19 18:17:05,171.415] [2004] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 18:17:05,171.415] [2004] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:17:05,172.397] [2004] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:17:05,610.522] [2004] INFO  - Bridge:GetInstance()->CreateBridgeLink success
+ [2019-02-19 18:17:05,616.755] [6592] INFO  - DEAL_START_DEALING
+ [2019-02-19 18:17:05,644.096] [8644] INFO  - PUMP_START_PUMPING
+ [2019-02-19 18:17:12,106.286] [6592] INFO  - Begin:GetUtcCaressing:1550571432106286
+ [2019-02-19 18:17:12,107.266] [6592] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:17:12,107.266] [6592] INFO  - RequestInfo:{id: 22 status: 2 time: 924212594 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.805 prices[1]: 110.785 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.805 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1236180794} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:17:12,107.266] [6592] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:17:12,109.224] [6592] INFO  - AbookSTP
+ [2019-02-19 18:17:17,641.701] [5620] ERROR - Dealer: now - iter->second.timestrap >= TIME_REQ_GAP
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - begin req.prices[0]:110.805,req.prices[1]:110.785,req.trade.price:110.805
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - end req.prices[0]:110.805,req.prices[1]:110.805,req.trade.price:110.805
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - ret.finish_status:2
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - RequestInfo:{id: 22 status: 2 time: 924212594 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.805 prices[1]: 110.805 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.805 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1236180794} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:17:17,641.701] [5620] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:17:17,642.679] [5620] INFO  - End:GetUtcCaressing::1550571437642679
+ [2019-02-19 18:17:17,642.679] [5620] ERROR - Dealer RequestInfo delay or lost msg from Bridge
+ [2019-02-19 18:17:17,642.679] [5620] INFO  - CheckDealerReqInfo ReqID:22
+ [2019-02-19 18:27:06,651.886] [7192] INFO  - INFO:log_file:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release/TWDealer
+ [2019-02-19 18:27:06,656.775] [7192] INFO  - INFO:lib_path:D:\Tiger_plugin\Plugin_wzp\TW_Dealer\x64\Release\lib\mtmanapi64.dll
+ [2019-02-19 18:27:06,780.784] [7192] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:27:06,781.765] [7192] INFO  - tmp.find_first_of():6 tmp.find_last_of():6
+ [2019-02-19 18:27:06,782.740] [7192] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:27:06,782.740] [7192] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:27:06,783.721] [7192] INFO  - tmp.find_first_of():-1 tmp.find_last_of():-1
+ [2019-02-19 18:27:06,783.721] [7192] INFO  - m_ExtDealer == NULL
+ [2019-02-19 18:27:06,783.721] [7192] INFO  - INFO:m_ExtManagerPump == NULL
+ [2019-02-19 18:27:06,784.696] [7192] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:27:06,784.696] [7192] INFO  - INFO:m_ExtManager == NULL
+ [2019-02-19 18:27:07,214.374] [7192] INFO  - Bridge:GetInstance()->CreateBridgeLink success
+ [2019-02-19 18:27:07,221.209] [7624] INFO  - DEAL_START_DEALING
+ [2019-02-19 18:27:07,246.589] [8172] INFO  - PUMP_START_PUMPING
+ [2019-02-19 18:27:14,053.990] [7624] INFO  - Begin:GetUtcCaressing:1550572034053990
+ [2019-02-19 18:27:14,054.967] [7624] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:27:14,054.967] [7624] INFO  - RequestInfo:{id: 26 status: 2 time: 924212952 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.783 prices[1]: 110.764 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.783 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 1049968703} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:27:14,054.967] [7624] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:27:14,057.906] [7624] INFO  - AbookSTP
+ [2019-02-19 18:27:14,360.670] [3080] INFO  - BEGIN:SendDataToMT4-----------------:26
+ [2019-02-19 18:27:14,361.610] [3080] INFO  - BEGIN:DealerSendDataToMT4-----------------:26
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - begin req.prices[0]:110.764,req.prices[1]:110.783,req.trade.price:110.783
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - end req.prices[0]:110.764,req.prices[1]:110.783,req.trade.price:110.783
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - ret.finish_status:2
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - RequestInfo:{id: 26 status: 2 time: 924212952 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.764 prices[1]: 110.783 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 10 price: 110.783 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 0} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:27:14,362.597] [3080] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:27:14,363.558] [3080] INFO  - End:GetUtcCaressing::1550572034363558
+ [2019-02-19 18:27:14,363.558] [3080] INFO  - END:DealerSendDataToMT4---------------------------:26
+ [2019-02-19 18:27:14,363.558] [3080] INFO  - END:SendDataToMT4-----------------:26
+ [2019-02-19 18:29:09,514.049] [7624] INFO  - Begin:GetUtcCaressing:1550572149514049
+ [2019-02-19 18:29:09,514.049] [7624] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:29:09,515.027] [7624] INFO  - RequestInfo:{id: 27 status: 2 time: 924213021 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.767 prices[1]: 110.786 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 100 price: 110.767 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 776377112} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:29:09,515.027] [7624] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:29:09,515.997] [7624] INFO  - AbookSTP
+ [2019-02-19 18:29:09,825.581] [3080] INFO  - BEGIN:SendDataToMT4-----------------:27
+ [2019-02-19 18:29:09,827.522] [3080] INFO  - BEGIN:DealerSendDataToMT4-----------------:27
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - begin req.prices[0]:110.767,req.prices[1]:110.786,req.trade.price:110.767
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - end req.prices[0]:110.767,req.prices[1]:110.786,req.trade.price:110.767
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - ret.finish_status:2
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - RequestInfo:{id: 27 status: 2 time: 924213021 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 110.767 prices[1]: 110.786 trade:{type: 66 flags: 0 cmd: 1 order: 0 orderby: 0 symbol: USDJPY volume: 100 price: 110.767 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 0} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:29:09,828.498] [3080] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:29:09,829.473] [3080] INFO  - End:GetUtcCaressing::1550572149829473
+ [2019-02-19 18:29:09,829.473] [3080] INFO  - END:DealerSendDataToMT4---------------------------:27
+ [2019-02-19 18:29:09,829.473] [3080] INFO  - END:SendDataToMT4-----------------:27
+ [2019-02-19 18:29:16,856.439] [7624] INFO  - Begin:GetUtcCaressing:1550572156856439
+ [2019-02-19 18:29:16,856.439] [7624] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:29:16,856.439] [7624] INFO  - RequestInfo:{id: 28 status: 2 time: 924213026 manager: 1 login: 851135 group: STP balance: 999967 credit: 0 prices[0]: 0 prices[1]: 0 trade:{type: 74 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 100 price: 0 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1455849706} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:29:16,856.439] [7624] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:29:16,858.396] [7624] INFO  - if (!flag || req.prices[0] == 0.0 || req.prices[1] == 0.0)
+ [2019-02-19 18:29:16,858.396] [7624] INFO  - begin req.prices[0]:110.766,req.prices[1]:110.786,req.trade.price:0
+ [2019-02-19 18:29:16,858.396] [7624] INFO  - end req.prices[0]:110.766,req.prices[1]:110.786,req.trade.price:0
+ [2019-02-19 18:29:24,735.899] [7624] INFO  - Begin:GetUtcCaressing:1550572164735899
+ [2019-02-19 18:29:24,736.879] [7624] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:29:24,736.879] [7624] INFO  - RequestInfo:{id: 29 status: 2 time: 924213030 manager: 1 login: 851135 group: STP balance: 999946 credit: 0 prices[0]: 0 prices[1]: 0 trade:{type: 70 flags: 0 cmd: 1 order: 29469433 orderby: 0 symbol: USDJPY volume: 9 price: 110.785 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 808021898} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:29:24,736.879] [7624] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:29:24,738.824] [7624] INFO  - AbookSTP
+ [2019-02-19 18:29:25,043.497] [3080] INFO  - BEGIN:SendDataToMT4-----------------:29
+ [2019-02-19 18:29:25,044.477] [3080] INFO  - BEGIN:DealerSendDataToMT4-----------------:29
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - begin req.prices[0]:110.764,req.prices[1]:110.782,req.trade.price:110.782
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - end req.prices[0]:110.764,req.prices[1]:110.782,req.trade.price:110.782
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - ret.finish_status:2
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - RequestInfo:{id: 29 status: 2 time: 924213030 manager: 1 login: 851135 group: STP balance: 999946 credit: 0 prices[0]: 110.764 prices[1]: 110.782 trade:{type: 70 flags: 0 cmd: 1 order: 29469433 orderby: 0 symbol: USDJPY volume: 9 price: 110.782 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 0} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - End:GetUtcCaressing::1550572165045444
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - END:DealerSendDataToMT4---------------------------:29
+ [2019-02-19 18:29:25,045.444] [3080] INFO  - END:SendDataToMT4-----------------:29
+ [2019-02-19 18:31:57,447.796] [7624] INFO  - Begin:GetUtcCaressing:1550572317447796
+ [2019-02-19 18:31:57,448.778] [7624] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:31:57,448.778] [7624] INFO  - RequestInfo:{id: 30 status: 2 time: 924213121 manager: 1 login: 851136 group: BRD balance: 1000 credit: 0 prices[0]: 110.778 prices[1]: 110.761 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 100 price: 110.778 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -1381081537} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:31:57,448.778] [7624] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:31:57,451.700] [7624] INFO  - BbookBRD
+ [2019-02-19 18:31:57,455.618] [3080] INFO  - BEGIN:SendDataToMT4-----------------:30
+ [2019-02-19 18:31:57,455.618] [3080] INFO  - BEGIN:DealerSendDataToMT4-----------------:30
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - begin req.prices[0]:110.761,req.prices[1]:110.778,req.trade.price:110.778
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - end req.prices[0]:110.761,req.prices[1]:110.778,req.trade.price:110.778
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - ret.finish_status:2
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - RequestInfo:{id: 30 status: 2 time: 924213121 manager: 1 login: 851136 group: BRD balance: 1000 credit: 0 prices[0]: 110.761 prices[1]: 110.778 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 100 price: 110.778 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 0} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - End:GetUtcCaressing::1550572317456599
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - END:DealerSendDataToMT4---------------------------:30
+ [2019-02-19 18:31:57,456.599] [3080] INFO  - END:SendDataToMT4-----------------:30
+ [2019-02-19 18:31:57,502.487] [8172] INFO  - Add order.OrderNum: 29469434 order.activation: 4 order.timestrap: 1550572317502487
+ [2019-02-19 18:31:57,503.468] [8172] INFO  - BbookBRD
+ [2019-02-19 18:31:57,503.468] [8172] INFO  - GetMarginInfo:so:98.5%/984.6/1000.0
+ [2019-02-19 18:31:57,503.468] [8172] INFO  - ---begin----------------TradeRecord-----------------------
+ [2019-02-19 18:31:57,503.468] [8172] INFO  - record:{  order: 29469434 login:851136 symbol:USDJPY digits:3 cmd:0 volume:100 open_time: 1550583117 state: 0 open_price: 110.778 sl: 0 tp: 0 close_time: 0 gw_volume: 0 expiration: 0 reason:   conv_reserv: ò conv_rates[0]: 1 conv_rates[1]: 0 commission: 0 commission_agent: 0 storage: 0 close_price: 110.761 profit: -15.35 taxes: 0 magic: 0 comment:  gw_order: 0activation: 4 gw_open_price: 0 gw_close_price: 0 margin_rate:1 timestamp: 1550583117 api_data[0]: 0 api_data[1]: 0 api_data[2]: 0 api_data[3]: 0}
+ [2019-02-19 18:31:57,503.468] [8172] INFO  - ---end----------------TradeRecord------------------------
+ [2019-02-19 18:31:57,505.423] [3080] INFO  - BEGIN:SendDataToMT4-----------------:0
+ [2019-02-19 18:31:57,506.398] [3080] INFO  - BEGIN:PumpSendDataToMT4-----------------
+ [2019-02-19 18:31:57,506.398] [3080] INFO  - CaculateSpreadForPump before:110.761
+ [2019-02-19 18:31:57,506.398] [3080] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:31:57,506.398] [3080] INFO  - order_id: 29469434 grp.secgroups[sv.type].spread_diff 0
+ [2019-02-19 18:31:57,506.398] [3080] INFO  - CaculateSpreadForPump after:110.761
+ [2019-02-19 18:31:57,507.378] [3080] INFO  - begin--------------TradeTransInfo-------------------------
+ [2019-02-19 18:31:57,507.378] [3080] INFO  - TradeTransInfo:{type: 76 flags: 0 cmd: 0 order: 29469434 orderby: 0 symbol: USDJPY volume: 100 price: 110.761 sl: 0 tp: 0 ie_deviation: 0 comment: so:98.5%/984.6/1000.0 expiration: 0 crc: 0}
+ [2019-02-19 18:31:57,507.378] [3080] INFO  - end--------------TradeTransInfo--------------------------
+ [2019-02-19 18:31:57,508.342] [3080] ERROR - m_ExtManager->TradeTransaction(&info) failed! order:29469434 ErrCode:Network problem
+ [2019-02-19 18:31:57,510.297] [3080] INFO  - END:PumpSendDataToMT4-----------------
+ [2019-02-19 18:31:57,511.275] [3080] INFO  - END:SendDataToMT4-----------------:0
+ [2019-02-19 18:31:57,564.986] [8172] INFO  - BbookBRD
+ [2019-02-19 18:31:57,637.237] [96] INFO  - m_ExtManager reconnect the link
+ [2019-02-19 18:32:03,758.924] [96] INFO  - DeleteOrderRecord m_Orders count:1
+ [2019-02-19 18:32:03,758.924] [96] INFO  - DeleteOrderRecord OrderNum:29469434
+ [2019-02-19 18:32:32,415.297] [7624] INFO  - Begin:GetUtcCaressing:1550572352415297
+ [2019-02-19 18:32:32,416.283] [7624] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:32:32,416.283] [7624] INFO  - RequestInfo:{id: 31 status: 2 time: 924213142 manager: 1 login: 851136 group: BRD balance: 984.65 credit: 0 prices[0]: 110.783 prices[1]: 110.766 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.783 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: -858823392} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:32:32,416.283] [7624] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:32:32,418.223] [7624] INFO  - BbookBRD
+ [2019-02-19 18:32:32,421.172] [3080] INFO  - BEGIN:SendDataToMT4-----------------:31
+ [2019-02-19 18:32:32,422.134] [3080] INFO  - BEGIN:DealerSendDataToMT4-----------------:31
+ [2019-02-19 18:32:32,422.134] [3080] INFO  - tmp.type:4,tmp.point:0.001,tmp.digits:3
+ [2019-02-19 18:32:32,422.134] [3080] INFO  - begin req.prices[0]:110.766,req.prices[1]:110.783,req.trade.price:110.783
+ [2019-02-19 18:32:32,422.134] [3080] INFO  - end req.prices[0]:110.766,req.prices[1]:110.783,req.trade.price:110.783
+ [2019-02-19 18:32:32,422.134] [3080] INFO  - ---Begin----------------PrintResponse-----------------------
+ [2019-02-19 18:32:32,423.145] [3080] INFO  - ret.finish_status:2
+ [2019-02-19 18:32:32,423.145] [3080] INFO  - begin--------------RequestInfo-------------------------
+ [2019-02-19 18:32:32,423.145] [3080] INFO  - RequestInfo:{id: 31 status: 2 time: 924213142 manager: 1 login: 851136 group: BRD balance: 984.65 credit: 0 prices[0]: 110.766 prices[1]: 110.783 trade:{type: 66 flags: 0 cmd: 0 order: 0 orderby: 0 symbol: USDJPY volume: 1 price: 110.783 sl: 0 tp: 0 ie_deviation: 0 comment:  expiration: 0 crc: 0} gw_volume: 0 gw_order: 0 gw_price: 0 }
+ [2019-02-19 18:32:32,423.145] [3080] INFO  - end--------------RequestInfo--------------------------
+ [2019-02-19 18:32:32,423.145] [3080] INFO  - ---End------------------PrintResponse-----------------------
+ [2019-02-19 18:32:32,423.145] [3080] INFO  - End:GetUtcCaressing::1550572352423145
+ [2019-02-19 18:32:32,423.145] [3080] INFO  - END:DealerSendDataToMT4---------------------------:31
+ [2019-02-19 18:32:32,423.145] [3080] INFO  - END:SendDataToMT4-----------------:31
+ 
