@@ -9,6 +9,7 @@
 *.map
 *.pdb
 *.log
+*.log.*
 
 log4cplusInterface/
 curl-7.61.0-win64/
